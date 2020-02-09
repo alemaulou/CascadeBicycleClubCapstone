@@ -1,0 +1,9 @@
+{% extends "admin/login.html" %}
+{% block branding %}
+    {% load static %}
+    <a href="/"><img src="{% static 'admin/cbc_head.png' %}" width=100%></a>
+{% endblock %}
+
+{% block content_title %}
+<h1 id="site-name">{{settings.CBCLM}}</h1>
+{% endblock %}
