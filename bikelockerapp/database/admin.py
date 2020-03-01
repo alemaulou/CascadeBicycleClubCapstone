@@ -3,7 +3,6 @@ from django.contrib import admin
 # Register your models here.
 from .models import *
 
-
 class StationA(admin.ModelAdmin):
     list_display = ('station_name', 'station_county', 'station_zip')
     list_filter = ('station_name', 'station_county', 'station_zip',)

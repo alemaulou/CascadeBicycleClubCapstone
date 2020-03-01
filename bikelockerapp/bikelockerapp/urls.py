@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 from django.contrib import admin
 from django.urls import include, path
+from . import views
 
 # Serializers define the API representation.
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -26,4 +27,5 @@ admin.site.index_title = 'Cascade Bicycle Club Locker Management'
 urlpatterns = [
     path('database/', include('database.urls')),
     path('', admin.site.urls),
+    path('customer_inquiry/', views.customer_inquiry, name='customer-inquiry')
 ]

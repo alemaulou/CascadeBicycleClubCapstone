@@ -16,8 +16,8 @@ class Station(models.Model):
         return self.station_county
 
 class Locker(models.Model):
-    station_id = models.ForeignKey(Station, on_delete=models.CASCADE)
     locker_id = models.AutoField(primary_key=True)
+    station_id = models.ForeignKey(Station, on_delete=models.CASCADE)
     locker_name = models.CharField('Locker Name', max_length=100)
 
 class Loc_Maintenance(models.Model):
@@ -37,12 +37,13 @@ class Maintenance(models.Model):
 
 class Customer(models.Model):
     cust_id = models.AutoField(primary_key=True)
-    cust_f_name = models.CharField('Customer First Name', max_length=50)
-    cust_l_name = models.CharField('Customer Last Name', max_length=50)
-    cust_street = models.CharField('Customer Street', max_length=50)
-    cust_city = models.CharField('Customer City', max_length=50)
-    cust_state = models.CharField('Customer State', max_length=50)
-    cust_zip = models.CharField('Customer Zip Code', max_length=10)
+    cust_f_name = models.CharField('First Name', max_length=50)
+    cust_l_name = models.CharField('Last Name', max_length=50)
+    cust_email = models.EmailField('Email', max_length=100, default='')
+    cust_address = models.CharField('Street Address', max_length=50, default='')
+    cust_city = models.CharField('City', max_length=50)
+    cust_state = models.CharField('State', max_length=50)
+    cust_zip = models.CharField('Zip Code', max_length=10)
 
 class Cust_Status_Type(models.Model):
     cust_stat_type_id = models.AutoField(primary_key=True)
@@ -86,8 +87,3 @@ class Cust_Loc_Event(models.Model):
     cust_loc_event_id = models.AutoField(primary_key=True)
     cust_loc_id = models.ForeignKey(Cust_Loc, on_delete=models.CASCADE)
     event_id = models.ForeignKey(Event, on_delete=models.CASCADE)
-
-
-
-
-
