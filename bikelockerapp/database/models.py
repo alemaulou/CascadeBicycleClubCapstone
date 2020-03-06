@@ -42,6 +42,9 @@ class Customer(models.Model):
     cust_state = models.CharField('State', max_length=50)
     cust_zip = models.CharField('Zip Code', max_length=10)
 
+    def __str__(self):
+        return self.cust_f_name + " " + self.cust_l_name
+
 class Status(models.Model):
     status_id = models.AutoField(primary_key=True)
     status_name = models.CharField('Status Name', max_length=100)
