@@ -3,21 +3,17 @@ from django.db import models
 # Create your models here.
 from django.db import models
 
-class Station(models.Model):
-    station_id = models.AutoField(primary_key=True)
-    station_name = models.CharField('Station Name', max_length=100)
-    station_county = models.CharField('Station County', max_length=50)
-    station_zip = models.CharField('Station Zip', max_length=10)
+class Location(models.Model):
+    location_id = models.AutoField(primary_key=True)
+    location_name = models.CharField('Location Name', max_length=100)
+    location_zip = models.CharField('Location Zip', max_length=10)
 
     def __str__(self):
-        return self.station_name
-
-    def show_county(self):
-        return self.station_county
+        return self.location_name
 
 class Locker(models.Model):
     locker_id = models.AutoField(primary_key=True)
-    station_id = models.ForeignKey(Station, on_delete=models.CASCADE)
+    location_id = models.ForeignKey(Location, on_delete=models.CASCADE)
     locker_name = models.CharField('Locker Name', max_length=100)
 
 class Maintenance_Type(models.Model):
@@ -69,8 +65,4 @@ class Inquiry(models.Model):
     inquiry_id = models.AutoField(primary_key=True)
     cust_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
     inquiry_date = models.DateField()
- 
-class Inquiry_Loc(models.Model):
-    inquiry_loc_id = models.AutoField(primary_key=True)
-    inquiry_id = models.ForeignKey(Inquiry, on_delete=models.CASCADE)
-    station_id = models.ForeignKey(Station, on_delete=models.CASCADE)
+    locations = models.ManyToManyField(Location)
