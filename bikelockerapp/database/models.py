@@ -20,7 +20,11 @@ class Maintenance_Type(models.Model):
     main_type_id = models.AutoField(primary_key=True)
     main_type_name = models.CharField('Maintenance Type Name', max_length=100)
     main_type_desc = models.CharField('Maintenance Type Description', max_length=100)
- 
+
+    class Meta:
+        verbose_name = "Maintenance Type"
+        verbose_name_plural = "Maintenance Types"
+
 class Maintenance(models.Model):
     maintenance_id = models.AutoField(primary_key=True)
     locker_id = models.ForeignKey(Locker, on_delete=models.CASCADE)
@@ -52,6 +56,10 @@ class Cust_Status(models.Model):
     cust_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
     status_id = models.ForeignKey(Status, on_delete=models.CASCADE)
     cust_status_date = models.DateField()
+
+    class Meta:
+        verbose_name = "Customer Status"
+        verbose_name_plural = "Customer Statuses"
  
 
 class Cust_Locker(models.Model):
@@ -61,8 +69,16 @@ class Cust_Locker(models.Model):
     contract_date = models.DateField()
     renew_date = models.DateField()
 
+    class Meta:
+        verbose_name = "Customer Locker"
+        verbose_name_plural = "Customer Lockers"
+
 class Inquiry(models.Model):
     inquiry_id = models.AutoField(primary_key=True)
     cust_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
     inquiry_date = models.DateField()
     locations = models.ManyToManyField(Location)
+
+    class Meta:
+        verbose_name = "Inquiry"
+        verbose_name_plural = "Inquiries"
