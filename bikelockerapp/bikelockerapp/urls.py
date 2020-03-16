@@ -27,5 +27,5 @@ admin.site.index_title = 'Cascade Bicycle Club Locker Management'
 urlpatterns = [
     path('database/', include('database.urls')),
     path('', admin.site.urls),
-    path('customer_inquiry/', views.customer_inquiry, name='customer-inquiry')
+    path('customer_inquiry/', views.customer_inquiry, name='customer-inquiry'),
 ]
