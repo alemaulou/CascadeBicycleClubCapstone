@@ -5,7 +5,6 @@ from database.models import Customer, Inquiry
 from .forms import CustomerForm
 from datetime import datetime
 
-
 def customer_inquiry(request):
     submitted = False
     if request.method == 'POST':
