@@ -18,11 +18,13 @@ class CustomerAdmin(ImportExportModelAdmin):
 
 
 admin.site.register(Location, LocationA)
+admin.site.register(Locker_Status)
 admin.site.register(Locker)
-admin.site.register(Maintenance)
+admin.site.register(Key_Status)
+admin.site.register(Key)
 admin.site.register(Maintenance_Type)
+admin.site.register(Maintenance_Status)
+admin.site.register(Maintenance)
 admin.site.register(Customer, CustomerAdmin)
-admin.site.register(Status)
-admin.site.register(Cust_Status)
 admin.site.register(Cust_Locker)
 admin.site.register(Inquiry)

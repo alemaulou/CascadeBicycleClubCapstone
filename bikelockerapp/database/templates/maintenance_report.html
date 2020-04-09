@@ -1,0 +1,31 @@
+{% load crispy_forms_tags %}
+  {% block content %}
+  <html>
+    <head>
+      <title>Maintenance Report Form</title>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    </head>
+    <body style="padding: 20px; align-content: center;">
+      <h1>Report Maintenance Issues Here:</h1>
+  
+      {% if submitted %}
+        <p class="success">
+           Your information was submitted successfully. We will reach out through email regarding next steps. Thank you.
+      </p>
+
+   {% else %}
+       <form action="" method="post" novalidate>
+       <table>
+           {{ form.as_table }}
+           <tr>
+               <td>&nbsp;</td>
+                
+           </tr>
+       </table>
+       {% csrf_token %}
+       <button type="submit" class="btn btn-primary">Submit</button>
+       </form>
+   {% endif %}
+   {% endblock content %}
+    </body>
+  </html>

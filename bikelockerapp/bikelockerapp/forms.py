@@ -1,7 +1,7 @@
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column
-from database.models import Customer, Location
+from database.models import Customer, Location, Maintenance
 
 class CustomerForm(forms.ModelForm):
 
@@ -31,3 +31,13 @@ class CustomerForm(forms.ModelForm):
             'locations',
             Submit('submit', 'Submit')
         )
+
+class MaintenanceForm(forms.ModelForm):
+    class Meta:
+        model = Maintenance
+        fields = ['location_id', 'main_type_id', 'maintenance_scope', 'lockers', 'maintenance_description', 'start_date']
+    def __init__(self, *args, **kwargs):
+        super(MaintenanceForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.maintenance_scope == 'general facility' :
+            self.fields['lockers'].disabled = True # still displays the field in the template
+        

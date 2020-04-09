@@ -28,4 +28,5 @@ urlpatterns = [
     path('database/', include('database.urls')),
     path('', admin.site.urls),
     path('customer_inquiry/', views.customer_inquiry, name='customer-inquiry'),
+    path('maintenance_report/', views.maintenance_report, name='maintenance-report'),
 ]
