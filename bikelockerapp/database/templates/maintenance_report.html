@@ -1,25 +1,18 @@
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-{% extends "admin/base_site.html" %}
-{% block breadcrumbs %}
-{% endblock %}
- <!-- {% load crispy_forms_tags %} -->
+{% load crispy_forms_tags %}
   {% block content %}
   <html>
     <head>
-      <title>Bike Locker Inquiry Form</title>
+      <title>Maintenance Report Form</title>
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     </head>
     <body style="padding: 20px; align-content: center;">
-      <h1>Bike Locker Customer Inquiry Form</h1>
+      <h1>Report Maintenance Issues Here:</h1>
   
       {% if submitted %}
         <p class="success">
            Your information was submitted successfully. We will reach out through email regarding next steps. Thank you.
       </p>
-   
+
    {% else %}
        <form action="" method="post" novalidate>
        <table>
@@ -36,5 +29,3 @@
    {% endblock content %}
     </body>
   </html>
-  
- 
