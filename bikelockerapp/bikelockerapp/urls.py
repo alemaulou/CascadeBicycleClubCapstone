@@ -26,14 +26,8 @@ admin.site.site_header = 'Cascade Bicycle Club Locker Management Admin'
 admin.site.index_title = 'Cascade Bicycle Club Locker Management'
 
 urlpatterns = [
-<<<<<<< HEAD
     path('admin/database/', include('database.urls')),
     path('admin/', admin.site.urls),
     path('admin/database/customer_inquiry/', views.customer_inquiry, name='customer-inquiry'),
-=======
-    path('database/', include('database.urls')),
-    path('', admin.site.urls),
-    path('customer_inquiry/', views.customer_inquiry, name='customer-inquiry'),
     path('maintenance_report/', views.maintenance_report, name='maintenance-report'),
->>>>>>> 7e21c46c7b4ffa74ab8d0ce64be34b4490d5850d
 ]

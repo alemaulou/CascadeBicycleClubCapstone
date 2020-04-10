@@ -14,7 +14,7 @@ class Location(models.Model):
     def get_admin_url(self):
         content_type = ContentType.objects.get_for_model(self.__class__)
         return reverse("admin:%s_%s_change" % (content_type.app_label, content_type.model), args=(self.pk,))
-
+        
 class Locker_Status(models.Model):
     locker_status_id = models.AutoField(primary_key=True)
     locker_status_name = models.CharField('Locker Status Name', max_length=100)

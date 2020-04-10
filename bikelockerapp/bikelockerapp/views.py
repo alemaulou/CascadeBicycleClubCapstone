@@ -1,13 +1,10 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-<<<<<<< HEAD
 from database.models import Customer, Inquiry
 from bikelockerapp.forms import CustomerForm
-=======
 from database.models import Customer, Inquiry, Maintenance
 from .forms import CustomerForm, MaintenanceForm
->>>>>>> 7e21c46c7b4ffa74ab8d0ce64be34b4490d5850d
 from datetime import datetime
 
 def customer_inquiry(request):
