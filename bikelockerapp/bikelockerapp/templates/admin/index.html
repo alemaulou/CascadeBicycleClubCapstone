@@ -1,0 +1,273 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% extends "admin/base_site.html" %}
+{% block breadcrumbs %}
+
+{% endblock %}
+{% block content %}
+{% block userlinks %}
+{% if user.is_active and user.is_staff %}
+{% url 'django-admindocs-docroot' as docsroot %}
+{% endif %}
+{% if user.has_usable_password %}
+
+
+<!--<a href="customer_upload">Import Data</a> - -->
+<!--            <a href="{% url 'admin:password_change' %}">Change Password</a> - -->
+{% endif %}
+<!--        <a href="{% url 'admin:logout' %}">Log Out</a>-->
+{% endblock %}
+<div id="content">
+    <input class="btn col-sm-2" type="submit" onclick="window.location.href = 'customer_upload'" ;
+                       value="Import Data"/>
+                           <input class="btn col-md-2" type="submit" onclick="window.location.href = '{% url 'admin:password_change' %}'" ;
+                       value="Change Password"/>
+<input class="btn col-md-1" type="submit" onclick="window.location.href = '{% url 'admin:logout' %}'" ;
+                       value="Logout"/>
+    <div class="container-fluid">
+        <!-- Add User -->
+        <div class="">
+        </div>
+        <div class="row">
+            <div class="p-1 event-panel">
+                <input class="btn col-md-12" type="submit" onclick="window.location.href = 'customer/add/'" ;
+                       value="Add User"/>
+                <p></p>
+                <div class="shadow p-3 mb-5 bg-white rounded" class="rounded">
+                    <table class="table">
+                        <!-- Locations Navigation -->
+                        <tr>
+                            <a href="location/"><h1>Locations</h1></a>
+                            <!-- Filter locations -->
+                            <div class="">
+                                <div class="form-row">
+                                    <div class="form-group col-12">
+
+                                        <form method="GET" action="">
+                                            <div class="input-group mb-3">
+                                                <input class="form-control border-right-0" type="search"
+                                                       placeholder="Filter by location" name="location"/>
+                                                <div class="input-group-append">
+                                            <span class="input-group-text bg-transparent">
+                                                <i class="fa fa-search"></i>
+                                            </span>
+                                        </div>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+
+                                <!-- List locations -->
+                                {% for item in all_stations %}
+                                <div>
+                        <tr class="">
+                            <td><a href="{{ item.get_admin_url }}">{{ item.location_name }}</a></td>
+                            {% endfor %}
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <tr class="container">
+
+                <!-- Current Members -->
+                <div class="shadow p-3 mb-5 bg-white rounded col-md-9" class="rounded">
+<!--                                                                    <div class="">-->
+<!--                                                    <div class="form-row">-->
+<!--                                                      <div class="form-group col-3">-->
+<!--                                                    <form method="GET" action="">-->
+<!--                                                            <div class="input-group">-->
+<!--                                                                <input class="form-control border-right-0" type="search" placeholder="Filter by member" name="customer" />-->
+<!--                                                                <span class="input-group-append">-->
+<!--                                                                <div class="input-group-text bg-transparent">-->
+<!--                                                                    <i class="fa fa-search"></i>-->
+<!--                                                                </div>-->
+<!--                                                            </span>-->
+<!--                                                        </div>-->
+<!--                                                    </form>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+
+                                        <table class="table table-bordered table-fixed">
+                        <thead>
+                        <tr><h1>Awaiting Renewal <em>(as of {% now "F j, Y" %})</em></h1>
+                            <th scope="col">First</th>
+                            <th scope="col">Last</th>
+                            <th scope="col">Address</th>
+                            <th scope="col">City</th>
+                            <th scope="col">State</th>
+                            <th scope="col">Zip</th>
+                            <th scope="col">E-mail</th>
+                            <th scope="col">Phone #1</th>
+                            <th scope="col">Phone #2</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Contract Exp</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in all_cust_lockers %}
+                        {% if item.is_past_due %}
+
+                        <tr>
+                            <td><a href="{{ item.customer.get_admin_url }}">{{ item.cust_id.cust_f_name }}</a></td>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_l_name }}</a></td>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_address }}</a></td>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_city }}</a></td>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_state }}</a></td>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_zip }}</a></td>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_email }}</a></td>
+                            <td>{{ item.cust_id.phone_number }}</td>
+                            <td>{{ item.cust_id.phone_number2 }}</td>
+                            <td>-</td>
+                            <td>{{ item.contract_date }}</a></td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                        </tbody>
+
+                    <table class="table table-bordered table-fixed">
+                        <thead>
+                        <tr><h1>Current Members <a href="cust_locker/add/"><i class="fa fa-plus" aria-hidden="true"></i></a></h1>
+                            <th scope="col">First</th>
+                            <th scope="col">Last</th>
+                            <th scope="col">Address</th>
+                            <th scope="col">City</th>
+                            <th scope="col">State</th>
+                            <th scope="col">Zip</th>
+                            <th scope="col">E-mail</th>
+                             <th scope="col">Phone #1</th>
+                            <th scope="col">Phone #2</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Locker Location</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in all_cust_lockers %}
+
+                        <tr>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_f_name }}</a></td>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_l_name }}</a></td>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_address }}</a></td>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_city }}</a></td>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_state }}</a></td>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_zip }}</a></td>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_email }}</a></td>
+                            <td>{{ item.cust_id.phone_number }}</td>
+                            <td>{{ item.cust_id.phone_number2 }}</td>
+                            <td>-</td>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.locker_id.location_id.location_name }}</a>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <table class="table table-bordered table-fixed">
+                        <thead>
+                        <tr><h1>Waitlist <a href="inquiry/add/"><i class="fa fa-plus" aria-hidden="true"></i></a></h1>
+                            <th scope="col">First</th>
+                            <th scope="col">Last</th>
+                            <th scope="col">Address</th>
+                            <th scope="col">City</th>
+                            <th scope="col">State</th>
+                            <th scope="col">Zip</th>
+                            <th scope="col">E-mail</th>
+                            <th scope="col">Phone #1</th>
+                            <th scope="col">Phone #2</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Desired Locations</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in all_inquiries %}
+                        {% if item %}
+                        <tr>
+                            <td><a href="{{ item.customer.get_admin_url }}">{{ item.cust_id.cust_f_name }}</a></td>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_l_name }}</a></td>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_address }}</a></td>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_city }}</a></td>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_state }}</a></td>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_zip }}</a></td>
+                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_email }}</a></td>
+                            <td>{{ item.cust_id.phone_number }}</td>
+                            <td>{{ item.cust_id.phone_number2 }}</td>
+                            <td>-</td>
+                            <td><a href="{{ item.get_admin_url }}">{% for item in item.locations.all %}
+                                <li>{{ item }}</li>
+                                {% endfor %}</a></td>
+                        </tr>
+                        {% else %}
+                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                            <td>-</td>
+                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                        {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+<!--                        <table class="table table-bordered table-fixed">-->
+<!--                            <thead>-->
+<!--                            <tr><h1>All Customers</em></h1>-->
+<!--                                <th scope="col">First</th>-->
+<!--                                <th scope="col">Last</th>-->
+<!--                                <th scope="col">Address</th>-->
+<!--                                <th scope="col">City</th>-->
+<!--                                <th scope="col">State</th>-->
+<!--                                <th scope="col">Zip</th>-->
+<!--                                <th scope="col">E-mail</th>-->
+<!--                                <th scope="col">Phone #1</th>-->
+<!--                            <th scope="col">Phone #2</th>-->
+<!--                                <th scope="col">Status</th>-->
+<!--                            </tr>-->
+<!--                            </thead>-->
+<!--                            <tbody>-->
+<!--                            {% for item in all_customer %}-->
+
+<!--                            <tr>-->
+<!--                                <td><a href="{{ item.customer.get_admin_url }}">{{ item.cust_f_name }}</a></td>-->
+<!--                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_l_name }}</a></td>-->
+<!--                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_address }}</a></td>-->
+<!--                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_city }}</a></td>-->
+<!--                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_state }}</a></td>-->
+<!--                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_zip }}</a></td>-->
+<!--                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_email }}</a></td>-->
+<!--                                                            <td>{{ item.cust_id.cust_phone }}</td>-->
+<!--                            <td>{{ item.cust_id.cust_phone }}</td>-->
+<!--                                <td>?</t>-->
+<!--                            </tr>-->
+<!--                            {% endfor %}-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+                </div>
+        </div>
+        </table>
+    </div>
+</div>
+
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+
+{% block sidebar %}
+{% endblock %}
+{% endblock %}
+

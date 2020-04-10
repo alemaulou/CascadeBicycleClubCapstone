@@ -24,8 +24,9 @@ router.register(r'users', UserViewSet)
 # Additionally, we include login URLs for the browsable API.
 admin.site.site_header = 'Cascade Bicycle Club Locker Management Admin'
 admin.site.index_title = 'Cascade Bicycle Club Locker Management'
+
 urlpatterns = [
-    path('database/', include('database.urls')),
-    path('', admin.site.urls),
-    path('customer_inquiry/', views.customer_inquiry, name='customer-inquiry'),
+    path('admin/database/', include('database.urls')),
+    path('admin/', admin.site.urls),
+    path('admin/database/customer_inquiry/', views.customer_inquiry, name='customer-inquiry'),
 ]

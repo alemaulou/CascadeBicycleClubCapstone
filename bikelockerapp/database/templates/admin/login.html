@@ -1,13 +1,45 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% extends "admin/login.html" %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/login.css' %}">
+{% block extrahead %}
+<style>
+    body.login {
+        background: #fff;
+    }
+
+    .login #container {
+        background: #fff;
+        border: 1px solid #eaeaea;
+        border-radius: 4px;
+        overflow: hidden;
+        width: 28em;
+        min-width: 300px;
+        margin: 100px auto;
+    }
+
+    .login #header {
+        height: auto;
+        padding: 15px 16px;
+        justify-content: center;
+        background: #eee;
+    }
+</style>
+{% endblock %}
+
 {% block branding %}
-    {% load static %}
-    <a href="/"><img src="{% static 'admin/cbc_head.png' %}" width=100%></a>
-    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/login.css' %}">
+<a href="/"><img src="{% static 'admin/cbc_head.png' %}" width=100%></a>
 
 {% endblock %}
 
 {% block content_title %}
-<h1 id="site-name">{{settings.CBCLM}}</h1>
+<!--<h1 id="site-name">{{settings.CBCLM}}</h1>-->
+<h1 id="site-name">CBC Locker Management</h1>
+
 {% endblock %}
 
 

@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from database.models import Customer, Inquiry
-from .forms import CustomerForm
+from bikelockerapp.forms import CustomerForm
 from datetime import datetime
 
 def customer_inquiry(request):

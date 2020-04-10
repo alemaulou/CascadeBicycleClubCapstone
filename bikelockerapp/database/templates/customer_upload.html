@@ -1,19 +1,36 @@
-{% if messages %}
-    {% for message in messages %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+{% extends "admin/base_site.html" %}
+{% block breadcrumbs %}{% endblock %}
+{% block content %}
+<tr class="container">
+
+    <!-- Current Members -->
+    <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
+        {% if messages %}
+        {% for message in messages %}
         <div>
             <strong>
                 {{message|safe}}
             </strong>
         </div>
-    {% endfor %}
-{% else %}
-
-{{order}}
-    <form method="post" enctype="multipart/form-data">
+        {% endfor %}
+        {% else %}
+        <h1>CSV Upload Form</h1>
+        {{ order }}
+        <div>
+            <form method="post" enctype="multipart/form-data">
+        </div>
         {% csrf_token %}
-        <label>Upload a file</label>
-        <input type="file" name="file">
-        <p>Only accepts CSV files</p>
-        <button type="submit">Upload</button>
-    </form>
-{% endif %}
+        <div><label><strong>Upload a file:</strong></label>
+            <input type="file" name="file">
+            <h4>Only accepts .csv files</h4>
+            <button class="btn btn-primary" type="submit">Upload</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</tr>
+{% endblock %}
