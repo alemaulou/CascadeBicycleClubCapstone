@@ -84,8 +84,8 @@ class Maintenance_Status(models.Model):
 
 class Maintenance(models.Model):
     SCOPE_CHOICES = (
-        ('general facility', "General Facility"),
-        ('specific locker(s)', "Specific Locker(s)"),
+        ('General Facility', "General Facility"),
+        ('Specific Locker(s)', "Specific Locker(s)"),
     )
 
 ##    STATUS_CHOICES = (
