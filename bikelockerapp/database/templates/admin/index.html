@@ -228,6 +228,47 @@
                             </tbody>
                         </table>
 
+                        <table class="table table-bordered table-fixed">
+                            <thead>
+                            <tr><h1>Maintenances <i class="fa fa-plus" aria-hidden="true"></i></a></h1>
+                                <th scope="col">Location</th>
+                                <th scope="col">Maintenance Type</th>
+                                <th scope="col">Maintenance Scope</th>
+                                <th scope="col">Maintenance Description</th>
+                                <th scope="col">Start Date</th>
+                                <th scope="col">End Date</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in all_maintenance %}
+                            {% if item %}
+                            <tr>
+                                <td><a href="{{ item.get_admin_url }}">{{ item.location_id.location_name }}</a></td>
+                                <td><a href="{{ item.get_admin_url }}">{{ item.main_type_id.main_type_name }}</a></td>
+                                <td><a href="{{ item.get_admin_url }}">{{ item.maintenance_scope }}</a></td>
+                                <td><a href="{{ item.get_admin_url }}">{{ item.maintenance_description }}</a></td>
+                                <td><a href="{{ item.get_admin_url }}">{{ item.start_date}}</a></td>
+                                <td><a href="{{ item.get_admin_url }}">{{ item.end_date }}</a></td>
+                                <td><a href="{{ item.get_admin_url }}">{{ item.main_status_id.main_status_name }}</a></td>
+                                
+                            {% else %}
+                                <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                                <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                                <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                                <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                                <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                                <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                                <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                                <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                                <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                                <td>-</td>
+                                <td><a href="{{ item.get_admin_url }}">N/A</a></td>
+                            {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table> 
+
                         <!--                        <table class="table table-bordered table-fixed">-->
                         <!--                            <thead>-->
                         <!--                            <tr><h1>All Customers</em></h1>-->
