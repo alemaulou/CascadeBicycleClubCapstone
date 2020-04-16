@@ -88,6 +88,12 @@ class Maintenance(models.Model):
         ('specific locker(s)', "Specific Locker(s)"),
     )
 
+##    STATUS_CHOICES = (
+##        ('Awaiting Response', "Awaiting Response"),
+##        ('In Progress', "In Progress"),
+##        ('Complete', "Complete")
+##    )
+
     maintenance_id = models.AutoField(primary_key=True)
     location_id = models.ForeignKey(Location, on_delete=models.CASCADE)
     main_type_id = models.ForeignKey(Maintenance_Type, on_delete=models.CASCADE)
@@ -100,6 +106,10 @@ class Maintenance(models.Model):
 
     def __str__(self):
             return str(self.start_date) + " " + self.location_id.location_name + " - " + self.main_type_id.main_type_name
+    
+    def get_admin_url(self):
+        content_type = ContentType.objects.get_for_model(self.__class__)
+        return reverse("admin:%s_%s_change" % (content_type.app_label, content_type.model), args=(self.pk,))
 
 class Customer(models.Model):
     cust_id = models.AutoField(primary_key=True)

@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 import csv, io
 from django.contrib import messages
-from .models import Customer, Inquiry, Location, Cust_Locker
+from .models import Customer, Inquiry, Location, Cust_Locker, Maintenance
 from .forms import CustomerForm
 from datetime import datetime
 
@@ -13,6 +13,7 @@ def index(request):
     all_station = Location.objects.all()
     all_customer = Customer.objects.all()
     all_cust_locker = Cust_Locker.objects.all()
+    all_maintenance = Maintenance.objects.all()
     location_contains_query = request.GET.get('location')
     customer_contains_query = request.GET.get('customer')
 
@@ -21,11 +22,12 @@ def index(request):
         all_station = all_station.filter(location_name__icontains=location_contains_query)
         all_cust_locker = all_cust_locker.filter(locker_id__location_id__location_name__contains=location_contains_query)
         all_inquiry = all_inquiry.filter(locations__location_name__contains=location_contains_query)
-
+        all_maintenance = all_maintenance.filter(locations__location_name__contains=location_contains_query)
+ 
     if customer_contains_query != '' and customer_contains_query is not None:
         all_customer = all_customer.filter(cust_f_name__icontains=customer_contains_query)
 
-    sta = {'all_stations': all_station, 'all_customer': all_customer, 'all_inquiries': all_inquiry, 'all_cust_lockers': all_cust_locker}
+    sta = {'all_stations': all_station, 'all_customer': all_customer, 'all_inquiries': all_inquiry, 'all_cust_lockers': all_cust_locker, 'all_maintenance': all_maintenance}
     return render(request, 'admin/index.html', sta)
 
 def BootstrapFilterView(request):
