@@ -5,11 +5,8 @@ import csv, io
 from django.contrib import messages
 from .models import Customer, Inquiry, Location, Cust_Locker, Waitlist
 from .forms import CustomerForm, SendEmailForm
-from datetime import datetime
-from django import forms
-
-# from ..bikelockerapp import settings
-
+from datetime import datetime, date, timedelta
+from django.conf import settings
 
 def index(request):
     template_name = 'admin/index.html'
@@ -87,8 +84,9 @@ def customer_waitlist(request):
     return render(request, 'customer_inquiry.html', {'form': form, 'submitted': submitted})
 
 def send_email(request):
-    x = [obj for obj in Cust_Locker.objects.all() if obj.is_past_due]
-    print(type(x))
+    x = [obj.cust_id.cust_email for obj in Cust_Locker.objects.all() if obj.is_under_2_weeks_past_due]
+    y = [obj.cust_id.cust_email for obj in Cust_Locker.objects.all() if obj.is_2_weeks_past_due]
+    all_cust_locker = Cust_Locker.objects.all()
     if request.method == 'GET':
         form = SendEmailForm()
     else:
@@ -96,10 +94,10 @@ def send_email(request):
         if form.is_valid():
             subject = form.cleaned_data['subject']
             message = form.cleaned_data['message']
-            from_email = 'alemau@uw.edu'
+            from_email = settings.EMAIL_HOST_USER
             try:
-                send_mail(subject, message, from_email, x)
+                send_mail(subject, message, from_email, x, fail_silently=False)
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
             return redirect('thanks')
-    return render(request, 'send_email.html', {'form': form, 'all_cust_lockers': x})
+    return render(request, 'send_email.html', {'form': form, 'emails': x, '2_weeks': y, 'all_cust_lockers': all_cust_locker})

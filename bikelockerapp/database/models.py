@@ -1,7 +1,8 @@
 from django.db import models
 from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
-from datetime import date
+from datetime import date, timedelta
+from django.db.models import signals
 
 class Location(models.Model):
     location_id = models.AutoField(primary_key=True)
@@ -168,12 +169,14 @@ class Cust_Locker(models.Model):
     def is_past_due(self):
         return date.today() > self.renew_date
 
-    def is_renew(self):
-        return date.today()-30 > self.renew_date
-
-    def contains(self, item):
-        if Cust_Locker.filter(cust_id=item.id).exists():
+    @property
+    def is_under_2_weeks_past_due(self):
+        if date.today() > self.renew_date and date.today() - timedelta(14) < self.renew_date:
             return True
+
+    @property
+    def is_2_weeks_past_due(self):
+        return date.today() - timedelta(14) > self.renew_date
 
     class Meta:
         verbose_name = "Customer Locker"
@@ -185,6 +188,19 @@ class Cust_Locker(models.Model):
 
     def __str__(self):
         return str(self.cust_id) + " " + str(self.locker_id.location_id) + " #" + self.locker_id.locker_name
+
+def create_cust_locker(sender, instance, created, **kwargs):
+    try:
+        inquiry = Inquiry.objects.get(cust_id=instance.cust_id)
+        inquiry.delete()
+    except:
+        inquiry = None
+    print(Locker.objects.get(locker_id=instance.locker_id.pk))
+    locker = Locker.objects.get(locker_id=instance.locker_id.pk)
+    locker.locker_status_id = Locker_Status.objects.get(pk = 2)
+    locker.save()
+
+signals.post_save.connect(receiver=create_cust_locker, sender=Cust_Locker)
 
 class Inquiry(models.Model):
     inquiry_id = models.AutoField(primary_key=True)

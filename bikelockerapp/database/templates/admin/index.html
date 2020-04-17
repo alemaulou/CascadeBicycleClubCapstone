@@ -13,12 +13,10 @@
 {% url 'django-admindocs-docroot' as docsroot %}
 {% endif %}
 {% if user.has_usable_password %}
-
-
 {% endif %}
-<!--        <a href="{% url 'admin:logout' %}">Log Out</a>-->
 {% endblock %}
 {% if user.is_authenticated %}
+
 <div id="content">
     <div class="container-fluid">
         <div class="align-right">
@@ -78,21 +76,6 @@
 
                 <!-- Current Members -->
                 <div class="shadow p-3 mb-5 bg-white rounded col-md-9" class="rounded">
-                    <!--                                                                    <div class="">-->
-                    <!--                                                    <div class="form-row">-->
-                    <!--                                                      <div class="form-group col-3">-->
-                    <!--                                                    <form method="GET" action="">-->
-                    <!--                                                            <div class="input-group">-->
-                    <!--                                                                <input class="form-control border-right-0" type="search" placeholder="Filter by member" name="customer" />-->
-                    <!--                                                                <span class="input-group-append">-->
-                    <!--                                                                <div class="input-group-text bg-transparent">-->
-                    <!--                                                                    <i class="fa fa-search"></i>-->
-                    <!--                                                                </div>-->
-                    <!--                                                            </span>-->
-                    <!--                                                        </div>-->
-                    <!--                                                    </form>-->
-                    <!--                                                    </div>-->
-                    <!--                                                </div>-->
 
                     <table class="table table-bordered table-fixed">
                         <thead>
@@ -125,7 +108,7 @@
                             <td>{{ item.cust_id.cust_city }}</td>
                             <td>{{ item.cust_id.cust_state }}</td>
                             <td>{{ item.cust_id.cust_zip }}</td>
-                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_email }}</a></td>
+                            <td><a href="mailto: {{ item.cust_id.cust_email }}"  target="_blank">{{ item.cust_id.cust_email }}</a></td>
                             <td>{{ item.cust_id.phone_number }}</td>
                             <td>{{ item.cust_id.phone_number2 }}</td>
                                 <td>{{ item.locker_id.locker_status_id.locker_status_name }}</td>
@@ -169,7 +152,7 @@
                                 <td>{{ item.cust_id.cust_city }}</a></td>
                                 <td>{{ item.cust_id.cust_state }}</a></td>
                                 <td>{{ item.cust_id.cust_zip }}</a></td>
-                                <td>{{ item.cust_id.cust_email }}</a></td>
+                            <td><a href="mailto: {{ item.cust_id.cust_email }}"  target="_blank">{{ item.cust_id.cust_email }}</a></td>
                                 <td>{{ item.cust_id.phone_number }}</td>
                                 <td>{{ item.cust_id.phone_number2 }}</td>
                                 <td>{{ item.locker_id.locker_status_id.locker_status_name }}</td>
@@ -205,7 +188,7 @@
 
                             </tr>
                             </thead>
-                            <tbody>test
+                            <tbody>
                             {% for item in all_inquiries %}
                             {% if item %}
                             <tr>
@@ -215,7 +198,7 @@
                                 <td>{{ item.cust_id.cust_city }}</td>
                                 <td>{{ item.cust_id.cust_state }}</td>
                                 <td>{{ item.cust_id.cust_zip }}</td>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_email }}</a></td>
+                            <td><a href="mailto: {{ item.cust_id.cust_email }}"  target="_blank">{{ item.cust_id.cust_email }}</a></td>
                                 <td>{{ item.cust_id.phone_number }}</td>
                                 <td>{{ item.cust_id.phone_number2 }}</td>
                                 <td>{% for item in item.locations.all %}
@@ -279,6 +262,7 @@
                         <!--                            </tbody>-->
                         <!--                        </table>-->
                 </div>
+
         </div>
         </table>
     </div>

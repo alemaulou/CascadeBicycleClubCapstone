@@ -27,11 +27,15 @@ SECRET_KEY = 'x=&8zwcq-3fk#@%q0*twl6d6lxjk1i1=+8iof38wb1#0m$6)i3'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+# EMAIL
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'alemau@uw.edu'
-EMAIL_HOST_PASSWORD = '2122m15fh'
+EMAIL_HOST_USER = 'alessandro.lou@gmail.com'
+EMAIL_HOST_PASSWORD = 'alexmaris1'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
