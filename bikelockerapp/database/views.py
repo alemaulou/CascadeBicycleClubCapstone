@@ -1,11 +1,15 @@
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect, BadHeaderError, HttpResponse
 import csv, io
 from django.contrib import messages
-from .models import Customer, Inquiry, Location, Cust_Locker
-from .forms import CustomerForm
+from .models import Customer, Inquiry, Location, Cust_Locker, Waitlist
+from .forms import CustomerForm, SendEmailForm
 from datetime import datetime
+from django import forms
+
+# from ..bikelockerapp import settings
+
 
 def index(request):
     template_name = 'admin/index.html'
@@ -62,7 +66,6 @@ def customer_upload(request):
     context = {}
     return render(request, template, context)
 
-
 def customer_waitlist(request):
     submitted = False
     if request.method == 'POST':
@@ -83,4 +86,20 @@ def customer_waitlist(request):
             submitted = True
     return render(request, 'customer_inquiry.html', {'form': form, 'submitted': submitted})
 
-
+def send_email(request):
+    x = [obj for obj in Cust_Locker.objects.all() if obj.is_past_due]
+    print(type(x))
+    if request.method == 'GET':
+        form = SendEmailForm()
+    else:
+        form = SendEmailForm(request.POST)
+        if form.is_valid():
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+            from_email = 'alemau@uw.edu'
+            try:
+                send_mail(subject, message, from_email, x)
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            return redirect('thanks')
+    return render(request, 'send_email.html', {'form': form, 'all_cust_lockers': x})

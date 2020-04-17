@@ -22,12 +22,12 @@
 <div id="content">
     <div class="container-fluid">
         <div class="align-right">
-            <input class="btn col-sm-2" type="submit" onclick="window.location.href = 'customer_upload'" ;
+            <input class="btn col-sm-1 btn-sm" type="submit" onclick="window.location.href = 'customer_upload'" ;
                    value="Import Data"/>
-            <input class="btn col-md-2" type="submit"
+            <input class="btn col-md-1.5 btn-sm" type="submit"
                    onclick="window.location.href = '{% url 'admin:password_change' %}'" ;
                    value="Change Password"/>
-            <input class="btn col-md-1" type="submit"
+            <input class="btn col-md-.5 btn-sm" type="submit"
                    onclick="window.location.href = '{% url 'admin:logout' %}?next=/admin'" ;
                    value="Logout"/></div>
         <!-- Add User -->
@@ -96,7 +96,8 @@
 
                     <table class="table table-bordered table-fixed">
                         <thead>
-                        <tr><h1>Awaiting Renewal <em>(as of {% now "F j, Y" %})</em> <a href=""><i class="fa fa-envelope" aria-hidden="true" style=" vertical-align: middle; font-size: 1rem;"></i></a></h1>
+                        <tr><h1>Awaiting Renewal <em>(as of {% now "F j, Y" %})</em> <a href="send_email"><i class="fa fa-envelope" aria-hidden="true" style=" vertical-align: middle; font-size: 1rem;"></i></a></h1>
+
                             <th scope="col" style="width: 9.09%">First</th>
                             <th scope="col" style="width: 9.09%">Last</th>
                             <th scope="col" style="width: 9.09%">Address</th>
@@ -108,6 +109,9 @@
                             <th scope="col" style="width: 9.09%">CELL #2</th>
                             <th scope="col" style="width: 9.09%">Status</th>
                             <th scope="col" style="width: 9.09%">Renewal</th>
+                            <th scope="col" style="width: 9.09%">Action</th>
+
+
                         </tr>
                         </thead>
                         <tbody>
@@ -115,8 +119,8 @@
                         {% if item.is_past_due %}
 
                         <tr>
-                            <td><a href="{{ item.customer.get_admin_url }}">{{ item.cust_id.cust_f_name }}</a></td>
-                            <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_l_name }}</a></td>
+                            <td>{{ item.cust_id.cust_f_name }}</td>
+                            <td>{{ item.cust_id.cust_l_name }}</td>
                             <td>{{ item.cust_id.cust_address }}</td>
                             <td>{{ item.cust_id.cust_city }}</td>
                             <td>{{ item.cust_id.cust_state }}</td>
@@ -124,8 +128,13 @@
                             <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_email }}</a></td>
                             <td>{{ item.cust_id.phone_number }}</td>
                             <td>{{ item.cust_id.phone_number2 }}</td>
-                            <td>-</td>
+                                <td>{{ item.locker_id.locker_status_id.locker_status_name }}</td>
                             <td>{{ item.renew_date }}</a></td>
+                            <td><a href="{{ item.get_admin_url }}"><i class="fa fa-edit"></i></a>
+                                <a href="cust_locker/{{ item.pk }}/delete"><i class="fa fa-trash"></i></a>
+                            </td>
+
+
                         </tr>
                         {% endif %}
                         {% endfor %}
@@ -143,28 +152,32 @@
                                 <th scope="col">State</th>
                                 <th scope="col">Zip</th>
                                 <th scope="col">E-mail</th>
-                                <th scope="col">Phone #1</th>
-                                <th scope="col">Phone #2</th>
+                                <th scope="col">Cell #1</th>
+                                <th scope="col">Cell #2</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Locker Location</th>
+                                <th scope="col" style="width: 9.09%">Action</th>
                             </tr>
                             </thead>
                             <tbody>
                             {% for item in all_cust_lockers %}
 
                             <tr>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_f_name }}</a></td>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_l_name }}</a></td>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_address }}</a></td>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_city }}</a></td>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_state }}</a></td>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_zip }}</a></td>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_email }}</a></td>
+                                <td>{{ item.cust_id.cust_f_name }}</a></td>
+                                <td>{{ item.cust_id.cust_l_name }}</a></td>
+                                <td>{{ item.cust_id.cust_address }}</a></td>
+                                <td>{{ item.cust_id.cust_city }}</a></td>
+                                <td>{{ item.cust_id.cust_state }}</a></td>
+                                <td>{{ item.cust_id.cust_zip }}</a></td>
+                                <td>{{ item.cust_id.cust_email }}</a></td>
                                 <td>{{ item.cust_id.phone_number }}</td>
                                 <td>{{ item.cust_id.phone_number2 }}</td>
-                                <td>-</td>
+                                <td>{{ item.locker_id.locker_status_id.locker_status_name }}</td>
                                 <td><a href="{{ item.get_admin_url }}">{{ item.locker_id.location_id.location_name }}</a>
                                 </td>
+                                                            <td><a href="{{ item.get_admin_url }}"><i class="fa fa-edit"></i></a>
+                                <a href="cust_locker/{{ item.pk }}/delete"><i class="fa fa-trash"></i></a>
+                            </td>
                             </tr>
 
                             {% endfor %}
@@ -183,32 +196,36 @@
                                 <th scope="col">State</th>
                                 <th scope="col">Zip</th>
                                 <th scope="col">E-mail</th>
-                                <th scope="col">Phone #1</th>
-                                <th scope="col">Phone #2</th>
-                                <th scope="col">Status</th>
+                                <th scope="col">Cell #1</th>
+                                <th scope="col">Cell #2</th>
                                 <th scope="col">Desired Locations</th>
                                 <th scope="col">Inquiry Date</th>
+                                                            <th scope="col" style="width: 9.09%">Action</th>
+
 
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody>test
                             {% for item in all_inquiries %}
                             {% if item %}
                             <tr>
-                                <td><a href="{{ item.customer.get_admin_url }}">{{ item.cust_id.cust_f_name }}</a></td>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_l_name }}</a></td>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_address }}</a></td>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_city }}</a></td>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_state }}</a></td>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_zip }}</a></td>
+                                <td>{{ item.cust_id.cust_f_name }}</td>
+                                <td>{{ item.cust_id.cust_l_name }}</td>
+                                <td>{{ item.cust_id.cust_address }}</td>
+                                <td>{{ item.cust_id.cust_city }}</td>
+                                <td>{{ item.cust_id.cust_state }}</td>
+                                <td>{{ item.cust_id.cust_zip }}</td>
                                 <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_email }}</a></td>
                                 <td>{{ item.cust_id.phone_number }}</td>
                                 <td>{{ item.cust_id.phone_number2 }}</td>
-                                <td>-</td>
-                                <td><a href="{{ item.get_admin_url }}">{% for item in item.locations.all %}
+                                <td>{% for item in item.locations.all %}
                                     <div>{{ item }}</div>
-                                    {% endfor %}</a></td>
+                                    {% endfor %}</td>
                                 <td>{{ item.inquiry_date }}</td>
+                                                            <td><a href="{{ item.get_admin_url }}"><i class="fa fa-edit"></i></a>
+                                <a href="inquiry/{{ item.pk }}/delete"><i class="fa fa-trash"></i></a>
+                            </td>
+
 
                             </tr>
                             {% else %}
@@ -238,8 +255,8 @@
                         <!--                                <th scope="col">State</th>-->
                         <!--                                <th scope="col">Zip</th>-->
                         <!--                                <th scope="col">E-mail</th>-->
-                        <!--                                <th scope="col">Phone #1</th>-->
-                        <!--                            <th scope="col">Phone #2</th>-->
+                        <!--                                <th scope="col">Cell #1</th>-->
+                        <!--                            <th scope="col">Cell #2</th>-->
                         <!--                                <th scope="col">Status</th>-->
                         <!--                            </tr>-->
                         <!--                            </thead>-->

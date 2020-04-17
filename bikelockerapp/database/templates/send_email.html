@@ -1,0 +1,53 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+{% extends "admin/base_site.html" %}
+<tr class="container">
+
+{% load i18n admin_urls static %}
+{ block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} delete-confirmation
+%{% block breadcrumbs %}
+{% endblock %}
+{% block content %}
+{% if user.is_authenticated %}
+    <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
+
+<p>Write your message here</p>
+<form method="POST" action="">{% csrf_token %}
+    <div>
+        <div>
+            <p>{{ form.users.errors }}</p>
+            <p>{{ form.users.label_tag }}</p>
+            <p>
+                {% for item in all_cust_lockers %}
+                {{ item.cust_id.cust_email }}
+                {% if not forloop.last %},&nbsp;{% endif %}
+                {% endfor %}
+            </p>
+            <select name="users" multiple style="display: none">
+                {% for item in all_cust_lockers %}
+                    <option value="{{ user.id }}" selected>{{ item.cust_id.cust_f_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <p>{{ form.subject.errors }}</p>
+            <p>{{ form.subject.label_tag }}</p>
+            <p>{{ form.subject }}</p>
+        </div>
+        <div>
+            <p>{{ form.message.errors }}</p>
+            <p>{{ form.message.label_tag }}</p>
+            <p>{{ form.message }}</p>
+        </div>
+        <input type="submit" value="{% trans 'Send message' %}" />
+    </div>
+</form>
+{% endif %}
+        </div>
+</tr>
+
+{% endblock %}
+
+
