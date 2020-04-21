@@ -76,10 +76,12 @@
 
                 <!-- Current Members -->
                 <div class="shadow p-3 mb-5 bg-white rounded col-md-9" class="rounded">
-
+                    {% if locker_renewals %}
                     <table class="table table-bordered table-fixed">
                         <thead>
-                        <tr><h1>Awaiting Renewal <em>(as of {% now "F j, Y" %})</em> <a href="send_email"><i class="fa fa-envelope" aria-hidden="true" style=" vertical-align: middle; font-size: 1rem;"></i></a></h1>
+                        <tr><h1>Awaiting Renewal <em>(as of {% now "F j, Y" %})</em> <a href="send_email"><i
+                                class="fa fa-envelope" aria-hidden="true"
+                                style=" vertical-align: middle; font-size: 1rem;"></i></a></h1>
 
                             <th scope="col" style="width: 9.09%">First</th>
                             <th scope="col" style="width: 9.09%">Last</th>
@@ -108,10 +110,11 @@
                             <td>{{ item.cust_id.cust_city }}</td>
                             <td>{{ item.cust_id.cust_state }}</td>
                             <td>{{ item.cust_id.cust_zip }}</td>
-                            <td><a href="mailto: {{ item.cust_id.cust_email }}"  target="_blank">{{ item.cust_id.cust_email }}</a></td>
+                            <td><a href="mailto: {{ item.cust_id.cust_email }}" target="_blank">{{
+                                item.cust_id.cust_email }}</a></td>
                             <td>{{ item.cust_id.phone_number }}</td>
                             <td>{{ item.cust_id.phone_number2 }}</td>
-                                <td>{{ item.locker_id.locker_status_id.locker_status_name }}</td>
+                            <td>{{ item.locker_id.locker_status_id.locker_status_name }}</td>
                             <td>{{ item.renew_date }}</a></td>
                             <td><a href="{{ item.get_admin_url }}"><i class="fa fa-edit"></i></a>
                                 <a href="cust_locker/{{ item.pk }}/delete"><i class="fa fa-trash"></i></a>
@@ -119,14 +122,17 @@
 
 
                         </tr>
+
+                        {% else %}
                         {% endif %}
                         {% endfor %}
                         </tbody>
+                        {% endif %}
 
                         <table class="table table-bordered table-fixed">
                             <thead>
                             <tr><h1>Current Members <a href="cust_locker/add/"><i class="fa fa-plus" aria-hidden="true"
-                                                                                  style=" vertical-align: middle; font-size: 1rem;" ></i></a>
+                                                                                  style=" vertical-align: middle; font-size: 1rem;"></i></a>
                             </h1>
                                 <th scope="col">First</th>
                                 <th scope="col">Last</th>
@@ -152,15 +158,15 @@
                                 <td>{{ item.cust_id.cust_city }}</a></td>
                                 <td>{{ item.cust_id.cust_state }}</a></td>
                                 <td>{{ item.cust_id.cust_zip }}</a></td>
-                            <td><a href="mailto: {{ item.cust_id.cust_email }}"  target="_blank">{{ item.cust_id.cust_email }}</a></td>
+                                <td><a href="mailto: {{ item.cust_id.cust_email }}" target="_blank">{{ item.cust_id.cust_email }}</a></td>
                                 <td>{{ item.cust_id.phone_number }}</td>
                                 <td>{{ item.cust_id.phone_number2 }}</td>
                                 <td>{{ item.locker_id.locker_status_id.locker_status_name }}</td>
                                 <td><a href="{{ item.get_admin_url }}">{{ item.locker_id.location_id.location_name }}</a>
                                 </td>
-                                                            <td><a href="{{ item.get_admin_url }}"><i class="fa fa-edit"></i></a>
-                                <a href="cust_locker/{{ item.pk }}/delete"><i class="fa fa-trash"></i></a>
-                            </td>
+                                <td><a href="{{ item.get_admin_url }}"><i class="fa fa-edit"></i></a>
+                                    <a href="cust_locker/{{ item.pk }}/delete"><i class="fa fa-trash"></i></a>
+                                </td>
                             </tr>
 
                             {% endfor %}
@@ -171,7 +177,7 @@
                             {% if all_inquiries %}
                             <thead>
                             <tr><h1>Waitlist <a href="inquiry/add/"><i class="fa fa-plus" aria-hidden="true"
-                                                                           style=" vertical-align: middle; font-size: 1rem;"></i></a>
+                                                                       style=" vertical-align: middle; font-size: 1rem;"></i></a>
                             </h1>
                                 <th scope="col">First</th>
                                 <th scope="col">Last</th>
@@ -184,7 +190,7 @@
                                 <th scope="col">Cell #2</th>
                                 <th scope="col">Desired Locations</th>
                                 <th scope="col">Inquiry Date</th>
-                                                            <th scope="col" style="width: 9.09%">Action</th>
+                                <th scope="col" style="width: 9.09%">Action</th>
 
 
                             </tr>
@@ -199,16 +205,18 @@
                                 <td>{{ item.cust_id.cust_city }}</td>
                                 <td>{{ item.cust_id.cust_state }}</td>
                                 <td>{{ item.cust_id.cust_zip }}</td>
-                            <td><a href="mailto: {{ item.cust_id.cust_email }}"  target="_blank">{{ item.cust_id.cust_email }}</a></td>
+                                <td><a href="mailto: {{ item.cust_id.cust_email }}" target="_blank">{{
+                                    item.cust_id.cust_email }}</a></td>
                                 <td>{{ item.cust_id.phone_number }}</td>
                                 <td>{{ item.cust_id.phone_number2 }}</td>
                                 <td>{% for item in item.locations.all %}
                                     <div>{{ item }}</div>
-                                    {% endfor %}</td>
+                                    {% endfor %}
+                                </td>
                                 <td>{{ item.inquiry_date }}</td>
-                                                            <td><a href="{{ item.get_admin_url }}"><i class="fa fa-edit"></i></a>
-                                <a href="inquiry/{{ item.pk }}/delete"><i class="fa fa-trash"></i></a>
-                            </td>
+                                <td><a href="{{ item.get_admin_url }}"><i class="fa fa-edit"></i></a>
+                                    <a href="inquiry/{{ item.pk }}/delete"><i class="fa fa-trash"></i></a>
+                                </td>
 
 
                             </tr>
@@ -229,40 +237,6 @@
                             </tbody>
                             {% endif %}
                         </table>
-
-                        <!--                        <table class="table table-bordered table-fixed">-->
-                        <!--                            <thead>-->
-                        <!--                            <tr><h1>All Customers</em></h1>-->
-                        <!--                                <th scope="col">First</th>-->
-                        <!--                                <th scope="col">Last</th>-->
-                        <!--                                <th scope="col">Address</th>-->
-                        <!--                                <th scope="col">City</th>-->
-                        <!--                                <th scope="col">State</th>-->
-                        <!--                                <th scope="col">Zip</th>-->
-                        <!--                                <th scope="col">E-mail</th>-->
-                        <!--                                <th scope="col">Cell #1</th>-->
-                        <!--                            <th scope="col">Cell #2</th>-->
-                        <!--                                <th scope="col">Status</th>-->
-                        <!--                            </tr>-->
-                        <!--                            </thead>-->
-                        <!--                            <tbody>-->
-                        <!--                            {% for item in all_customer %}-->
-
-                        <!--                            <tr>-->
-                        <!--                                <td><a href="{{ item.customer.get_admin_url }}">{{ item.cust_f_name }}</a></td>-->
-                        <!--                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_l_name }}</a></td>-->
-                        <!--                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_address }}</a></td>-->
-                        <!--                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_city }}</a></td>-->
-                        <!--                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_state }}</a></td>-->
-                        <!--                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_zip }}</a></td>-->
-                        <!--                                <td><a href="{{ item.get_admin_url }}">{{ item.cust_email }}</a></td>-->
-                        <!--                                                            <td>{{ item.cust_id.cust_phone }}</td>-->
-                        <!--                            <td>{{ item.cust_id.cust_phone }}</td>-->
-                        <!--                                <td>?</t>-->
-                        <!--                            </tr>-->
-                        <!--                            {% endfor %}-->
-                        <!--                            </tbody>-->
-                        <!--                        </table>-->
                 </div>
 
         </div>
