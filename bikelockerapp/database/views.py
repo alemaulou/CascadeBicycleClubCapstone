@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, BadHeaderError, HttpResponse
 from django.contrib import messages
 from .models import Customer, Inquiry, Location, Cust_Locker, Waitlist
-from .forms import CustomerForm, SendEmailForm
+from .forms import CustomerForm, SendEmailForm, SendEmailFormAfter2Weeks
 from datetime import datetime, date
 from django.conf import settings
 
@@ -39,7 +39,7 @@ def index(request):
             contains_locker_renewals = True
 
     # Returning values to to render onto template
-    render_dicts = {'all_stations': all_station, 'all_customer': all_customer, 'all_inquiries': all_inquiry, 'all_cust_lockers': all_cust_locker}
+    render_dicts = {'all_stations': all_station, 'all_customer': all_customer, 'all_inquiries': all_inquiry, 'all_cust_lockers': all_cust_locker, 'locker_renewals': contains_locker_renewals}
     return render(request, 'admin/index.html', render_dicts)
 
 def BootstrapFilterView(request):
@@ -105,7 +105,9 @@ def send_email(request):
     all_cust_locker = Cust_Locker.objects.all()
     if request.method == 'GET':
         form = SendEmailForm()
-    else:
+        form2 = SendEmailFormAfter2Weeks()
+    if request.method == 'POST' and 'form1' in request.POST:
+        print("test")
         form = SendEmailForm(request.POST)
         if form.is_valid():
             subject = form.cleaned_data['subject']
@@ -116,4 +118,18 @@ def send_email(request):
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
             return redirect('thanks')
-    return render(request, 'send_email.html', {'form': form, 'emails': x, '2_weeks': y, 'all_cust_lockers': all_cust_locker})
+    if request.method == 'POST' and 'form2' in request.POST:
+        print("test")
+        form2 = SendEmailFormAfter2Weeks(request.POST)
+        if form2.is_valid():
+            subject = form2.cleaned_data['subject']
+            print(subject)
+            message = form2.cleaned_data['message']
+            print(message)
+            from_email = settings.EMAIL_HOST_USER
+            try:
+                send_mail(subject, message, from_email, y, fail_silently=False)
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            return redirect('thanks')
+    return render(request, 'send_email.html', {'form': form, 'form2': form2, 'emails': x, '2_weeks': y, 'all_cust_lockers': all_cust_locker})

@@ -1,3 +1,10 @@
 {% extends "admin/change_form.html" %}
 {% block breadcrumbs %}
 {% endblock %}
+{% block userlinks %}
+{% endblock %}
+{% if user.is_active and user.is_staff %}
+{% url 'django-admindocs-docroot' as docsroot %}
+{% endif %}
+{% if user.has_usable_password %}
+{% endif %}

@@ -5,7 +5,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% extends "admin/base_site.html" %}
 {% block breadcrumbs %}
-
 {% endblock %}
 {% block content %}
 {% block userlinks %}
@@ -28,15 +27,16 @@
             <input class="btn col-md-.5 btn-sm" type="submit"
                    onclick="window.location.href = '{% url 'admin:logout' %}?next=/admin'" ;
                    value="Logout"/></div>
-        <!-- Add User -->
 
+        <!-- Add User -->
         <div class="row">
             <div class="p-1 event-panel">
-                <input class="btn col-md-12" type="submit" onclick="window.location.href = 'customer/add/'" ;
+                <input class="btn col-md-12" type="submit" onclick="window.location.href = 'location/add/'" ;
                        value="Add User"/>
                 <p></p>
                 <div class="shadow p-3 mb-5 bg-white rounded" class="rounded">
                     <table class="table">
+
                         <!-- Locations Navigation -->
                         <tr>
                             <a href="location/"><h1>Locations</h1></a>
@@ -110,8 +110,7 @@
                             <td>{{ item.cust_id.cust_city }}</td>
                             <td>{{ item.cust_id.cust_state }}</td>
                             <td>{{ item.cust_id.cust_zip }}</td>
-                            <td><a href="mailto: {{ item.cust_id.cust_email }}" target="_blank">{{
-                                item.cust_id.cust_email }}</a></td>
+                            <td><a href="mailto: {{ item.cust_id.cust_email }}" target="_blank">{{item.cust_id.cust_email }}</a></td>
                             <td>{{ item.cust_id.phone_number }}</td>
                             <td>{{ item.cust_id.phone_number2 }}</td>
                             <td>{{ item.locker_id.locker_status_id.locker_status_name }}</td>
@@ -176,8 +175,8 @@
                         <table class="table table-bordered table-fixed">
                             {% if all_inquiries %}
                             <thead>
-                            <tr><h1>Waitlist <a href="inquiry/add/"><i class="fa fa-plus" aria-hidden="true"
-                                                                       style=" vertical-align: middle; font-size: 1rem;"></i></a>
+                            <tr><h1>Waitlist <a href="location/add/"><i class="fa fa-plus" aria-hidden="true"
+                                                                        style=" vertical-align: middle; font-size: 1rem;"></i></a>
                             </h1>
                                 <th scope="col">First</th>
                                 <th scope="col">Last</th>
@@ -215,7 +214,7 @@
                                 </td>
                                 <td>{{ item.inquiry_date }}</td>
                                 <td><a href="{{ item.get_admin_url }}"><i class="fa fa-edit"></i></a>
-                                    <a href="inquiry/{{ item.pk }}/delete"><i class="fa fa-trash"></i></a>
+                                    <a href="location/{{ item.pk }}/delete"><i class="fa fa-trash"></i></a>
                                 </td>
 
 
