@@ -24,8 +24,8 @@ def index(request):
     if customer_contains_query != '' and customer_contains_query is not None:
         all_customer = all_customer.filter(cust_f_name__icontains=customer_contains_query)
 
-    sta = {'all_stations': all_station, 'all_customer': all_customer, 'all_inquiries': all_inquiry, 'all_cust_lockers': all_cust_locker}
-    return render(request, 'admin/index.html', sta)
+    render_dict = {'all_stations': all_station, 'all_customer': all_customer, 'all_inquiries': all_inquiry, 'all_cust_lockers': all_cust_locker}
+    return render(request, 'admin/index.html', render_dict)
 
 def BootstrapFilterView(request):
     render(request, "bootstrap_form.html ")
