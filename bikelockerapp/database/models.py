@@ -193,12 +193,11 @@ def create_cust_locker(sender, instance, created, **kwargs):
     try:
         inquiry = Inquiry.objects.get(cust_id=instance.cust_id)
         inquiry.delete()
+        locker = Locker.objects.get(locker_id=instance.locker_id.pk)
+        locker.locker_status_id = Locker_Status.objects.get(pk=2)
+        locker.save()
     except:
         inquiry = None
-    print(Locker.objects.get(locker_id=instance.locker_id.pk))
-    locker = Locker.objects.get(locker_id=instance.locker_id.pk)
-    locker.locker_status_id = Locker_Status.objects.get(pk = 2)
-    locker.save()
 
 signals.post_save.connect(receiver=create_cust_locker, sender=Cust_Locker)
 
@@ -207,6 +206,11 @@ class Inquiry(models.Model):
     cust_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
     inquiry_date = models.DateField()
     locations = models.ManyToManyField(Location)
+
+    @property
+    def is_empty(self):
+        if Inquiry.objects.count() == 0:
+            return True
 
     class Meta:
         verbose_name = "Inquiry"

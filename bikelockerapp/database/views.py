@@ -9,14 +9,12 @@ from datetime import datetime, date, timedelta
 from django.conf import settings
 
 def index(request):
-    template_name = 'admin/index.html'
     all_inquiry = Inquiry.objects.all()
     all_station = Location.objects.all()
     all_customer = Customer.objects.all()
     all_cust_locker = Cust_Locker.objects.all()
     location_contains_query = request.GET.get('location')
     customer_contains_query = request.GET.get('customer')
-
 
     if location_contains_query != '' and location_contains_query is not None:
         all_station = all_station.filter(location_name__icontains=location_contains_query)
