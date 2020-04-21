@@ -30,6 +30,7 @@ def index(request):
     if customer_contains_query != '' and customer_contains_query is not None:
         all_customer = all_customer.filter(cust_f_name__icontains=customer_contains_query)
 
+
     # Rendering boolean for Locker Renewals
     contains_locker_renewals = False
     for locker_renewals in all_cust_locker:
@@ -37,10 +38,8 @@ def index(request):
             contains_locker_renewals = True
 
     # Returning values to to render onto template
-    sta = {'all_stations': all_station, 'all_customer': all_customer, 'all_inquiries': all_inquiry, 'all_cust_lockers': all_cust_locker, 'locker_renewals': contains_locker_renewals}
-    return render(request, 'admin/index.html', sta)
-
-
+    render_dicts = {'all_stations': all_station, 'all_customer': all_customer, 'all_inquiries': all_inquiry, 'all_cust_lockers': all_cust_locker}
+    return render(request, 'admin/index.html', render_dicts)
 
 def BootstrapFilterView(request):
     render(request, "bootstrap_form.html ")
