@@ -9,23 +9,38 @@ from datetime import datetime, date, timedelta
 from django.conf import settings
 
 def index(request):
+
+    # Querying for data
     all_inquiry = Inquiry.objects.all()
     all_station = Location.objects.all()
     all_customer = Customer.objects.all()
     all_cust_locker = Cust_Locker.objects.all()
+
+    # Checking to see if user input in search field "contains" query
     location_contains_query = request.GET.get('location')
     customer_contains_query = request.GET.get('customer')
 
+    # Filtering customer data (station, locker, inquiry) by location
     if location_contains_query != '' and location_contains_query is not None:
         all_station = all_station.filter(location_name__icontains=location_contains_query)
         all_cust_locker = all_cust_locker.filter(locker_id__location_id__location_name__contains=location_contains_query)
         all_inquiry = all_inquiry.filter(locations__location_name__contains=location_contains_query)
 
+    # Filtering customer data by customer name
     if customer_contains_query != '' and customer_contains_query is not None:
         all_customer = all_customer.filter(cust_f_name__icontains=customer_contains_query)
 
-    sta = {'all_stations': all_station, 'all_customer': all_customer, 'all_inquiries': all_inquiry, 'all_cust_lockers': all_cust_locker}
+    # Rendering boolean for Locker Renewals
+    contains_locker_renewals = False
+    for locker_renewals in all_cust_locker:
+        if date.today() > locker_renewals.renew_date:
+            contains_locker_renewals = True
+
+    # Returning values to to render onto template
+    sta = {'all_stations': all_station, 'all_customer': all_customer, 'all_inquiries': all_inquiry, 'all_cust_lockers': all_cust_locker, 'locker_renewals': contains_locker_renewals}
     return render(request, 'admin/index.html', sta)
+
+
 
 def BootstrapFilterView(request):
     render(request, "bootstrap_form.html ")
