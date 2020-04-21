@@ -1,13 +1,14 @@
+import csv, io
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, BadHeaderError, HttpResponse
-import csv, io
 from django.contrib import messages
 from .models import Customer, Inquiry, Location, Cust_Locker, Waitlist
 from .forms import CustomerForm, SendEmailForm
-from datetime import datetime, date, timedelta
+from datetime import datetime
 from django.conf import settings
 
+# Admin Index View
 def index(request):
     all_inquiry = Inquiry.objects.all()
     all_station = Location.objects.all()
@@ -30,6 +31,7 @@ def index(request):
 def BootstrapFilterView(request):
     render(request, "bootstrap_form.html ")
 
+# Customer Upload Data View
 def customer_upload(request):
     template = "customer_upload.html"
 
@@ -61,6 +63,7 @@ def customer_upload(request):
     context = {}
     return render(request, template, context)
 
+# Customer Waitlist View
 def customer_waitlist(request):
     submitted = False
     if request.method == 'POST':
@@ -81,6 +84,7 @@ def customer_waitlist(request):
             submitted = True
     return render(request, 'customer_inquiry.html', {'form': form, 'submitted': submitted})
 
+# Admin E-Mail Renewals View
 def send_email(request):
     x = [obj.cust_id.cust_email for obj in Cust_Locker.objects.all() if obj.is_under_2_weeks_past_due]
     y = [obj.cust_id.cust_email for obj in Cust_Locker.objects.all() if obj.is_2_weeks_past_due]
