@@ -6,6 +6,7 @@ from bikelockerapp.forms import CustomerForm
 from database.models import Customer, Inquiry, Maintenance
 from .forms import CustomerForm, MaintenanceForm
 from datetime import datetime
+from django.http import HttpResponse
 
 def customer_inquiry(request):
     submitted = False
@@ -27,7 +28,6 @@ def customer_inquiry(request):
             submitted = True
     return render(request, 'customer_inquiry.html', {'form': form, 'submitted': submitted})
 
-
 def maintenance_report(request):
     submitted = False
     if request.method == 'POST':
@@ -40,3 +40,6 @@ def maintenance_report(request):
         if 'submitted' in request.GET:
             submitted = True
     return render(request, 'maintenance_report.html', {'form': form, 'submitted': submitted})
+
+def redirect(request):
+    return HttpResponseRedirect('/admin/database/')

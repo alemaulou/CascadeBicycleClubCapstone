@@ -1,12 +1,18 @@
- 
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} delete-confirmation{% endblock %}
+{% block breadcrumbs %}
+{% endblock %}
+{% block content %}
+{% if user.is_authenticated %}
   {% block content %}
   <h1>Bike Locker Customer Waitlist Form</h1>
-  
+
     {% if submitted %}
       <p class="success">
          Your information was submitted successfully. We will reach out through email or phone regarding next steps. Thank you.
     </p>
- 
+
  {% else %}
      <form action="" method="post" novalidate>
      <table>
@@ -20,4 +26,3 @@
      </form>
  {% endif %}
  {% endblock content %}
- 
