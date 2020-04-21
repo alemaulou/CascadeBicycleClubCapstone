@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect, BadHeaderError, HttpResponse
 from django.contrib import messages
 from .models import Customer, Inquiry, Location, Cust_Locker, Waitlist
 from .forms import CustomerForm, SendEmailForm
-from datetime import datetime
+from datetime import datetime, date
 from django.conf import settings
 
 # Admin Index View
