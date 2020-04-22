@@ -1,38 +1,54 @@
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
 import csv, io
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect, BadHeaderError, HttpResponse
 from django.contrib import messages
-from .models import Customer, Inquiry, Location, Cust_Locker, Maintenance, Locker
-from .forms import CustomerForm
-from datetime import datetime
+from .models import Customer, Inquiry, Location, Cust_Locker, Maintenance, Locker, Waitlist
+from .forms import CustomerForm, SendEmailForm, SendEmailFormAfter2Weeks
+from datetime import datetime, date
+from django.conf import settings
 
+# Admin Index View
 def index(request):
-    template_name = 'admin/index.html'
+
+    # Querying for data
     all_inquiry = Inquiry.objects.all()
     all_station = Location.objects.all()
     all_customer = Customer.objects.all()
     all_cust_locker = Cust_Locker.objects.all()
     all_maintenance = Maintenance.objects.all()
+
+    # Checking to see if user input in search field "contains" query
     location_contains_query = request.GET.get('location')
     customer_contains_query = request.GET.get('customer')
 
-
+    # Filtering customer data (station, locker, inquiry) by location
     if location_contains_query != '' and location_contains_query is not None:
         all_station = all_station.filter(location_name__icontains=location_contains_query)
         all_cust_locker = all_cust_locker.filter(locker_id__location_id__location_name__contains=location_contains_query)
         all_inquiry = all_inquiry.filter(locations__location_name__contains=location_contains_query)
         all_maintenance = all_maintenance.filter(locations__location_name__contains=location_contains_query)
  
+
+    # Filtering customer data by customer name
     if customer_contains_query != '' and customer_contains_query is not None:
         all_customer = all_customer.filter(cust_f_name__icontains=customer_contains_query)
 
-    sta = {'all_stations': all_station, 'all_customer': all_customer, 'all_inquiries': all_inquiry, 'all_cust_lockers': all_cust_locker, 'all_maintenance': all_maintenance}
-    return render(request, 'admin/index.html', sta)
+
+    # Rendering boolean for Locker Renewals
+    contains_locker_renewals = False
+    for locker_renewals in all_cust_locker:
+        if date.today() > locker_renewals.renew_date:
+            contains_locker_renewals = True
+
+    # Returning values to to render onto template
+    render_dicts = {'all_stations': all_station, 'all_customer': all_customer, 'all_inquiries': all_inquiry, 'all_cust_lockers': all_cust_locker, 'locker_renewals': contains_locker_renewals, 'all_maintenance' : all_maintenance}
+    return render(request, 'admin/index.html', render_dicts)
 
 def BootstrapFilterView(request):
     render(request, "bootstrap_form.html ")
 
+# Customer Upload Data View
 def customer_upload(request):
     template = "customer_upload.html"
 
@@ -64,7 +80,7 @@ def customer_upload(request):
     context = {}
     return render(request, template, context)
 
-
+# Customer Waitlist View
 def customer_waitlist(request):
     submitted = False
     if request.method == 'POST':
@@ -85,4 +101,38 @@ def customer_waitlist(request):
             submitted = True
     return render(request, 'customer_inquiry.html', {'form': form, 'submitted': submitted})
 
-
+# Admin E-Mail Renewals View
+def send_email(request):
+    x = [obj.cust_id.cust_email for obj in Cust_Locker.objects.all() if obj.is_under_2_weeks_past_due]
+    y = [obj.cust_id.cust_email for obj in Cust_Locker.objects.all() if obj.is_2_weeks_past_due]
+    all_cust_locker = Cust_Locker.objects.all()
+    if request.method == 'GET':
+        form = SendEmailForm()
+        form2 = SendEmailFormAfter2Weeks()
+    if request.method == 'POST' and 'form1' in request.POST:
+        print("test")
+        form = SendEmailForm(request.POST)
+        if form.is_valid():
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+            from_email = settings.EMAIL_HOST_USER
+            try:
+                send_mail(subject, message, from_email, x, fail_silently=False)
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            return redirect('thanks')
+    if request.method == 'POST' and 'form2' in request.POST:
+        print("test")
+        form2 = SendEmailFormAfter2Weeks(request.POST)
+        if form2.is_valid():
+            subject = form2.cleaned_data['subject']
+            print(subject)
+            message = form2.cleaned_data['message']
+            print(message)
+            from_email = settings.EMAIL_HOST_USER
+            try:
+                send_mail(subject, message, from_email, y, fail_silently=False)
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            return redirect('thanks')
+    return render(request, 'send_email.html', {'form': form, 'form2': form2, 'emails': x, '2_weeks': y, 'all_cust_lockers': all_cust_locker})
