@@ -11,6 +11,9 @@ class LocationA(admin.ModelAdmin):
 
     update_status.short_description = "Update status    "
 
+class MaintenanceAdmin(admin.ModelAdmin):
+    list_filter = ('main_type_id', 'location_id')
+
 admin.site.register(Location, LocationA)
 admin.site.register(Waitlist)
 admin.site.register(Locker_Status)
@@ -22,6 +25,7 @@ admin.site.register(Customer)
 admin.site.register(Status)
 admin.site.register(Cust_Status)
 admin.site.register(Maintenance_Status)
-admin.site.register(Maintenance)
+admin.site.register(Maintenance, MaintenanceAdmin)
 admin.site.register(Cust_Locker)
 admin.site.register(Inquiry)
+

@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 import csv, io
 from django.contrib import messages
-from .models import Customer, Inquiry, Location, Cust_Locker, Maintenance
+from .models import Customer, Inquiry, Location, Cust_Locker, Maintenance, Locker
 from .forms import CustomerForm
 from datetime import datetime
 
