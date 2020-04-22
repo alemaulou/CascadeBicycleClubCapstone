@@ -84,21 +84,15 @@ class Maintenance_Status(models.Model):
         verbose_name_plural = "Maintenance Statuses"
 
 class Maintenance(models.Model):
-    SCOPE_CHOICES = (
+    SCOPE = (
         ('General Facility', "General Facility"),
         ('Specific Locker(s)', "Specific Locker(s)"),
     )
 
-##    STATUS_CHOICES = (
-##        ('Awaiting Response', "Awaiting Response"),
-##        ('In Progress', "In Progress"),
-##        ('Complete', "Complete")
-##    )
-
     maintenance_id = models.AutoField(primary_key=True)
     location_id = models.ForeignKey(Location, on_delete=models.CASCADE)
     main_type_id = models.ForeignKey(Maintenance_Type, on_delete=models.CASCADE)
-    maintenance_scope = models.CharField('Maintenance Scope', choices=SCOPE_CHOICES, max_length=50)
+    maintenance_scope = models.CharField('Maintenance Scope', choices=SCOPE, max_length=50)
     lockers = models.ManyToManyField(Locker, blank=True)
     maintenance_description = models.CharField('Maintenance Description', max_length=250, default='')
     start_date = models.DateField()

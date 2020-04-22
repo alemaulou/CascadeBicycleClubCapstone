@@ -31,7 +31,7 @@
         <!-- Add User -->
         <div class="row">
             <div class="p-1 event-panel">
-                <input class="btn col-md-12" type="submit" onclick="window.location.href = 'location/add/'" ;
+                <input class="btn col-md-12" type="submit" onclick="window.location.href = 'inquiry/add/'" ;
                        value="Add User"/>
                 <p></p>
                 <div class="shadow p-3 mb-5 bg-white rounded" class="rounded">
@@ -204,8 +204,7 @@
                                 <td>{{ item.cust_id.cust_city }}</td>
                                 <td>{{ item.cust_id.cust_state }}</td>
                                 <td>{{ item.cust_id.cust_zip }}</td>
-                                <td><a href="mailto: {{ item.cust_id.cust_email }}" target="_blank">{{
-                                    item.cust_id.cust_email }}</a></td>
+                                <td><a href="mailto: {{ item.cust_id.cust_email }}" target="_blank">{{ item.cust_id.cust_email }}</a></td>
                                 <td>{{ item.cust_id.phone_number }}</td>
                                 <td>{{ item.cust_id.phone_number2 }}</td>
                                 <td>{% for item in item.locations.all %}
