@@ -8,6 +8,9 @@ from .forms import CustomerForm, MaintenanceForm
 from datetime import datetime
 from django.http import HttpResponse
 
+def landing(request):
+    return render(request, 'landing.html')
+
 def customer_inquiry(request):
     submitted = False
     if request.method == 'POST':
@@ -21,12 +24,12 @@ def customer_inquiry(request):
                 cust_id = Customer.objects.get(cust_id = obj.pk),
                 inquiry_date = datetime.now())
             inquiry.locations.add(*locs)
-            return HttpResponseRedirect('/customer_inquiry/?submitted=True')
+            return HttpResponseRedirect('/landing/?submitted=True')
     else:
         form = CustomerForm()
         if 'submitted' in request.GET:
             submitted = True
-    return render(request, 'customer_inquiry.html', {'form': form, 'submitted': submitted})
+    return render(request, 'landing.html', {'form': form, 'submitted': submitted})
 
 def maintenance_report(request):
     submitted = False

@@ -1,0 +1,222 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+  
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+    crossorigin=""></script>
+
+    <link rel="stylesheet" href= "{% static 'css/style.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}"/>
+	<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}"/>
+	<link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/slicknav.min.css' %}"/>
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="theme-color" content="#000000" />
+   
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  
+    <title>Cascade Bicycle Club</title>
+</head>
+
+
+<body>
+  
+  <header class="header-section clearfix">		 
+    <a href="for.html" class="site-logo">
+       <img src="{% static 'img/logo.png' %}" alt="">
+     </a>
+ </header>
+
+<main>
+  <section class="hero-section2">
+    	<div class="hs-item2">
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-6">
+							<div class="hs-text">
+								<h2><span>Secure Bike Parking</span></h2>
+								<h4> Looking to securely park your bike at a transit station? You've come to the right place. </h4>
+
+                  
+                <p>Cascade handles King County Metro’s leased bike lockers at transit locations. We can set you up with an available
+                   locker and will collect and hold your key deposit. Vacancies vary by location and openings change often. Reservable
+                    lockers are most suited to people who want a guaranteed space at a specific location where they plan to park frequently,
+                     year-round, to catch transit. If you want more flexibility to shift locations and to pay as you go at a very low price. </p>
+              </div>
+              
+            </div>
+						<div class="col-lg-5">
+							<div class="hr-img">
+					<img src="{% static 'img/home.jpg' %}">
+              </div>
+            </div>
+          </div>
+          <div class='contact-us'>
+          <div class="col-lg-6">
+            <ul class="sub-list">
+              <li><h2>Contact Us</h2></li>
+              <li><p>For King Metro Locations contact via email at bikelocker@cascade.org</p></li>
+            </ul>
+          </div>
+          </div>
+				</div>
+			</div>
+  </section>
+  
+
+	<section class="subscription-section spad set-bg">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-10">
+					<div class="sub-text">
+						<h2>Renewals & Maintenance Request</h2>
+						<p>WE NEED TO WRITE WHAT THIS IS GOING TO BE </p>
+            <a href="#" class="site-btn">Renew Now!</a>
+            <a href="#" class="Mainsite-btn">Maintenance Request</a>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</section>
+
+  <section >
+		<div class="container">
+			<div >
+				<div class="col-lg-6">
+					<div class="section-title2">
+						<h2>Leased Locker Sign Up:</h2>
+					</div>
+        </div>
+        
+        <div class = 'steps-text'>
+        <div class="row">
+          <div class="col-lg-3">
+            <div class="concept-item">
+              <img src="{% static 'img/find.png' %}" alt="">
+              <h4>Find a locker </h4>
+              <p>Locate a locker that you would like to lease below by filtering for the specific city.</p>
+
+            </div>
+          </div>
+
+          <div class="col-lg-3">
+            <div class="concept-item">
+              <img src= "{% static 'img/pencil.png' %}" alt="">
+              <h4>Fill out request form </h4>
+              <p>Cascade Locker Bicycle will reach out with furthur steps to approve you for your locker! If there are no available spots, 
+                you will be placed on the waitlist and notified when a spot is open. 
+              </p>
+            </div>
+          </div>
+
+          <div class="col-lg-3">
+            <div class="concept-item">
+              <img src="{% static 'img/docs.png' %}" alt="">
+              <h4>Sign Agreement & Pay Deposit </h4>
+              <p>Cascade Bicycle Club will send a locker 
+                agreement that will need to be signed and ask for a 
+                deposit that will be returned after you are done using.</p>
+            </div>
+          </div>
+
+          <div class="col-lg-3">
+            <div class="concept-item">
+              <img src= "{% static 'img/bike.png' %}" alt="">
+              <h4>Recieve your key and start biking</h4>
+              <p>Once the onboarding process is finishsed you will 
+                recieve your locker key in the mail! Happy biking! 
+              </p>
+            </div>
+          </div>
+        </div>
+</div>
+</div>
+</section>
+
+<section>
+
+    <div class='filterBtn'>
+       <select id="cities" role="option" aria-selected="true" id="exampleFormControlSelect1">
+              <option value= 'Auburn'>Auburn</option>
+              <option value='Bellevue'>Bellevue</option>
+              <option value='Bothell'>Bothell</option>
+              <option value='Burien'>Burien</option>
+              <option value='Federal Way'>Federal Way</option>
+              <option value='Issaquah'>Issaquah</option>
+              <option value='Kenmore'>Kenmore</option>
+              <option value='Kirkland'>Kirkland</option>
+              <option value='Redmond'>Redmond</option>
+              <option value='Renton'>Renton</option>
+              <option value='Sammamish'>Sammamish</option>
+              <option value='North Seattle'>Seattle (North)</option>
+              <option value='Shoreline'>Shoreline</option>
+              <option value='Tukwila'>Tukwila</option>
+              <option value='Vashon Island'>Vashon Island</option>
+              <option value='Woodinville'>Woodinville</option>
+       </select>
+       <input  class = 'filter-btn' type='submit' value='Submit' onclick='filterMarkers()'>
+       
+       
+
+     </div>
+        </section>
+
+
+
+
+<section id="mapFormSection">
+
+  <div id="mapid"></div> 
+
+
+  
+  
+  <div id="custform" style="padding: 20px; align-content: center;">
+    {% block content %}
+    <h1>Bike Locker Customer Inquiry Form</h1>
+
+    {% if submitted %}
+      <p class="success">
+         Your information was submitted successfully. 
+      </p>
+      <p class="success">
+        We will reach out through email regarding next steps. Thank you
+      </p>
+ 
+ {% else %}
+     <form action="" method="post" novalidate>
+     <table>
+         {{ form.as_table }}
+         <tr>
+             <td>&nbsp;</td>
+              
+         </tr>
+     </table>
+     {% csrf_token %}
+     <button type="submit" class="btn btn-primary">Submit</button>
+     </form>
+ {% endif %}
+ {% endblock content %}
+  </div>
+
+</section>
+  
+
+      
+
+     
+  </body>
+  
+  <script src = "{% static 'marker.js' %}"></script>
+</html>
