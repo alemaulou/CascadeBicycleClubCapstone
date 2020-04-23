@@ -10,9 +10,29 @@
     {% load i18n admin_urls static %}
     { block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} delete-confirmation
     %{% block breadcrumbs %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
+
+  <button class="navbar-toggler" type="buton" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav" style="margin-left: 3%">
+
+      <a class="nav-item nav-link active" href="/admin/database">Home <span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link" href="send_email">Renewals</a>
+      <a class="nav-item nav-link" href="#">Maintenance</a>
+      <a class="nav-item nav-link" href="customer_upload">Import Data</a>
+        <a class="nav-item nav-link" href="{% url 'admin:password_change' %}">Change Password</a>
+        <a class="nav-item nav-link" href="{% url 'admin:logout' %}?next=/admin">Logout</a>
+    </div>
+  </div>
+</nav>
     {% endblock %}
     {% block content %}
     {% if user.is_authenticated %}
+    {% if locker_renewals %}
+    {% if lr_under_2 %}
+
     <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
         <table class="table table-bordered table-fixed">
             <thead>
@@ -62,7 +82,6 @@
         </table>
 
     </div>
-
     <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
         <h1>Renewal Process for KCM Bike Lockers</h1>
         <form method="POST" action="">{% csrf_token %}
@@ -95,7 +114,9 @@
             </div>
         </form>
     </div>
+    {% endif %}
 
+    {% if lr_over_2 %}
     <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
         <table class="table table-bordered table-fixed">
             <thead>
@@ -144,8 +165,6 @@
         </table>
 
     </div>
-
-
     <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
         <h1>Renewal Process for KCM Bike Lockers (After 2 Weeks)</h1>
         <p>Follow up with people who give no response within 2 weeks. If you do not receive a response from them within
@@ -159,7 +178,6 @@
                     {{ item.cust_id }}
                     {% endif %}
                     {% endfor %}
-
                 </div>
                 <div>
                     <p>{{ form2.subject.errors }}</p>
@@ -177,8 +195,56 @@
     </div>
     {% endif %}
 
-</tr>
+    {% else %}
+    <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
+        There are no lockers up for renewal. <a href="../database">Back to main page.</a>
+    </div>
+    {% endif %}
+    {% endif %}
 
+</tr>
+            <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
+        <table class="table table-bordered table-fixed">
+            <thead>
+            <tr><h1>Renewal Summary</h1>
+                <th scope="col" style="width: 9.09%">Location</th>
+                <th scope="col" style="width: 9.09%"># of Lockers</th>
+                <th scope="col" style="width: 9.09%"># of Occupants</th>
+                <th scope="col" style="width: 9.09%"># Renewing</th>
+                <th scope="col" style="width: 9.09%"># Not Renewing</th>
+                <th scope="col" style="width: 9.09%"># Waiting For Reponse</th>
+                <th scope="col" style="width: 9.09%">% Responded</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr>{% for item in all_stations %}
+                <td> {{ item.location_name }}</td>
+                <td></td>
+                <td>{{ item.cust_id.cust_l_name }}</td>
+                <td>{{ item.cust_id.cust_address }}</td>
+                <td>{{ item.cust_id.cust_city }}</td>
+                <td>{{ item.cust_id.cust_state }}</td>
+                <td>{{ item.cust_id.cust_zip }}</td>
+
+            </tr>
+
+
+                            {% endfor %}
+                                  <tr>
+                <td><strong>Total</strong></td>
+                <td>{{ total_locker_count }}</td>
+                <td></td>
+                <td>{{ item.cust_id.cust_address }}</td>
+                <td>{{ item.cust_id.cust_city }}</td>
+                <td>{{ item.cust_id.cust_state }}</td>
+                <td>{{ item.cust_id.cust_zip }}</td>
+
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
 
 {% endblock %}
 

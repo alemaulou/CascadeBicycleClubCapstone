@@ -5,6 +5,23 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% extends "admin/base_site.html" %}
 {% block breadcrumbs %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
+
+  <button class="navbar-toggler" type="buton" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav" style="margin-left: 3%">
+
+      <a class="nav-item nav-link active" href="/admin/database">Home <span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link" href="send_email">Renewals</a>
+      <a class="nav-item nav-link" href="#">Maintenance</a>
+      <a class="nav-item nav-link" href="customer_upload">Import Data</a>
+        <a class="nav-item nav-link" href="{% url 'admin:password_change' %}">Change Password</a>
+        <a class="nav-item nav-link" href="{% url 'admin:logout' %}?next=/admin">Logout</a>
+    </div>
+  </div>
+</nav>
 {% endblock %}
 {% block content %}
 {% block userlinks %}
@@ -17,21 +34,10 @@
 {% if user.is_authenticated %}
 
 <div id="content">
-    <div class="container-fluid">
-        <div class="align-right">
-            <input class="btn col-sm-1 btn-sm" type="submit" onclick="window.location.href = 'customer_upload'" ;
-                   value="Import Data"/>
-            <input class="btn col-md-1.5 btn-sm" type="submit"
-                   onclick="window.location.href = '{% url 'admin:password_change' %}'" ;
-                   value="Change Password"/>
-            <input class="btn col-md-.5 btn-sm" type="submit"
-                   onclick="window.location.href = '{% url 'admin:logout' %}?next=/admin'" ;
-                   value="Logout"/></div>
-
         <!-- Add User -->
         <div class="row">
             <div class="p-1 event-panel">
-                <input class="btn col-md-12" type="submit" onclick="window.location.href = 'location/add/'" ;
+                <input class="btn col-md-12" type="submit" onclick="window.location.href = 'inquiry/add/'" ;
                        value="Add User"/>
                 <p></p>
                 <div class="shadow p-3 mb-5 bg-white rounded" class="rounded">
@@ -204,8 +210,7 @@
                                 <td>{{ item.cust_id.cust_city }}</td>
                                 <td>{{ item.cust_id.cust_state }}</td>
                                 <td>{{ item.cust_id.cust_zip }}</td>
-                                <td><a href="mailto: {{ item.cust_id.cust_email }}" target="_blank">{{
-                                    item.cust_id.cust_email }}</a></td>
+                                <td><a href="mailto: {{ item.cust_id.cust_email }}" target="_blank">{{ item.cust_id.cust_email }}</a></td>
                                 <td>{{ item.cust_id.phone_number }}</td>
                                 <td>{{ item.cust_id.phone_number2 }}</td>
                                 <td>{% for item in item.locations.all %}
