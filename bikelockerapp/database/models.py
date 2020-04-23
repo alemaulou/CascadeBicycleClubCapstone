@@ -84,15 +84,15 @@ class Maintenance_Status(models.Model):
         verbose_name_plural = "Maintenance Statuses"
 
 class Maintenance(models.Model):
-    SCOPE_CHOICES = (
-        ('general facility', "General Facility"),
-        ('specific locker(s)', "Specific Locker(s)"),
+    SCOPE = (
+        ('General Facility', "General Facility"),
+        ('Specific Locker(s)', "Specific Locker(s)"),
     )
 
     maintenance_id = models.AutoField(primary_key=True)
     location_id = models.ForeignKey(Location, on_delete=models.CASCADE)
     main_type_id = models.ForeignKey(Maintenance_Type, on_delete=models.CASCADE)
-    maintenance_scope = models.CharField('Maintenance Scope', choices=SCOPE_CHOICES, max_length=50)
+    maintenance_scope = models.CharField('Maintenance Scope', choices=SCOPE, max_length=50)
     lockers = models.ManyToManyField(Locker, blank=True)
     maintenance_description = models.CharField('Maintenance Description', max_length=250, default='')
     start_date = models.DateField()
@@ -101,6 +101,10 @@ class Maintenance(models.Model):
 
     def __str__(self):
             return str(self.start_date) + " " + self.location_id.location_name + " - " + self.main_type_id.main_type_name
+    
+    def get_admin_url(self):
+        content_type = ContentType.objects.get_for_model(self.__class__)
+        return reverse("admin:%s_%s_change" % (content_type.app_label, content_type.model), args=(self.pk,))
 
 class Customer(models.Model):
     cust_id = models.AutoField(primary_key=True)
@@ -239,3 +243,5 @@ class Waitlist(models.Model):
 
     def __str__(self):
         return str(self.cust_id)
+
+
