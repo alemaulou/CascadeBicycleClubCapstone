@@ -1,7 +1,7 @@
  :root {
     --primary-color: rgba(29, 29, 27, 0.09);
     --primary-color-faded: #6aa44f;
-    --secondary-color: #4dffba;
+    --secondary-color: rgba(29, 29, 27, 0.09);
   }
 
   ::selection {

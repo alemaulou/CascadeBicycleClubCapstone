@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect, BadHeaderError, HttpResponse
 from django.contrib import messages
 from .models import Customer, Inquiry, Location, Cust_Locker, Maintenance, Locker, Waitlist
 from .forms import CustomerForm, SendEmailForm, SendEmailFormAfter2Weeks
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from django.conf import settings
 
 # Admin Index View
@@ -105,6 +105,8 @@ def customer_waitlist(request):
 def send_email(request):
     x = [obj.cust_id.cust_email for obj in Cust_Locker.objects.all() if obj.is_under_2_weeks_past_due]
     y = [obj.cust_id.cust_email for obj in Cust_Locker.objects.all() if obj.is_2_weeks_past_due]
+    all_stations = Location.objects.all()
+    total_locker_count = Cust_Locker.objects.count()
     all_cust_locker = Cust_Locker.objects.all()
     if request.method == 'GET':
         form = SendEmailForm()
@@ -135,4 +137,22 @@ def send_email(request):
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
             return redirect('thanks')
-    return render(request, 'send_email.html', {'form': form, 'form2': form2, 'emails': x, '2_weeks': y, 'all_cust_lockers': all_cust_locker})
+
+    # Rendering boolean for Locker Renewals
+    contains_locker_renewals = False
+    for locker_renewals in all_cust_locker:
+        if date.today() > locker_renewals.renew_date:
+            contains_locker_renewals = True
+
+
+    contains_lr_under_2_weeks = False
+    for locker_renewals in all_cust_locker:
+        if date.today() > locker_renewals.renew_date and date.today() - timedelta(14) < locker_renewals.renew_date:
+            contains_lr_under_2_weeks = True
+
+    contains_lr_over_2_weeks = False
+    for locker_renewals in all_cust_locker:
+        if date.today() - timedelta(14) > locker_renewals.renew_date:
+            contains_lr_over_2_weeks = True
+
+    return render(request, 'send_email.html', {'all_stations': all_stations, 'form': form, 'form2': form2, 'emails': x, '2_weeks': y, 'all_cust_lockers': all_cust_locker, 'locker_renewals': contains_locker_renewals, 'lr_over_2': contains_lr_over_2_weeks, 'lr_under_2': contains_lr_under_2_weeks, "total_locker_count": total_locker_count})

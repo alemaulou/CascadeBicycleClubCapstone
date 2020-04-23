@@ -112,7 +112,7 @@ class Customer(models.Model):
     cust_l_name = models.CharField('Last Name', max_length=50)
     cust_email = models.EmailField('Email', max_length=100, default='')
     cust_phone = models.CharField('Phone #1', max_length=50, default='')
-    cust_phone2 = models.CharField('Phone #2', max_length=50, default='')
+    cust_phone2 = models.CharField('Phone #2', max_length=50, default='', blank=True)
     cust_address = models.CharField('Street Address', max_length=50, default='')
     cust_city = models.CharField('City', max_length=50)
     cust_state = models.CharField('State', max_length=50)
@@ -168,6 +168,10 @@ class Cust_Locker(models.Model):
     locker_id = models.ForeignKey(Locker, on_delete=models.CASCADE)
     contract_date = models.DateField()
     renew_date = models.DateField()
+
+    @property
+    def total_lockers(self):
+        return Cust_Locker.objects.count()
 
     @property
     def is_past_due(self):
