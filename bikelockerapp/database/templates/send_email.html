@@ -20,9 +20,7 @@
 
       <a class="nav-item nav-link active" href="/admin/database">Home <span class="sr-only">(current)</span></a>
       <a class="nav-item nav-link" href="send_email">Send Renewals</a>
-
-      <a class="nav-item nav-link" href="#">Maintenance</a>
-        <a class="nav-item nav-link" href="#">Bike Locker Log</a>
+      <a class="nav-item nav-link" href="renewals">Renewals</a>
       <a class="nav-item nav-link" href="customer_upload">Import Data</a>
         <a class="nav-item nav-link" href="{% url 'admin:password_change' %}">Change Password</a>
         <a class="nav-item nav-link" href="{% url 'admin:logout' %}?next=/admin">Logout</a>
@@ -205,46 +203,6 @@
     {% endif %}
 
 </tr>
-            <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
-        <table class="table table-bordered table-fixed table-sm">
-            <thead>
-            <tr><h1>Renewal Summary</h1>
-                <th scope="col" style="width: 9.09%">Location</th>
-                <th scope="col" style="width: 9.09%"># of Lockers</th>
-                <th scope="col" style="width: 9.09%"># of Occupants</th>
-                <th scope="col" style="width: 9.09%"># Renewing</th>
-                <th scope="col" style="width: 9.09%"># Not Renewing</th>
-                <th scope="col" style="width: 9.09%"># Waiting For Reponse</th>
-                <th scope="col" style="width: 9.09%">% Responded</th>
-
-            </tr>
-            </thead>
-            <tbody>
-            <tr>{% for item in all_cust_lockers %}
-                <td> {{ item.locker_id.location_id.location_name }}</td>
-                <td>{{ item.locker_id.location_id.location_capacity }}</td>
-                <td>{{ item.cust_id.cust_l_name }}</td>
-                <td>{{ item.cust_id.cust_address }}</td>
-                <td>{{ item.cust_id.cust_city }}</td>
-                <td>{{ item.cust_id.cust_state }}</td>
-                <td>{{ item.cust_id.cust_zip }}</td>
-
-            </tr>
-                            {% endfor %}
-                                  <tr>
-                <td><strong>Total</strong></td>
-                <td>{{ total_lockers }}</td>
-                <td></td>
-                <td>{{ item.cust_id.cust_address }}</td>
-                <td>{{ item.cust_id.cust_city }}</td>
-                <td>{{ item.cust_id.cust_state }}</td>
-                <td>{{ item.cust_id.cust_zip }}</td>
-
-            </tr>
-            </tbody>
-        </table>
-
-    </div>
 
 {% endblock %}
 

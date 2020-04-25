@@ -162,6 +162,9 @@ def send_email(request):
     for location in all_stations:
         total_lockers += location.location_capacity
 
+    # Total number of Occupied Lockers
+    total_occupied = len(all_cust_locker)
+
     return render(request, 'send_email.html',
                   {'all_stations': all_stations,
                    'form': form,
@@ -172,7 +175,53 @@ def send_email(request):
                    'locker_renewals': contains_locker_renewals,
                    'lr_over_2': contains_lr_over_2_weeks,
                    'lr_under_2': contains_lr_under_2_weeks,
-                   'total_lockers': total_lockers})
+                   'total_lockers': total_lockers,
+                   'total_occupied': total_occupied})
+
+# TBD: DELETE IF UNIMPLEMENTED
+def renewals(request):
+    # Querying for data.
+    all_stations = Location.objects.all()
+    all_cust_locker = Cust_Locker.objects.all()
+
+    # Total number of Lockers by Location Capacity
+    total_lockers = 0
+    for location in all_stations:
+        total_lockers += location.location_capacity
+
+    # Total number of Occupied Lockers
+    total_occupied = len(all_cust_locker)
+
+    ## Get Total Customer Renewal Status to render
+    # Total Renewing
+    locker_renewal_count_total = 0
+    for locker in all_stations:
+        if Cust_Locker.objects.filter(locker_id__location_id=locker.pk) and Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Renewed"):
+            locker_renewal_count_total += 1
+
+    # Not Renewing
+    locker_not_renewal_count_total = 0
+    for locker in all_stations:
+        if Cust_Locker.objects.filter(locker_id__location_id=locker.pk) and Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Renewing"):
+            locker_not_renewal_count_total += 1
+
+    # Not Responded
+    not_responded_count_total = 0
+    for locker in all_stations:
+        if Cust_Locker.objects.filter(locker_id__location_id=locker.pk) and Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded"):
+            not_responded_count_total += 1
+
+    # Calculation for number responded and total
+    total_percentage_responded = round((locker_renewal_count_total + locker_not_renewal_count_total) / (locker_renewal_count_total + locker_not_renewal_count_total + not_responded_count_total), 2)
+
+    return render(request, 'renewals.html',
+                  {'all_stations': all_stations,
+                   'locker_not_renewal_count_total': locker_not_renewal_count_total,
+                   'locker_renewal_count_total': locker_renewal_count_total,
+                   'not_responded_count_total': not_responded_count_total,
+                   'total_percentage_responded': total_percentage_responded,
+                   'total_lockers': total_lockers,
+                   'total_occupied': total_occupied})
 
 # TBD: DELETE IF UNIMPLEMENTED
 def log(request):

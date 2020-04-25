@@ -1,3 +1,6 @@
+from django import forms
+from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
@@ -5,13 +8,11 @@ from datetime import date, timedelta, datetime
 from django.db.models import signals
 from django.utils import timezone
 
-
 class Location(models.Model):
     location_id = models.AutoField(primary_key=True)
     location_name = models.CharField('Location Name', max_length=100)
     location_zip = models.CharField('Location Zip', max_length=10)
     location_capacity = models.IntegerField('Location Capacity', default=0)
-
 
     def __str__(self):
         return self.location_name
@@ -19,7 +20,42 @@ class Location(models.Model):
     def get_admin_url(self):
         content_type = ContentType.objects.get_for_model(self.__class__)
         return reverse("admin:%s_%s_change" % (content_type.app_label, content_type.model), args=(self.pk,))
-        
+
+    def get_location_occ(self):
+        return len(Cust_Locker.objects.filter(locker_id__location_id=self.pk))
+
+    def get_renewal_count(self):
+        location = Cust_Locker.objects.filter(locker_id__location_id=self.pk)
+        if location:
+            return len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Renewed"))
+        else:
+            return 0
+
+    def get_not_renewed_count(self):
+        location = Cust_Locker.objects.filter(locker_id__location_id=self.pk)
+        if location:
+            return len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Renewing"))
+        else:
+            return 0
+
+    def get_not_responded(self):
+        location = Cust_Locker.objects.filter(locker_id__location_id=self.pk)
+        if location:
+            return len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded"))
+        else:
+            return 0
+
+    def get_renewal_percentage(self):
+        location = Cust_Locker.objects.filter(locker_id__location_id=self.pk)
+        if location:
+            if (len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Renewed")) + len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Renewing")) + len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded"))) != 0:
+                return str(round((len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Renewed")) + len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Renewing"))) / (len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Renewed")) + len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Renewing")) + len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded"))), 2))
+            else:
+                return 0
+        return 0
+
+
+
 class Locker_Status(models.Model):
     locker_status_id = models.AutoField(primary_key=True)
     locker_status_name = models.CharField('Locker Status Name', max_length=100)
@@ -111,6 +147,14 @@ class Maintenance(models.Model):
         content_type = ContentType.objects.get_for_model(self.__class__)
         return reverse("admin:%s_%s_change" % (content_type.app_label, content_type.model), args=(self.pk,))
 
+class Status(models.Model):
+    status_id = models.AutoField(primary_key=True)
+    status_name = models.CharField('Status Name', max_length=100)
+    status_desc = models.CharField('Status Description', max_length=100, blank=True)
+
+    def __str__(self):
+        return self.status_name
+
 class Customer(models.Model):
     cust_id = models.AutoField(primary_key=True)
     cust_f_name = models.CharField('First Name', max_length=50)
@@ -122,6 +166,7 @@ class Customer(models.Model):
     cust_city = models.CharField('City', max_length=50)
     cust_state = models.CharField('State', max_length=50)
     cust_zip = models.CharField('Zip Code', max_length=10)
+    status = models.ForeignKey(Status, on_delete=models.CASCADE, null=True)
 
     def phone_number(self):
         if self.cust_phone:
@@ -150,11 +195,6 @@ class Customer(models.Model):
 
     class Meta:
         ordering = ['cust_l_name']
-
-class Status(models.Model):
-    status_id = models.AutoField(primary_key=True)
-    status_name = models.CharField('Status Name', max_length=100)
-    status_desc = models.CharField('Status Description', max_length=100)
 
 class Cust_Status(models.Model):
     cust_status_id = models.AutoField(primary_key=True)
@@ -212,8 +252,6 @@ def create_cust_locker(sender, instance, created, **kwargs):
         locker.save()
     except:
         inquiry = None
-
-# hack away
 
 signals.post_save.connect(receiver=create_cust_locker, sender=Cust_Locker)
 

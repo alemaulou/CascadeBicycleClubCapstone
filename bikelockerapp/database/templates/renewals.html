@@ -1,0 +1,78 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+{% extends "admin/base_site.html" %}
+<tr class="container">
+
+    {% load i18n admin_urls static %}
+    { block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} delete-confirmation
+    %{% block breadcrumbs %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
+
+  <button class="navbar-toggler" type="buton" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav" style="margin-left: 3%">
+
+      <a class="nav-item nav-link active" href="/admin/database">Home <span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link" href="send_email">Send Renewals</a>
+      <a class="nav-item nav-link" href="renewals">Renewals</a>
+      <a class="nav-item nav-link" href="customer_upload">Import Data</a>
+        <a class="nav-item nav-link" href="{% url 'admin:password_change' %}">Change Password</a>
+        <a class="nav-item nav-link" href="{% url 'admin:logout' %}?next=/admin">Logout</a>
+    </div>
+  </div>
+</nav>
+    {% endblock %}
+    {% block content %}
+    {% if user.is_authenticated %}
+            <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
+        <table class="table table-bordered table-fixed table-sm">
+            <thead>
+            <tr><h1>Renewal Summary</h1>
+                <th scope="col" style="width: 9.09%">Location</th>
+                <th scope="col" style="width: 9.09%"># of Lockers</th>
+                <th scope="col" style="width: 9.09%"># of Occupants</th>
+                <th scope="col" style="width: 9.09%"># Renewing</th>
+                <th scope="col" style="width: 9.09%"># Not Renewing</th>
+                <th scope="col" style="width: 9.09%"># Waiting For Reponse</th>
+                <th scope="col" style="width: 9.09%">% Responded</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr>{% for item in all_stations %}
+                <td> {{ item.location_name }}</td>
+                <td>{{ item.location_capacity }}</td>
+                <td>{{ item.get_location_occ }}</td>
+                <td>{{ item.get_renewal_count }}</td>
+                <td>{{ item.get_not_renewed_count }}</td>
+                <td>{{ item.get_not_responded }}</td>
+                <td>{{ item.get_renewal_percentage }}</td>
+
+            </tr>
+            {% endfor %}
+            <tr>
+                <td><strong>Total</strong></td>
+                <td>{{ total_lockers }}</td>
+                <td>{{ total_occupied }}</td>
+                <td>{{ locker_renewal_count_total }}</td>
+                <td>{{ locker_not_renewal_count_total }}</td>
+                <td>{{ not_responded_count_total }}</td>
+                <td>{{ total_percentage_responded }}</td>
+
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+    {% endif %}
+
+{% endblock %}
+
+
+
