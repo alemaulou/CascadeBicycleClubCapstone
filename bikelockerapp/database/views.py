@@ -8,10 +8,11 @@ from .forms import CustomerForm, SendEmailForm, SendEmailFormAfter2Weeks
 from datetime import datetime, date, timedelta
 from django.conf import settings
 
+
 # Admin Index View
 def index(request):
 
-    # Querying for data
+    # Querying for data to display on main page
     all_inquiry = Inquiry.objects.all()
     all_station = Location.objects.all()
     all_customer = Customer.objects.all()
@@ -34,7 +35,6 @@ def index(request):
     if customer_contains_query != '' and customer_contains_query is not None:
         all_customer = all_customer.filter(cust_f_name__icontains=customer_contains_query)
 
-
     # Rendering boolean for Locker Renewals
     contains_locker_renewals = False
     for locker_renewals in all_cust_locker:
@@ -50,6 +50,7 @@ def BootstrapFilterView(request):
 
 # Customer Upload Data View
 def customer_upload(request):
+    # Import data template
     template = "customer_upload.html"
 
     prompt = {
@@ -67,6 +68,8 @@ def customer_upload(request):
     data_set = csv_file.read().decode('UTF-8')
     io_string = io.StringIO(data_set)
     next(io_string)
+
+    # Scraping data from CSV file.
     for column in csv.reader(io_string, delimiter=',', quotechar="|"):
         _, created = Customer.objects.update_or_create(
             cust_f_name = column[0],
@@ -77,6 +80,7 @@ def customer_upload(request):
             cust_state = column[4],
             cust_zip = column[5]
         )
+
     context = {}
     return render(request, template, context)
 
@@ -141,11 +145,13 @@ def send_email(request):
         if date.today() > locker_renewals.renew_date:
             contains_locker_renewals = True
 
+    # Rendering boolean for New Locker Renewal Requests
     contains_lr_under_2_weeks = False
     for locker_renewals in all_cust_locker:
         if date.today() > locker_renewals.renew_date and date.today() - timedelta(14) < locker_renewals.renew_date:
             contains_lr_under_2_weeks = True
 
+    # Rendering boolean for Past due (over 2 week) Locker Renewal Requests
     contains_lr_over_2_weeks = False
     for locker_renewals in all_cust_locker:
         if date.today() - timedelta(14) > locker_renewals.renew_date:
@@ -168,9 +174,8 @@ def send_email(request):
                    'lr_under_2': contains_lr_under_2_weeks,
                    'total_lockers': total_lockers})
 
+# TBD: DELETE IF UNIMPLEMENTED
 def log(request):
-
     all_logs = Locker_Log.objects.all()
-
     return render(request, 'log.html',
                   {'all_logs': all_logs})

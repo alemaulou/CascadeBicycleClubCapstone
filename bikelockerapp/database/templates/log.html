@@ -6,7 +6,6 @@
 
 {% extends "admin/base_site.html" %}
 <tr class="container">
-
     {% load i18n admin_urls static %}
     { block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} delete-confirmation
     %{% block breadcrumbs %}
