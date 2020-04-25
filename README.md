@@ -10,19 +10,19 @@ Create the building blocks for Cascade Bicycle  Club's larger business goal for 
     <img src="imgs/cbc_3.png" width="700px">
 </p>
 <p align="left">
-    <img src="imgs/cbc_1.png" width="600px">
+    <img src="imgs/cbc_1.png" width="700px">
 </p>
 <p align="left">
-    <img src="imgs/cbc_2.png" width="600px">
+    <img src="imgs/cbc_2.png" width="700px">
 </p>
 <p align="left">
-    <img src="imgs/cbc_4.png" width="600px">
+    <img src="imgs/cbc_4.png" width="700px">
 </p>
 <p align="left">
-    <img src="imgs/cbc_5.png" width="600px">
+    <img src="imgs/cbc_5.png" width="700px">
 </p>
 <p align="left">
-    <img src="imgs/cbc_6.png" width="600px">
+    <img src="imgs/cbc_6.png" width="700px">
 </p>
 
 ## Our Team
