@@ -1,13 +1,17 @@
 from django.db import models
 from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from django.db.models import signals
+from django.utils import timezone
+
 
 class Location(models.Model):
     location_id = models.AutoField(primary_key=True)
     location_name = models.CharField('Location Name', max_length=100)
     location_zip = models.CharField('Location Zip', max_length=10)
+    location_capacity = models.IntegerField('Location Capacity', default=0)
+
 
     def __str__(self):
         return self.location_name
@@ -32,6 +36,7 @@ class Locker(models.Model):
     location_id = models.ForeignKey(Location, on_delete=models.CASCADE)
     locker_name = models.CharField('Locker Name', max_length=100)
     locker_status_id = models.ForeignKey(Locker_Status, on_delete=models.CASCADE, default=1)
+
     def __str__(self):
         return self.location_id.location_name + " #" + self.locker_name
 
@@ -150,8 +155,7 @@ class Status(models.Model):
     status_id = models.AutoField(primary_key=True)
     status_name = models.CharField('Status Name', max_length=100)
     status_desc = models.CharField('Status Description', max_length=100)
- 
- 
+
 class Cust_Status(models.Model):
     cust_status_id = models.AutoField(primary_key=True)
     cust_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
@@ -171,7 +175,7 @@ class Cust_Locker(models.Model):
 
     @property
     def total_lockers(self):
-        return Cust_Locker.objects.count()
+        return Locker.objects.count()
 
     @property
     def is_past_due(self):
@@ -201,13 +205,35 @@ def create_cust_locker(sender, instance, created, **kwargs):
     try:
         inquiry = Inquiry.objects.get(cust_id=instance.cust_id)
         inquiry.delete()
+
+        # Check to see if locker in use
         locker = Locker.objects.get(locker_id=instance.locker_id.pk)
-        locker.locker_status_id = Locker_Status.objects.get(pk=2)
+        locker.locker_status_id = Locker_Status.objects.get(pk=4)
         locker.save()
     except:
         inquiry = None
 
+# hack away
+
 signals.post_save.connect(receiver=create_cust_locker, sender=Cust_Locker)
+
+class Renewal_Response(models.Model):
+    response_id = models.AutoField(primary_key=True)
+    response_description = models.CharField('Response Description', max_length=100)
+
+class Locker_Usage(models.Model):
+    locker_usage_id = models.AutoField(primary_key=True)
+    lu_description = models.CharField('Locker Usage', max_length=100)
+
+class Renewal(models.Model):
+    renewal_id = models.AutoField(primary_key=True)
+    cust_locker_id = models.ForeignKey(Cust_Locker, on_delete=models.CASCADE)
+    sent_date = models.DateField(blank=True)
+    response_1 = models.ForeignKey(Renewal_Response, on_delete=models.CASCADE, related_name='response1', blank=True)
+    sent_date_2 = models.DateField(blank=True)
+    response_2 = models.ForeignKey(Renewal_Response, on_delete=models.CASCADE, related_name='response2', blank=True)
+    phone_call_date = models.DateField('Phone Call Date', default=timezone.now(), blank=True)
+    response_3 = models.ForeignKey(Renewal_Response, on_delete=models.CASCADE, related_name='response3', blank=True)
 
 class Inquiry(models.Model):
     inquiry_id = models.AutoField(primary_key=True)
@@ -243,5 +269,67 @@ class Waitlist(models.Model):
 
     def __str__(self):
         return str(self.cust_id)
+
+class Staff(models.Model):
+    staff_id = models.AutoField(primary_key=True)
+    staff_f_name = models.CharField('First Name', max_length=50)
+    staff_l_name = models.CharField('Last Name', max_length=50)
+    staff_email = models.EmailField('Email', max_length=100, default='')
+    staff_phone = models.CharField('Phone #1', max_length=50, default='')
+    staff_phone2 = models.CharField('Phone #2', max_length=50, default='', blank=True)
+    staff_address = models.CharField('Street Address', max_length=50, default='')
+    staff_city = models.CharField('City', max_length=50)
+    staff_state = models.CharField('State', max_length=50)
+    staff_zip = models.CharField('Zip Code', max_length=10)
+
+    def phone_number(self):
+        if self.staff_phone:
+            first = self.staff_phone[0:3]
+            second = self.staff_phone[3:6]
+            third = self.staff_phone[6:10]
+            return '(' + first + ')' + ' ' + second + '-' + third
+        else:
+            return 'N/A'
+
+    def phone_number2(self):
+        if self.staff_phone2:
+            first = self.staff_phone2[0:3]
+            second = self.staff_phone2[3:6]
+            third = self.staff_phone2[6:10]
+            return '(' + first + ')' + ' ' + second + '-' + third
+        else:
+            return 'N/A'
+
+    def __str__(self):
+        return self.staff_f_name + " " + self.staff_l_name
+
+    def get_admin_url(self):
+        content_type = ContentType.objects.get_for_model(self.__class__)
+        return reverse("admin:%s_%s_change" % (content_type.app_label, content_type.model), args=(self.pk,))
+
+    class Meta:
+        ordering = ['staff_l_name']
+
+class TimeStamp(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+class Locker_Log(TimeStamp):
+    locker_log_id = models.AutoField(primary_key=True)
+    staff_id = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    cust_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    location_id = models.ForeignKey(Location, on_delete=models.CASCADE)
+    action = models.CharField('Action', max_length=500, blank=True)
+    action_done = models.CharField('Action Done', max_length=500, blank=True)
+    next_step = models.CharField('Action', max_length=500, blank=True)
+    resolved = models.BooleanField('Resolved', default=False)
+
+    class Meta:
+        verbose_name = "Locker Log"
+        verbose_name_plural = "Locker Logs"
+
 
 

@@ -3,7 +3,7 @@ from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, BadHeaderError, HttpResponse
 from django.contrib import messages
-from .models import Customer, Inquiry, Location, Cust_Locker, Maintenance, Locker, Waitlist
+from .models import Customer, Inquiry, Location, Cust_Locker, Maintenance, Locker, Waitlist, Locker_Log
 from .forms import CustomerForm, SendEmailForm, SendEmailFormAfter2Weeks
 from datetime import datetime, date, timedelta
 from django.conf import settings
@@ -27,7 +27,7 @@ def index(request):
         all_station = all_station.filter(location_name__icontains=location_contains_query)
         all_cust_locker = all_cust_locker.filter(locker_id__location_id__location_name__contains=location_contains_query)
         all_inquiry = all_inquiry.filter(locations__location_name__contains=location_contains_query)
-        all_maintenance = all_maintenance.filter(locations__location_name__contains=location_contains_query)
+        all_maintenance = all_maintenance.filter(lockers__location_id__location_name__contains=location_contains_query)
  
 
     # Filtering customer data by customer name
@@ -106,13 +106,11 @@ def send_email(request):
     x = [obj.cust_id.cust_email for obj in Cust_Locker.objects.all() if obj.is_under_2_weeks_past_due]
     y = [obj.cust_id.cust_email for obj in Cust_Locker.objects.all() if obj.is_2_weeks_past_due]
     all_stations = Location.objects.all()
-    total_locker_count = Cust_Locker.objects.count()
     all_cust_locker = Cust_Locker.objects.all()
     if request.method == 'GET':
         form = SendEmailForm()
         form2 = SendEmailFormAfter2Weeks()
     if request.method == 'POST' and 'form1' in request.POST:
-        print("test")
         form = SendEmailForm(request.POST)
         if form.is_valid():
             subject = form.cleaned_data['subject']
@@ -124,7 +122,6 @@ def send_email(request):
                 return HttpResponse('Invalid header found.')
             return redirect('thanks')
     if request.method == 'POST' and 'form2' in request.POST:
-        print("test")
         form2 = SendEmailFormAfter2Weeks(request.POST)
         if form2.is_valid():
             subject = form2.cleaned_data['subject']
@@ -144,7 +141,6 @@ def send_email(request):
         if date.today() > locker_renewals.renew_date:
             contains_locker_renewals = True
 
-
     contains_lr_under_2_weeks = False
     for locker_renewals in all_cust_locker:
         if date.today() > locker_renewals.renew_date and date.today() - timedelta(14) < locker_renewals.renew_date:
@@ -155,4 +151,26 @@ def send_email(request):
         if date.today() - timedelta(14) > locker_renewals.renew_date:
             contains_lr_over_2_weeks = True
 
-    return render(request, 'send_email.html', {'all_stations': all_stations, 'form': form, 'form2': form2, 'emails': x, '2_weeks': y, 'all_cust_lockers': all_cust_locker, 'locker_renewals': contains_locker_renewals, 'lr_over_2': contains_lr_over_2_weeks, 'lr_under_2': contains_lr_under_2_weeks, "total_locker_count": total_locker_count})
+    # Total number of Lockers by Location Capacity
+    total_lockers = 0
+    for location in all_stations:
+        total_lockers += location.location_capacity
+
+    return render(request, 'send_email.html',
+                  {'all_stations': all_stations,
+                   'form': form,
+                   'form2': form2,
+                   'emails': x,
+                   '2_weeks': y,
+                   'all_cust_lockers': all_cust_locker,
+                   'locker_renewals': contains_locker_renewals,
+                   'lr_over_2': contains_lr_over_2_weeks,
+                   'lr_under_2': contains_lr_under_2_weeks,
+                   'total_lockers': total_lockers})
+
+def log(request):
+
+    all_logs = Locker_Log.objects.all()
+
+    return render(request, 'log.html',
+                  {'all_logs': all_logs})

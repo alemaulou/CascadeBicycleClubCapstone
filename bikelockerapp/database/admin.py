@@ -27,5 +27,10 @@ admin.site.register(Cust_Status)
 admin.site.register(Maintenance_Status)
 admin.site.register(Maintenance, MaintenanceAdmin)
 admin.site.register(Cust_Locker)
+admin.site.register(Renewal)
+admin.site.register(Renewal_Response)
 admin.site.register(Inquiry)
+admin.site.register(Locker_Log)
+admin.site.register(Staff)
+
 
