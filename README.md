@@ -7,7 +7,7 @@ Create the building blocks for Cascade Bicycle  Club's larger business goal for 
 
 ## Problem Space & Solution
 <p align="left">
-    <img src="imgs/cbc_3.png" width="3rem">
+    <img src="imgs/cbc_3.png" width="5rem">
 </p>
 <p align="left">
     <img src="imgs/cbc_1.png" width="600px">
