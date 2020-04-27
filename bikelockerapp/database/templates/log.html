@@ -1,0 +1,78 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+{% extends "admin/base_site.html" %}
+<tr class="container">
+    {% load i18n admin_urls static %}
+    { block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} delete-confirmation
+    %{% block breadcrumbs %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
+
+  <button class="navbar-toggler" type="buton" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav" style="margin-left: 3%">
+
+      <a class="nav-item nav-link active" href="/admin/database">Home <span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link" href="send_email">Send Renewals</a>
+
+      <a class="nav-item nav-link" href="#">Maintenance</a>
+        <a class="nav-item nav-link" href="#">Bike Locker Log</a>
+      <a class="nav-item nav-link" href="customer_upload">Import Data</a>
+        <a class="nav-item nav-link" href="{% url 'admin:password_change' %}">Change Password</a>
+        <a class="nav-item nav-link" href="{% url 'admin:logout' %}?next=/admin">Logout</a>
+    </div>
+  </div>
+</nav>
+    {% endblock %}
+    {% block content %}
+    {% if user.is_authenticated %}
+    <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
+        <table class="table table-bordered table-fixed">
+            <thead>
+            <tr>
+                <h1>Bike Locker Log
+                    <a href="../locker_log/add/">
+                        <i class="fa fa-plus" aria-hidden="true" style=" vertical-align: middle; font-size: 1rem;">
+                        </i>
+                    </a>
+                </h1>
+                <th scope="col" style="width: 9.09%">Date</th>
+                <th scope="col" style="width: 9.09%">Staff</th>
+                <th scope="col" style="width: 9.09%">Client</th>
+                <th scope="col" style="width: 9.09%">Location</th>
+                <th scope="col" style="width: 9.09%">Action</th>
+                <th scope="col" style="width: 9.09%">Action Done</th>
+                <th scope="col" style="width: 9.09%">Next Step</th>
+                <th scope="col" style="width: 9.09%">Resolved</th>
+                <th scope="col" style="width: 9.09%">Action</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                {% for log in all_logs %}
+                <td> {{ log.created_at }}</td>
+                <td>{{ log.staff_id }}</td>
+                <td>{{ log.cust_id }}</td>
+                <td>{{ log.location_id }}</td>
+                <td>{{ log.action }}</td>
+                <td>{{ log.action_done }}</td>
+                <td>{{ log.next_step }}</td>
+                <td>{{ log.resolved|yesno:"Yes,No" }}</td>
+                <td><a href="../locker_log/{{ log.pk }}"><i class="fa fa-edit"></i></a>
+                    <a href="../locker_log/{{ log.pk }}/delete"><i class="fa fa-trash"></i></a>
+                </td>
+                {% endfor %}
+
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+{% endif %}
+{% endblock %}
