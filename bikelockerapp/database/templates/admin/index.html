@@ -252,19 +252,23 @@
                                 <th scope="col">Start Date</th>
                                 <th scope="col">End Date</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Action</th>
                             </tr>
                             </thead>
                             <tbody>
                             {% for item in all_maintenance %}
                             {% if item %}
                             <tr>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.location_id.location_name }}</a></td>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.main_type_id.main_type_name }}</a></td>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.maintenance_scope }}</a></td>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.maintenance_description }}</a></td>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.start_date}}</a></td>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.end_date }}</a></td>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.main_status_id.main_status_name }}</a></td>
+                                <td>{{ item.location_id.location_name }}</td>
+                                <td>{{ item.main_type_id.main_type_name }}</td>
+                                <td>{{ item.maintenance_scope }}</td>
+                                <td>{{ item.maintenance_description }}</td>
+                                <td>{{ item.start_date}}</td>
+                                <td>{{ item.end_date }} </td>
+                                <td>{{ item.main_status_id.main_status_name }}</td>
+                                <td><a href="{{ item.get_admin_url }}"><i class="fa fa-edit"></i></a>
+                                    <a href="location/{{ item.pk }}/delete"><i class="fa fa-trash"></i></a>
+                                </td>
                                 
                             {% else %}
                                 <td><a href="{{ item.get_admin_url }}">N/A</a></td>
