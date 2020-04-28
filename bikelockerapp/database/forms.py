@@ -1,5 +1,5 @@
 from django import forms
-from database.models import Customer, Location
+from database.models import Customer, Location, Status
 from datetime import date, datetime
 
 class SendEmailForm(forms.Form):
@@ -18,3 +18,10 @@ class CustomerForm(forms.ModelForm):
     class Meta:
         model = Customer
         fields = ['cust_f_name', 'cust_l_name', 'cust_email', 'cust_address', 'cust_city', 'cust_state', 'cust_zip', 'locations']
+
+class RenewalStatusForm(forms.ModelForm):
+    class Meta:
+        model = Status
+        fields = ['status_name']
+        widgets = {'locker_status_name': forms.RadioSelect}
+

@@ -3,7 +3,7 @@ from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, BadHeaderError, HttpResponse
 from django.contrib import messages
-from .models import Customer, Inquiry, Location, Cust_Locker, Maintenance, Locker, Waitlist, Locker_Log
+from .models import Customer, Inquiry, Location, Cust_Locker, Maintenance, Locker, Waitlist, Locker_Log, Status
 from .forms import CustomerForm, SendEmailForm, SendEmailFormAfter2Weeks
 from datetime import datetime, date, timedelta
 from django.conf import settings
@@ -182,7 +182,8 @@ def send_email(request):
 def renewals(request):
     # Querying for data.
     all_stations = Location.objects.all()
-    all_cust_locker = Cust_Locker.objects.all()
+    all_cust_lockers = Cust_Locker.objects.all()
+    all_cust_locker = Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded")
 
     # Total number of Lockers by Location Capacity
     total_lockers = 0
@@ -212,10 +213,53 @@ def renewals(request):
             not_responded_count_total += 1
 
     # Calculation for number responded and total
-    total_percentage_responded = round((locker_renewal_count_total + locker_not_renewal_count_total) / (locker_renewal_count_total + locker_not_renewal_count_total + not_responded_count_total), 2)
+    total_percentage_responded = 0
+    if (locker_renewal_count_total + locker_not_renewal_count_total + not_responded_count_total) != 0:
+        total_percentage_responded = ((locker_renewal_count_total + locker_not_renewal_count_total) / (locker_renewal_count_total + locker_not_renewal_count_total + not_responded_count_total), 2)
+    else:
+        total_percentage_responded = 0
+
+    # Selecting which buttons pressed and querying Customer
+    list_of_id_for_action = request.POST.getlist('for_action')
+    list_of_id_for_action2 = request.POST.getlist('for_action2')
+    list_of_obj = Customer.objects.filter(cust_id__in=list_of_id_for_action)
+    list_of_obj_not_renewing = Customer.objects.filter(cust_id__in=list_of_id_for_action2)
+    renewing_status = Status.objects.get(pk=1)
+    not_renewing_status = Status.objects.get(pk=2)
+    not_responded_status = Status.objects.get(pk=3)
+    if 'save' in request.POST:
+        if list_of_obj:
+            list_of_obj.update(status=renewing_status)
+        if list_of_obj_not_renewing:
+            list_of_obj_not_renewing.update(status=not_renewing_status)
+        return HttpResponseRedirect("renewals")
+
+    # Mass update
+    if 'list' in request.POST:
+        active_customers = Customer.objects.all().exclude(status_id__status_name__iexact="Inactive").exclude(status__isnull=True).exclude(status_id__status_name__iexact="Not Renewing")
+        print(active_customers)
+        active_customers.update(status=not_responded_status)
+        return HttpResponseRedirect("renewals")
+
+    # Purge "Inactive" Cust_Lockers
+    if 'purge' in request.POST:
+        inactive_lockers = Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Inactive")
+        print(inactive_lockers)
+        for locker in inactive_lockers:
+            print(locker)
+            locker.delete()
+        return HttpResponseRedirect("renewals")
+
+    # Set Not Renewing Status to Inactive
+    if 'inactive' in request.POST:
+        inactive = Status.objects.get(pk=4)
+        not_renewing = Customer.objects.filter(status_id__status_name__iexact="Not Renewing")
+        not_renewing.update(status=inactive)
+        return HttpResponseRedirect("renewals")
 
     return render(request, 'renewals.html',
-                  {'all_stations': all_stations,
+                  {'all_cust_lockers': all_cust_locker,
+                   'all_stations': all_stations,
                    'locker_not_renewal_count_total': locker_not_renewal_count_total,
                    'locker_renewal_count_total': locker_renewal_count_total,
                    'not_responded_count_total': not_responded_count_total,
