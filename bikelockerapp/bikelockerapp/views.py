@@ -8,9 +8,6 @@ from .forms import CustomerForm, MaintenanceForm
 from datetime import datetime
 from django.http import HttpResponse
 
-def landing(request):
-    return render(request, 'landing.html')
-
 def customer_inquiry(request):
     submitted = False
     if request.method == 'POST':

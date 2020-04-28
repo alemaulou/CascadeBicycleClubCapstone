@@ -183,7 +183,6 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     accessToken: 'pk.eyJ1IjoieWVvbWoiLCJhIjoiY2pzMWVrY3V2MDR1ZDN5bzA5NDU3dTV3diJ9.FE52Fe9BEDs8T6O5VgMynQ'
 }).addTo(mymap);
 
-
 // Displays the markers on the map 
 function displayMarker(data) {
 var marker =  L.marker([data.latitude, data.longitude]).addTo(mymap);
@@ -194,7 +193,7 @@ marker.bindPopup(data.Place + '</br>' + data.Address);
 // Grabs the data from the submit from filter and 
 // then displays the markers 
 function filterMarkers() {
- 
+
   var e = document.getElementById('cities');
   var strUser = e.options[e.selectedIndex].value;
   console.log(strUser);
