@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 {% extends "admin/base_site.html" %}
-<tr class="container">
+<div class="container">
 
     {% load i18n admin_urls static %}
     { block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} delete-confirmation
@@ -57,7 +57,7 @@
             </tr>
             {% endfor %}
             <tr>
-                <td><strong>Total</strong></td>
+                <td><strong>Totals</strong></td>
                 <td>{{ total_lockers }}</td>
                 <td>{{ total_occupied }}</td>
                 <td>{{ locker_renewal_count_total }}</td>
@@ -68,8 +68,92 @@
             </tr>
             </tbody>
         </table>
+    </div>
+        <div class="row">
+<!--    Reset Renewals-->
+    <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-md-3" class="rounded">
+        <table class="table table-bordered table-fixed table-sm">
+            <h1>1) Reset Renewals</h1>
+            <div>At time to start updating customer information for renewals, this feature functions as a method to change
+                customer's status' from "Active" to "No Reponse."</div>
+            <div>
+                <form method="POST" action="">{% csrf_token %}
+                    <input type="submit" name="list" value="Reset Renewals"/>
+                </form>
+            </table>
+    </div>
+
+            <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-md-3" class="rounded">
+        <table class="table table-bordered table-fixed table-sm">
+                <h1>2) Set All Not Renewing to Inactive</h1>
+                Set all Customers not Renewing to Inactive
+            <div><form method="POST" action="">{% csrf_token %}
+    <input type="submit" name="inactive" value="Set Not Renewing to Inactive"/>
+</form>
+                </div>
+        </table>
+                </div>
+
+    <div class="shadow p-3 mb-5 bg-white rounded col-md-3" class="rounded">
+        <table class="table table-bordered table-fixed table-sm">
+                <h1>3) Purge Inactive Lockers</h1>
+                This will purge all inactive lockers and free them up.
+            <div><form method="POST" action="">{% csrf_token %}
+    <input type="submit" name="purge" value="Purge Inactive Lockers"/>
+</form>
+            </table>
+    </div>
+            </div>
+
+
+<!--    Reset Renewals-->
+    <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
+        <table class="table table-bordered table-fixed table-sm">
+
+        <h1 class="page-header">Customers Not Responded <a href="customer">
+            <i class="fa fa-edit"
+            aria-hidden="true"
+               style=" vertical-align: middle; font-size: 1rem;"></i></a></h1>
+
+            List of Customers who's statuses are still not confirmed.
+    <div class="col-md-12">
+        <form method="POST" action="">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <table class="table table-striped">
+                <tr>
+                    <th>Customer</th>
+                    <th>Location</th>
+                    <th>Renewing</th>
+                    <th>Not Renewing</th>
+<!--                    <th>Not Responded</th>-->
+                </tr>
+                {% if all_cust_lockers %}
+                {% for item in all_cust_lockers %}
+                <tr id="loop">
+                    <td>{{ item }}</td>
+                    <td>{{ item.locker_id.location_id.location_name }}</td>
+                    <td><input type="checkbox" value='{{item.cust_id.pk}}'
+                     name='for_action' id='for_action' ></td>
+                     <td><input type="checkbox" value='{{item.cust_id.pk}}'
+                     name='for_action2' id='for_action2' ></td>
+<!--                    <td><input type="radio" value='{{item.cust_id.pk}}'-->
+<!--                     name='for_action3' id='for_action3' ></td>-->
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td>All customers have responded</td>
+                </tr>
+                {% endif %}
+            </table>
+            <input type="submit" value="Save" name="save">
+        </form>
 
     </div>
+</div>
+</table>
+</div>
     {% endif %}
 
 {% endblock %}

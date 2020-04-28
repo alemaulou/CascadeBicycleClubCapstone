@@ -54,8 +54,6 @@ class Location(models.Model):
                 return 0
         return 0
 
-
-
 class Locker_Status(models.Model):
     locker_status_id = models.AutoField(primary_key=True)
     locker_status_name = models.CharField('Locker Status Name', max_length=100)
@@ -168,6 +166,12 @@ class Customer(models.Model):
     cust_state = models.CharField('State', max_length=50)
     cust_zip = models.CharField('Zip Code', max_length=10)
     status = models.ForeignKey(Status, on_delete=models.CASCADE, null=True)
+    # CHOICES = [('option1', 'label 1'), ('option2', 'label 2')]
+    # some_field = forms.ChoiceField(choices=CHOICES, widget=forms.RadioSelect())
+
+    def not_responded(self):
+        if self.status == Status.objects.get(pk=3):
+            return True
 
     def phone_number(self):
         if self.cust_phone:
@@ -196,6 +200,19 @@ class Customer(models.Model):
 
     class Meta:
         ordering = ['cust_l_name']
+
+def delete_inactive_cust_locker(sender, instance, created, **kwargs):
+    try:
+        cust_locker = Cust_Locker.objects.get(cust_id=instance.cust_id)
+        print(cust_locker)
+        instance_status = instance.status.status_id
+        print(instance_status)
+        if instance_status == 4:
+            cust_locker.delete()
+    except:
+        inquiry = None
+
+signals.post_save.connect(receiver=delete_inactive_cust_locker, sender=Customer)
 
 class Cust_Status(models.Model):
     cust_status_id = models.AutoField(primary_key=True)
