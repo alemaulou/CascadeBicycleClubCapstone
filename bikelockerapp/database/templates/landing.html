@@ -30,16 +30,15 @@
 
 
 <body>
-  
+<div class=”main-container”>  
   <header class="header-section clearfix">		 
     <a href="for.html" class="site-logo">
        <img src="{% static 'img/logo.png' %}" alt="">
      </a>
  </header>
 
-<main>
   <section class="hero-section2">
-    	<div class="hs-item2">
+      <div class="hs-item2">
 				<div class="container">
 					<div class="row">
 						<div class="col-lg-6">
@@ -57,7 +56,7 @@
             </div>
 						<div class="col-lg-5">
 							<div class="hr-img">
-					<img src="{% static 'img/drawing.jpg' %}">
+					      <img src="{% static 'img/drawing.jpg' %}">
               </div>
             </div>
           </div>
@@ -72,25 +71,8 @@
 				</div>
 			</div>
   </section>
-  
 
-	<section class="subscription-section spad set-bg">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-10">
-					<div class="sub-text">
-						<h2>Renewals & Maintenance Request</h2>
-						<p>WE NEED TO WRITE WHAT THIS IS GOING TO BE </p>
-            <a href="#" class="site-btn">Renew Now!</a>
-            <a href="maintenance_report/" class="Mainsite-btn">Maintenance Request</a>
-					</div>
-				</div>
-				
-			</div>
-		</div>
-	</section>
-
-  <section >
+  <section id="steps-section">
 		<div class="container">
 			<div >
 				<div class="col-lg-6">
@@ -113,7 +95,7 @@
           <div class="col-lg-3">
             <div class="concept-item">
               <img src= "{% static 'img/pencil.png' %}" alt="">
-              <h4>Fill out request form </h4>
+              <h4>Fill out inquiry form </h4>
               <p>Cascade Locker Bicycle will reach out with furthur steps to approve you for your locker! If there are no available spots, 
                 you will be placed on the waitlist and notified when a spot is open. 
               </p>
@@ -123,7 +105,7 @@
           <div class="col-lg-3">
             <div class="concept-item">
               <img src="{% static 'img/docs.png' %}" alt="">
-              <h4>Sign Agreement & Pay Deposit </h4>
+              <h4>Sign agreement & pay deposit </h4>
               <p>Cascade Bicycle Club will send a locker 
                 agreement that will need to be signed and ask for a 
                 deposit that will be returned after you are done using.</p>
@@ -140,11 +122,11 @@
             </div>
           </div>
         </div>
-</div>
-</div>
-</section>
+      </div>
+    </div>
+  </section>
 
-<section>
+  <section>
 
     <div class='filterBtn'>
        <select id="cities" role="option" aria-selected="true" id="exampleFormControlSelect1">
@@ -166,57 +148,75 @@
               <option value='Woodinville'>Woodinville</option>
        </select>
        <input  class = 'filter-btn' type='submit' value='Submit' onclick='filterMarkers()'>
-       
-       
-
-     </div>
-        </section>
-
-
-
-
-<section id="mapFormSection">
-
-  <div id="mapid"></div> 
-
-
-  
-  
-  <div id="custform" style="padding: 20px; align-content: center;">
-    {% block content %}
-    <h1>Bike Locker Customer Inquiry Form</h1>
-
-    {% if submitted %}
-      <p class="success">
-         Your information was submitted successfully. 
-      </p>
-      <p class="success">
-        We will reach out through email regarding next steps. Thank you
-      </p>
- 
- {% else %}
-     <form action="" method="post" novalidate>
-     <table>
-         {{ form.as_table }}
-         <tr>
-             <td>&nbsp;</td>
-              
-         </tr>
-     </table>
-     {% csrf_token %}
-     <button type="submit" class="btn btn-primary">Submit</button>
-     </form>
- {% endif %}
- {% endblock content %}
-  </div>
-
-</section>
-  
-
       
+     </div>
+  </section>
 
-     
-  </body>
+
+
+
+  <section id="mapFormSection">
+
+    <div id="mapid"></div> 
+    
+    <div id="custform" style="padding: 20px; align-content: center;">
+      {% block content %}
+      <h1>Bike Locker Customer Inquiry Form</h1>
+
+      {% if submitted %}
+        <p class="success">
+          Your information was submitted successfully. 
+        </p>
+        <p class="success">
+          We will reach out through email regarding next steps. Thank you
+        </p>
   
+  {% else %}
+      <form action="" method="post" novalidate>
+      <table>
+          {{ form.as_table }}
+          <tr>
+              <td>&nbsp;</td>
+                
+          </tr>
+      </table>
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+  {% endif %}
+  {% endblock content %}
+    </div>
+  </section>
+  <section class="subscription-section spad set-bg">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-10">
+          <div class="sub-text">
+            <h2>Renewals & Maintenance Request</h2>
+            <p>WE NEED TO WRITE WHAT THIS IS GOING TO BE </p>
+            <a href="#" class="site-btn">Renew Now!</a>
+            <a href="maintenance_report/" class="Mainsite-btn">Maintenance Request</a>
+          </div>
+        </div>
+        
+      </div>
+    </div>   
+  </section>
+</div>
+<div class="clearfooter"></div>
+<footer id="footer">
+  <h2>Contact Us!</h2>
+  <ul>
+  <li>For King Country Metro Locker Locations please reach out to us at:</li>
+  <li>email: bikelocker@cascade.org</li>
+  <li>phone: (206) 522-3222</li>
+  <li>address: Cascade Bicycling Center 
+  7787 62nd Ave NE
+  Seattle, WA 98115</li>
+  </ul>
+</footer>
+</body>
+
+ 
   <script src = "{% static 'marker.js' %}"></script>
 </html>

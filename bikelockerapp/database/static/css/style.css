@@ -23,8 +23,27 @@
 	padding: 23px 20px;
 }
 
+* {
+	box-sizing: border-box;
+   }
 
+   *:before,
+   *:after {
+	box-sizing: border-box;
+   }
 
+   html,
+   body {
+	height: 100%;
+   }
+
+   .main-container {
+	min-height: 100%;
+	margin-bottom: -330px;
+	position: relative;
+   }
+
+   
 
 /* header section */ 
 
@@ -426,7 +445,7 @@ Subscription section
  .subscription-section {
 	background: lightgray;
 	padding: 40px;
-	margin-top: 20px;
+	margin-top: 1100px;
 	width: 100%;
 }
 
@@ -488,3 +507,24 @@ Subscription section
 	
 }
 
+#footer {
+	height: 200px;
+	position: relative;
+	background-color: #37B04A;
+	color: white;
+	list-style: none;
+	padding: 10px;
+	margin-top: -200px;
+}
+
+.clearfooter {
+height: 200px;
+clear: both;
+}
+
+section#steps-section {
+	background-color: lightgray;
+	width: 100%;
+	padding-bottom: 20px;
+	margin-bottom: 60px;
+}
