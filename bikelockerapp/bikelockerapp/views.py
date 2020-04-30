@@ -21,7 +21,7 @@ def customer_inquiry(request):
                 cust_id = Customer.objects.get(cust_id = obj.pk),
                 inquiry_date = datetime.now())
             inquiry.locations.add(*locs)
-            return HttpResponseRedirect('/landing/?submitted=True')
+            return HttpResponseRedirect('/?submitted=True')
     else:
         form = CustomerForm()
         if 'submitted' in request.GET:
