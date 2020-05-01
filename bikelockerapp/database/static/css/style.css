@@ -51,6 +51,7 @@
 	padding-left: 55px;
 	padding-right: 72px;
 	background: white;
+	margin-bottom: -100px;
 }
 
 .site-logo {
@@ -184,7 +185,7 @@
 .hs-item2 {
 	height: 724px;
 	padding-bottom: 90px;
-	padding-top: 240px;
+	padding-top: 300px;
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;
@@ -207,13 +208,6 @@
 	margin-bottom: 50px;
 	
 }
-
-
-.hr-img {
-	position: absolute;
-	left: 150px;
-}
-
 
 
 
@@ -244,10 +238,11 @@ Intro section
 	color: green;
 }
 
+
 .contact-us{
 	position: relative;
 	left:-18px;
-	bottom: 40px;
+	bottom: 20px;
 
 }
 
@@ -301,31 +296,18 @@ Concept section
 }
 
 
-
-.map-container{
-    overflow:hidden;
-    padding-bottom:56.25%;
-    position:relative;
-    height:0;
-    }
-    .map-container iframe{
-    left:100px;
-    top:40px;
-    height:100%;
-    width:100%;
-	position:absolute;
-	overflow: hidden;
-    }
-
-    #mapid { height: 400px;
-			width: 50%; 
-			position: absolute;
-		left: 10px;}
+#mapid { 
+	height: 500px;
+	width:100%; 
+	position: absolute;
+	left: -60px;
+	float: left;
+}
 
 div#custform {
-	float: right;
 	margin-top: -30px;
 	list-style-type: none;
+	margin-left: 20px;
 }
 
 div#custform button {
@@ -346,7 +328,7 @@ div#custform button {
 
 .filterBtn {
 		position: relative;
-		left: 70px;
+		left: 110px;
 		bottom: 20px;
 }
 
@@ -357,6 +339,7 @@ div#custform button {
 	font-weight: 500;
 	min-width: 90px;
 	padding: 8px 5px;
+	margin-top: 50px;
 	border-radius: 50px;
 	text-transform: uppercase;
 	background: #37B04A;
@@ -366,6 +349,17 @@ div#custform button {
 	text-align: center;
 
 }
+
+#mapFormSection {
+	color:  #1c294a;
+}
+
+#mapFormSection input {
+	border-radius: 7px;
+	border-width: 1.5px;
+}
+
+
 /* Dropdown Button */
 .dropbtn {
   background-color: #3498DB;
@@ -445,8 +439,8 @@ Subscription section
  .subscription-section {
 	background: lightgray;
 	padding: 40px;
-	margin-top: 1100px;
 	width: 100%;
+	margin-top: 20px;
 }
 
 .sub-text {
@@ -473,18 +467,21 @@ Subscription section
 	margin-bottom: 40px;
 }
 
-.sub-list {
-	list-style: none;
+a.lease-now {
 	background: #37B04A;
-	padding: 40px 15px 20px 57px;
-	border-radius: 30px;
-	
-}
-
-.sub-list li {
 	color: white;
-	font-size: 16px;
-	margin-bottom: 8px;
+	display: inline-block;
+	border: none;
+	font-size: 14px;
+	font-weight: 500;
+	min-width: 195px;
+	padding: 23px 20px;
+	border-radius: 50px;
+	text-transform: uppercase;
+	line-height: normal;
+	cursor: pointer;
+	text-align: center;
+	margin-top: -200px;
 }
 
 
@@ -526,5 +523,14 @@ section#steps-section {
 	background-color: lightgray;
 	width: 100%;
 	padding-bottom: 20px;
-	margin-bottom: 60px;
+	margin-top: 30px;
+}
+
+#main-photo {
+	top: -3px;
+}
+
+
+.hr-img {
+	position: absolute;
 }
