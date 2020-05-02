@@ -110,12 +110,24 @@
     <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
         <table class="table table-bordered table-fixed table-sm">
 
+
         <h1 class="page-header">Customers Not Responded <a href="customer">
             <i class="fa fa-edit"
             aria-hidden="true"
                style=" vertical-align: middle; font-size: 1rem;"></i></a></h1>
-
             List of Customers who's statuses are still not confirmed.
+            <p><form method="GET" action="">
+    <select name="featured">
+
+
+        <option value="{{ item.location_name }}" />All</option>
+                        {% for item in all_stations %}
+        <option value="{{ item.location_name }}" />{{ item.location_name }}</option>
+                                    {% endfor %}
+    </select>
+
+    <input type="submit" value="Filter" />
+        </form></p>
     <div class="col-md-12">
         <form method="POST" action="">
             {% csrf_token %}

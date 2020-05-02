@@ -7,6 +7,7 @@ from .models import Customer, Inquiry, Location, Cust_Locker, Maintenance, Locke
 from .forms import CustomerForm, SendEmailForm, SendEmailFormAfter2Weeks
 from datetime import datetime, date, timedelta
 from django.conf import settings
+from django.core.paginator import Paginator
 
 
 # Admin Index View
@@ -182,9 +183,9 @@ def send_email(request):
 def renewals(request):
     # Querying for data.
     all_stations = Location.objects.all()
-    all_cust_lockers = Cust_Locker.objects.all()
     all_cust_locker = Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded")
-
+    paginator = Paginator(all_cust_locker, 1)
+    page = request.GET.get('page')
     # Total number of Lockers by Location Capacity
     total_lockers = 0
     for location in all_stations:
@@ -237,7 +238,6 @@ def renewals(request):
     # Mass update
     if 'list' in request.POST:
         active_customers = Customer.objects.all().exclude(status_id__status_name__iexact="Inactive").exclude(status__isnull=True).exclude(status_id__status_name__iexact="Not Renewing")
-        print(active_customers)
         active_customers.update(status=not_responded_status)
         return HttpResponseRedirect("renewals")
 
@@ -256,6 +256,16 @@ def renewals(request):
         not_renewing = Customer.objects.filter(status_id__status_name__iexact="Not Renewing")
         not_renewing.update(status=inactive)
         return HttpResponseRedirect("renewals")
+
+    if request.GET.get('featured'):
+        location = request.GET['featured']
+        print(location)
+        all_cust_locker = all_cust_locker.filter(locker_id__location_id__location_name__contains=location).filter(cust_id__status_id__status_name__iexact="Not Responded")
+    else:
+        all_cust_locker = Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded")
+
+    # context_dict = {'listings': listings}
+    # return render(request, template_name, context_dict)
 
     return render(request, 'renewals.html',
                   {'all_cust_lockers': all_cust_locker,
