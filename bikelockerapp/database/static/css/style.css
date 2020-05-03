@@ -299,9 +299,7 @@ Concept section
 #mapid { 
 	height: 500px;
 	width:100%; 
-	position: absolute;
-	left: -60px;
-	float: left;
+	position: relative;
 }
 
 div#custform {
@@ -328,7 +326,7 @@ div#custform button {
 
 .filterBtn {
 		position: relative;
-		left: 110px;
+		left: 185px;
 		bottom: 20px;
 }
 
@@ -533,4 +531,46 @@ section#steps-section {
 
 .hr-img {
 	position: absolute;
+}
+
+ul{
+	list-style-type: none;
+	padding-left: 0;
+}
+
+#footer {
+	padding: 30px;
+}
+
+div#sound-transit {
+	background-color:#37B04A;
+	color: #fff;
+	border-radius: 5px;
+	padding: 10px;
+	margin-top: 100px;
+	margin-bottom: 20px;
+}
+
+
+div#sound-transit a {
+	font-weight: bold;
+	color: #1c294a;
+	text-transform: uppercase;
+}
+
+div#link-to-locker-list p {
+	font-size: large;
+	color: #1c294a;
+}
+
+@media (max-width:1000px){
+    .hr-img {
+        display:none;
+    }
+}
+
+div#locker-list-body {
+	background-color: white;
+	color: grey;
+	padding: 5px;
 }
