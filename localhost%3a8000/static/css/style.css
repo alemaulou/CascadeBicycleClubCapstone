@@ -1,0 +1,526 @@
+.site-btn {
+	display: inline-block;
+	border: none;
+	font-size: 14px;
+	font-weight: 500;
+	min-width: 195px;
+	padding: 23px 20px;
+	border-radius: 50px;
+	text-transform: uppercase;
+	background: #37B04A;
+	color: #fff;
+	line-height: normal;
+	cursor: pointer;
+	text-align: center;
+}
+
+.site-btn:hover {
+	color: #fff;
+}
+
+.site-btn.sb-c2 {
+	background:#0a183d;
+	padding: 23px 20px;
+}
+
+* {
+	box-sizing: border-box;
+   }
+
+   *:before,
+   *:after {
+	box-sizing: border-box;
+   }
+
+   html,
+   body {
+	height: 100%;
+   }
+
+   .main-container {
+	min-height: 100%;
+	margin-bottom: -330px;
+	position: relative;
+   }
+
+   
+
+/* header section */ 
+
+.header-section {
+	padding-left: 55px;
+	padding-right: 72px;
+	background: white;
+}
+
+.site-logo {
+	display: inline-block;
+	padding: 0;
+	padding: 44px 15px;
+}
+
+.header-right {
+	float: right;
+	padding: 44px 0;
+	margin-left: 130px;
+}
+
+.header-right .hr-btn {
+	display: inline-block;
+	color: #979aa5;
+}
+
+.header-right .user-panel {
+	display: inline-block;
+}
+
+.header-right .user-panel a {
+	font-size: 16px;
+	color: #ffffff;
+	margin: 0 10px;
+}
+
+.header-right .user-panel .register {
+	color: #fc0254;
+	margin-right: 0;
+}
+
+.header-right span {
+	color: #fff;
+	display: inline-block;
+	padding-left: 9px;
+}
+
+.main-menu {
+	list-style: none;
+	float: right;
+}
+
+.main-menu li {
+	display: inline-block;
+	position: relative;
+}
+
+.main-menu li a {
+	display: block;
+	font-size: 16px;
+	color: #ffffff;
+	padding: 44px 10px;
+	margin-left: 60px;
+}
+
+.main-menu li a:hover {
+	color: #fc0254;
+}
+
+.main-menu li:first-child a {
+	margin-left: 0;
+}
+
+.main-menu li:hover .sub-menu {
+	visibility: visible;
+	opacity: 1;
+	margin-top: 0;
+}
+
+.main-menu .sub-menu {
+	position: absolute;
+	list-style: none;
+	width: 220px;
+	left: 60px;
+	top: 100%;
+	padding: 20px 0;
+	visibility: hidden;
+	opacity: 0;
+	margin-top: 50px;
+	background: #fff;
+	z-index: 99;
+	-webkit-transition: all 0.4s;
+	transition: all 0.4s;
+	-webkit-box-shadow: 2px 7px 20px rgba(0, 0, 0, 0.05);
+	box-shadow: 2px 7px 20px rgba(0, 0, 0, 0.05);
+}
+
+.main-menu .sub-menu li {
+	display: block;
+}
+
+.main-menu .sub-menu li a {
+	display: block;
+	color: #000;
+	margin-left: 0;
+	padding: 5px 20px;
+}
+
+.main-menu .sub-menu li a:hover {
+	color: #fc0254;
+}
+
+.slicknav_menu {
+	display: none;
+}
+
+.icon-bar {
+    width: 90px; /* Set a specific width */
+    background-color: #555; /* Dark-grey background */
+  }
+
+  .site-logo {
+	display: inline-block;
+	padding: 0;
+	padding: 2px 5px;
+	padding-top: 50px;
+}
+
+
+
+/* hero section */
+
+.hero-section2 {
+	overflow: hidden;
+	background-color: white;
+} 
+
+.hs-item2 {
+	height: 724px;
+	padding-bottom: 90px;
+	padding-top: 240px;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	background: white;
+}
+
+.hs-text h2{
+	font-size: 70px;
+	margin-bottom: 25px;
+	line-height: 0.9;
+	 color: green; 
+}
+
+.hs-text p {
+	color: black;
+	opacity: 0.6;
+	margin-bottom: 50px;
+	
+}
+
+
+.hr-img {
+	position: absolute;
+	left: 150px;
+}
+
+
+
+
+
+/* ----------------
+Intro section
+ -------------------*/
+
+.intro-section p {
+	margin-bottom: 35px;
+	padding-top: 10px;
+}
+
+.section-title2{
+	padding-top: 40px;
+}
+
+.section-title2 h2 {
+
+	font-size:50px;
+	margin-bottom:25px;
+	line-height: 1;
+	color: #0a183d;
+
+}
+
+.steps-text h4 {
+	color: green;
+}
+
+.contact-us{
+	position: relative;
+	left:-18px;
+	bottom: 40px;
+
+}
+
+
+/* how */ 
+
+.how-section {
+	background-color: #006882;
+}
+
+.how-item .hi-icon {
+	position: relative;
+	width: 57px;
+	height: 57px;
+	border-radius: 50%;
+	background: #1c294a;
+	margin-bottom: 25px;
+}
+
+.how-item .hi-icon img {
+	position: absolute;
+	right: -8px;
+	bottom: 0;
+}
+
+.how-item h4 {
+	margin-bottom: 25px;
+}
+
+.how-item p {
+	font-weight: 400;
+	opacity: 0.6;
+}
+
+/* ----------------
+Concept section
+ -------------------*/
+
+.concept-section p {
+	padding-top: 5px;
+}
+
+.concept-item {
+	text-align: center;
+	padding-top: 35px;
+}
+
+.concept-item img {
+	border-radius: 40px;
+	margin-bottom: 15px;
+}
+
+
+
+.map-container{
+    overflow:hidden;
+    padding-bottom:56.25%;
+    position:relative;
+    height:0;
+    }
+    .map-container iframe{
+    left:100px;
+    top:40px;
+    height:100%;
+    width:100%;
+	position:absolute;
+	overflow: hidden;
+    }
+
+    #mapid { height: 400px;
+			width: 50%; 
+			position: absolute;
+		left: 10px;}
+
+div#custform {
+	float: right;
+	margin-top: -30px;
+	list-style-type: none;
+}
+
+div#custform button {
+	border: none;
+	font-size: 14px;
+	font-weight: 500;
+	min-width: 90px;
+	padding: 8px 5px;
+	border-radius: 50px;
+	text-transform: uppercase;
+	background: #37B04A;
+	color: #fff;
+	line-height: normal;
+	cursor: pointer;
+	text-align: center;
+}
+
+
+.filterBtn {
+		position: relative;
+		left: 70px;
+		bottom: 20px;
+}
+
+.filter-btn{
+	display: inline-block;
+	border: none;
+	font-size: 14px;
+	font-weight: 500;
+	min-width: 90px;
+	padding: 8px 5px;
+	border-radius: 50px;
+	text-transform: uppercase;
+	background: #37B04A;
+	color: #fff;
+	line-height: normal;
+	cursor: pointer;
+	text-align: center;
+
+}
+/* Dropdown Button */
+.dropbtn {
+  background-color: #3498DB;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+/* Dropdown button on hover & focus */
+.dropbtn:hover, .dropbtn:focus {
+  background-color: #2980B9;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {display:block;}
+
+* {
+  box-sizing: border-box;
+}
+
+.column {
+  float: left;
+  width: 25%;
+  padding: 10px;
+  height: 215px; /* Should be removed. Only for demonstration */
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+
+
+/* Responsive layout - makes the four columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+  }
+}
+
+/* --------------------
+Subscription section
+ -----------------------*/
+
+ .subscription-section {
+	background: lightgray;
+	padding: 40px;
+	margin-top: 1200px;
+	width: 100%;
+}
+
+.sub-text {
+	padding-right: 15px;
+}
+
+.sub-text h2 {
+	color: #0a183d;
+	font-size: 60px;
+	margin-bottom: 20px;
+	font-weight: 500;
+}
+
+.sub-text h3 {
+	color: #fc0254;
+	margin-bottom: 30px;
+	font-weight: 500;
+}
+
+.sub-text p {
+	color: black;
+	font-weight: 400;
+	opacity: 0.6;
+	margin-bottom: 40px;
+}
+
+.sub-list {
+	list-style: none;
+	background: #37B04A;
+	padding: 40px 15px 20px 57px;
+	border-radius: 30px;
+	
+}
+
+.sub-list li {
+	color: white;
+	font-size: 16px;
+	margin-bottom: 8px;
+}
+
+
+.Mainsite-btn {
+	
+		display: inline-block;
+		border: none;
+		font-size: 14px;
+		font-weight: 500;
+		min-width: 195px;
+		padding: 23px 20px;
+		border-radius: 50px;
+		text-transform: uppercase;
+		background: white;
+		color:  #1c294a;
+		line-height: normal;
+		cursor: pointer;
+		text-align: center;
+	
+	
+}
+
+#footer {
+	height: 200px;
+	position: relative;
+	background-color: #37B04A;
+	color: white;
+	list-style: none;
+	padding: 10px;
+}
+
+.clearfooter {
+height: 200px;
+clear: both;
+}
+
+#mapFormSection {
+	display: block;
+}
