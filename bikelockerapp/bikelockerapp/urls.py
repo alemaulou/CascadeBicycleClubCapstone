@@ -1,5 +1,6 @@
 from django.conf.urls import url, include
 from django.contrib.auth.models import User
+from django.views.generic import RedirectView
 from rest_framework import routers, serializers, viewsets
 from django.contrib import admin
 from django.urls import include, path
@@ -27,6 +28,7 @@ admin.site.index_title = 'Cascade Bicycle Club Locker Management'
 
 urlpatterns = [
     path('admin/database/', include('database.urls')),
+    path('admin/', RedirectView.as_view(url='database')),
     path('admin/', admin.site.urls),
     path('maintenance_report/', views.maintenance_report, name='maintenance-report'),
     path('', views.customer_inquiry, name='landing'),

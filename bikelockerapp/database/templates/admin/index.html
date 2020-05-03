@@ -5,6 +5,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% extends "admin/base_site.html" %}
 {% block breadcrumbs %}
+<head>
+<title>Test</title>
+    </head>
 <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
 
   <button class="navbar-toggler" type="buton" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,9 +70,11 @@
                                 </div>
 
                                 <!-- List locations -->
+                        <tr><td>All</td></tr>
                                 {% for item in all_stations %}
                                 <div>
                         <tr class="">
+
                             <td><a href="{{ item.get_admin_url }}">{{ item.location_name }}</a></td>
                             {% endfor %}
                         </tr>

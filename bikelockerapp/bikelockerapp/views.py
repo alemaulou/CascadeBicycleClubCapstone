@@ -41,5 +41,5 @@ def maintenance_report(request):
             submitted = True
     return render(request, 'maintenance_report.html', {'form': form, 'submitted': submitted})
 
-def redirect(request):
-    return HttpResponseRedirect('/admin/database/')
+def test_redirect(request):
+    return HttpResponseRedirect("admin/database")
