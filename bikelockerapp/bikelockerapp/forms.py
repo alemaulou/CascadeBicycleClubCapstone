@@ -2,10 +2,10 @@ from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column
 from database.models import Customer, Location, Maintenance
-
+from django_select2 import forms as s2forms
 
 class CustomerForm(forms.ModelForm):
-    locations = forms.ModelMultipleChoiceField(queryset=Location.objects.all(), widget=forms.CheckboxSelectMultiple)
+    locations = forms.ModelMultipleChoiceField(queryset=Location.objects.all(), widget=s2forms.Select2MultipleWidget)
     class Meta:
         model = Customer
         fields = ['cust_f_name', 'cust_l_name', 'cust_email', 'cust_phone', 'cust_phone2', 'cust_address', 'cust_city', 'cust_state', 'cust_zip', 'locations']

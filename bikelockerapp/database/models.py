@@ -230,6 +230,7 @@ class Cust_Locker(models.Model):
     locker_id = models.ForeignKey(Locker, on_delete=models.CASCADE)
     contract_date = models.DateField()
     renew_date = models.DateField()
+    description = models.CharField(max_length=100, default="")
 
     @property
     def total_lockers(self):

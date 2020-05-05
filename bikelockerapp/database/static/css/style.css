@@ -50,7 +50,7 @@
 .header-section {
 	padding-left: 55px;
 	padding-right: 72px;
-	background: white;
+	background-color: white;
 	margin-bottom: -100px;
 }
 
@@ -173,13 +173,14 @@
 	padding-top: 50px;
 }
 
-
+header {
+	background-color:lightseagreen;
+}
 
 /* hero section */
 
 .hero-section2 {
 	overflow: hidden;
-	background-color: white;
 } 
 
 .hs-item2 {
@@ -192,21 +193,23 @@
 	-webkit-box-align: center;
 	-ms-flex-align: center;
 	align-items: center;
-	background: white;
+	background-color: white;
 }
 
 .hs-text h2{
 	font-size: 70px;
 	margin-bottom: 25px;
 	line-height: 0.9;
-	 color: green; 
+	 color: white; 
+}
+
+.hs-text h4, .hs-text p {
+	color: white;
+	opacity: 0.8;
 }
 
 .hs-text p {
-	color: black;
-	opacity: 0.6;
 	margin-bottom: 50px;
-	
 }
 
 
@@ -235,7 +238,7 @@ Intro section
 }
 
 .steps-text h4 {
-	color: green;
+	color: forestgreen;
 }
 
 
@@ -243,7 +246,6 @@ Intro section
 	position: relative;
 	left:-18px;
 	bottom: 20px;
-
 }
 
 
@@ -305,7 +307,8 @@ Concept section
 div#custform {
 	margin-top: -30px;
 	list-style-type: none;
-	margin-left: 20px;
+	border: 1px solid gray;
+	border-radius: 5px;
 }
 
 div#custform button {
@@ -316,7 +319,7 @@ div#custform button {
 	padding: 8px 5px;
 	border-radius: 50px;
 	text-transform: uppercase;
-	background: #37B04A;
+	background:  #37B04A;
 	color: #fff;
 	line-height: normal;
 	cursor: pointer;
@@ -480,6 +483,7 @@ a.lease-now {
 	cursor: pointer;
 	text-align: center;
 	margin-top: -200px;
+	margin-left:15px;
 }
 
 
@@ -503,17 +507,17 @@ a.lease-now {
 }
 
 #footer {
-	height: 200px;
+	height: 230px;
 	position: relative;
-	background-color: #37B04A;
-	color: white;
+	background-color: #006882;
+	color: blAck;
 	list-style: none;
 	padding: 10px;
-	margin-top: -200px;
+	margin-top: -230px;
 }
 
 .clearfooter {
-height: 200px;
+height: 230px;
 clear: both;
 }
 
@@ -544,7 +548,7 @@ ul{
 
 div#sound-transit {
 	background-color:#37B04A;
-	color: #fff;
+	color: #1c294a;
 	border-radius: 5px;
 	padding: 10px;
 	margin-top: 100px;
@@ -558,7 +562,7 @@ div#sound-transit a {
 	text-transform: uppercase;
 }
 
-div#link-to-locker-list p {
+div#sound-transit p {
 	font-size: large;
 	color: #1c294a;
 }
@@ -573,4 +577,14 @@ div#locker-list-body {
 	background-color: white;
 	color: grey;
 	padding: 5px;
+}
+
+input, option {
+	margin: 10px;
+}
+
+div#landing-text {
+	background-color: #006882;
+	padding: 30px;
+	border-radius: 10px;
 }

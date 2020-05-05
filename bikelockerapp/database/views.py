@@ -3,7 +3,7 @@ from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, BadHeaderError, HttpResponse
 from django.contrib import messages
-from .models import Customer, Inquiry, Location, Cust_Locker, Maintenance, Locker, Waitlist, Locker_Log, Key, Status
+from .models import Customer, Inquiry, Location, Cust_Locker, Maintenance, Locker, Waitlist, Locker_Log, Status
 from .forms import CustomerForm, SendEmailForm, SendEmailFormAfter2Weeks
 from datetime import datetime, date, timedelta
 from django.conf import settings
@@ -19,7 +19,6 @@ def index(request):
     all_customer = Customer.objects.all()
     all_cust_locker = Cust_Locker.objects.all()
     all_maintenance = Maintenance.objects.all()
-    all_key = Key.objects.all()
 
     # Checking to see if user input in search field "contains" query
     location_contains_query = request.GET.get('location')
@@ -31,7 +30,6 @@ def index(request):
         all_cust_locker = all_cust_locker.filter(locker_id__location_id__location_name__contains=location_contains_query)
         all_inquiry = all_inquiry.filter(locations__location_name__contains=location_contains_query)
         all_maintenance = all_maintenance.filter(lockers__location_id__location_name__contains=location_contains_query)
-        all_key = all_key.filter(locker_id__location_id__location_name__contains=location_contains_query)
 
     # Filtering customer data by customer name
     if customer_contains_query != '' and customer_contains_query is not None:
@@ -44,7 +42,7 @@ def index(request):
             contains_locker_renewals = True
 
     # Returning values to to render onto template
-    render_dicts = {'all_stations': all_station, 'all_customer': all_customer, 'all_inquiries': all_inquiry, 'all_cust_lockers': all_cust_locker, 'locker_renewals': contains_locker_renewals, 'all_maintenance' : all_maintenance, 'all_key' : all_key}
+    render_dicts = {'all_stations': all_station, 'all_customer': all_customer, 'all_inquiries': all_inquiry, 'all_cust_lockers': all_cust_locker, 'locker_renewals': contains_locker_renewals, 'all_maintenance' : all_maintenance}
     return render(request, 'admin/index.html', render_dicts)
 
 def BootstrapFilterView(request):

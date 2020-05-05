@@ -291,37 +291,6 @@
                             {% endfor %}
                             </tbody>
                         </table>
-
-                        <table class="table table-bordered table-fixed">
-                            <thead>
-                            <tr><h1>Keys <a href="key/add/"> <i class="fa fa-plus" aria-hidden="true"></i></a></h1>
-                                <th scope="col">Locker</th>
-                                <th scope="col">Key</th>
-                                <th scope="col">Key Status</th>
-                                <th scope="col">Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for item in all_key %}
-                            {% if item %}
-                            <tr>
-                                <td>{{ item.locker_id }}</td>
-                                <td>{{ item.key_name }}</td>
-                                <td>{{ item.key_status_id.key_status_name }}</td>
-                                <td><a href="{{ item.get_admin_url }}"><i class="fa fa-edit"></i></a>
-                                    <a href="key/{{ item.pk }}/delete"><i class="fa fa-trash"></i></a>
-                                </td>
-                                
-                            {% else %}
-                                <td><a href="{{ item.get_admin_url }}">N/A</a></td>
-                                <td><a href="{{ item.get_admin_url }}">N/A</a></td>
-                                <td><a href="{{ item.get_admin_url }}">N/A</a></td>
-                                <td><a href="{{ item.get_admin_url }}">N/A</a></td>
-                                <td><a href="{{ item.get_admin_url }}">N/A</a></td>
-                            {% endif %}
-                            {% endfor %}
-                            </tbody>
-                        </table>
                 </div>
 
         </div>

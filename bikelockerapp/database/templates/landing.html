@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    {{ form.media.css }}
     <meta charset="utf-8" />
   
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
@@ -16,6 +17,8 @@
 	<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}"/>
 	<link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}"/>
     <link rel="stylesheet" href="{% static 'css/slicknav.min.css' %}"/>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <meta
       name="viewport"
@@ -32,7 +35,7 @@
 <body>
 <div class=”main-container”>  
   <header class="header-section clearfix">		 
-    <a href="for.html" class="site-logo">
+    <a href="https://www.cascade.org/" class="site-logo">
        <img src="{% static 'img/logo.png' %}" alt="">
      </a>
  </header>
@@ -41,7 +44,7 @@
       <div class="hs-item2">
 				<div class="container">
 					<div class="row">
-						<div class="col-lg-6">
+						<div class="col-lg-6" id="landing-text">
 							<div class="hs-text">
 								<h2><span>Secure Bike Parking</span></h2>
 								<h4> Looking to securely park your bike at a transit station? You've come to the right place. </h4>
@@ -53,6 +56,9 @@
                      lockers are most suited to people who need a guaranteed space at a specific location
                       where they plan to park their bike frequently, year-round, to catch transit.</p>
               </div>
+              <div class='contact-us'>
+                  <a href="#lease" class="lease-now">Lease Now!</a>
+                </div>
               
             </div>
 						<div class="col-lg-5">
@@ -61,11 +67,7 @@
               </div>
             </div>
           </div>
-          <div class='contact-us'>
-          <div class="col-lg-6">
-            <a href="#lease" class="lease-now">Lease Now!</a>
-          </div>
-          </div>
+          
 				</div>
 			</div>
   </section>
@@ -127,8 +129,8 @@
     </div>
   </section>
   </a>
-  <section>
 
+  <section>
     <div class='filterBtn'>
        <select id="cities" role="option" aria-selected="true" id="exampleFormControlSelect1">
               <option value= 'Auburn'>Auburn</option>
@@ -211,13 +213,10 @@
       <div class="row">
         <div class="col-lg-10">
           <div class="sub-text">
-            <h2>Renewals & Maintenance Request</h2>
-            <p>Did you recently receive a renewal notice from us? Please use the
-               “Renew Now!” button to fill out our renewal form. Is your bike locker
-                in need of repair. Does the site need a power wash or graffiti cover-up?
+            <h2>Send a Maintenance Request</h2>
+            <p>Is your bike locker in need of repair. Does the site need a power wash or graffiti cover-up?
                  Please use the maintenance request button to fill out our maintenance request
                   form.</p>
-            <a href="#" class="site-btn">Renew Now!</a>
             <a href="maintenance_report/" class="Mainsite-btn">Maintenance Request</a>
           </div>
         </div>
@@ -228,7 +227,7 @@
 </div>
 <div class="clearfooter"></div>
 <footer id="footer">
-  <h2>Contact Us!</h2>
+  <img src="{% static 'img/logo.png' %}" alt="">
   <ul>
   <li>bikelocker@cascade.org</li>
   <li>(206) 522-3222</li>
@@ -237,8 +236,7 @@
   Seattle, WA 98115</li>
   </ul>
 </footer>
+<script src = "{% static 'marker.js' %}"></script>
+{{ form.media.js }}
 </body>
-
- 
-  <script src = "{% static 'marker.js' %}"></script>
 </html>
