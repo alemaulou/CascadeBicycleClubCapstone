@@ -225,7 +225,8 @@ def renewals(request):
     # Calculation for number responded and total
     total_percentage_responded = 0
     if (locker_renewal_count_total + locker_not_renewal_count_total + not_responded_count_total) != 0:
-        total_percentage_responded = ((locker_renewal_count_total + locker_not_renewal_count_total) / (locker_renewal_count_total + locker_not_renewal_count_total + not_responded_count_total), 2)
+        total_percentage_responded = (locker_renewal_count_total + locker_not_renewal_count_total) / (locker_renewal_count_total + locker_not_renewal_count_total + not_responded_count_total)
+        print(total_percentage_responded)
     else:
         total_percentage_responded = 0
 
