@@ -9,7 +9,7 @@
 
     {% load i18n admin_urls static %}
     { block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} delete-confirmation
-    %{% block breadcrumbs %}
+    {% block breadcrumbs %}
     <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
 
   <button class="navbar-toggler" type="buton" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -128,11 +128,14 @@
         <table class="table table-bordered table-fixed table-sm">
 
 
-        <h1 class="page-header">Customers Not Responded <a href="customer">
+        <h1 class="page-header">Customer Responses <a href="customer">
             <i class="fa fa-edit"
             aria-hidden="true"
                style=" vertical-align: middle; font-size: 1rem;"></i></a></h1>
-            List of Customers who's statuses are still not confirmed.
+            <div>
+                Based on customer responses from survey, set Customers to their appropriate statuses.
+            </div>
+            <br>
             <p><form method="GET" action="">
     <select name="featured">
 

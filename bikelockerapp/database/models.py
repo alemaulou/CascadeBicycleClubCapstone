@@ -41,6 +41,7 @@ class Location(models.Model):
     def get_not_responded(self):
         location = Cust_Locker.objects.filter(locker_id__location_id=self.pk)
         if location:
+            print(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded"))
             return len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded"))
         else:
             return 0
@@ -165,6 +166,9 @@ class Customer(models.Model):
     cust_state = models.CharField('State', max_length=50)
     cust_zip = models.CharField('Zip Code', max_length=10)
     status = models.ForeignKey(Status, on_delete=models.CASCADE, null=True)
+    CONTACTED_ONCE = "Contacted Once"
+    CONTACTED_TWICE = "Contacted Twice"
+    contacted = models.CharField('Contacted', max_length=50, default='Not Contacted', blank=True)
     # CHOICES = [('option1', 'label 1'), ('option2', 'label 2')]
     # some_field = forms.ChoiceField(choices=CHOICES, widget=forms.RadioSelect())
 
@@ -240,7 +244,7 @@ class Cust_Locker(models.Model):
 
     @property
     def is_under_2_weeks_past_due(self):
-        if date.today() > self.renew_date and date.today() - timedelta(14) < self.renew_date:
+        if (date.today() > self.renew_date and date.today() - timedelta(14) < self.renew_date) and (self.cust_id.status.status_name == "Not Responded"):
             return True
 
     @property
