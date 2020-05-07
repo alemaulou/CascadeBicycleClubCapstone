@@ -5,9 +5,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% extends "admin/base_site.html" %}
 {% block breadcrumbs %}
-<head>
-<title>Test</title>
-    </head>
 <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
 
   <button class="navbar-toggler" type="buton" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,12 +13,27 @@
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav" style="margin-left: 3%">
 
-      <a class="nav-item nav-link active" href="/admin/database">Home <span class="sr-only">(current)</span></a>
-      <a class="nav-item nav-link" href="send_email">Send Renewals</a>
-      <a class="nav-item nav-link" href="renewals">Renewals</a>
-      <a class="nav-item nav-link" href="customer_upload">Import Data</a>
-        <a class="nav-item nav-link" href="{% url 'admin:password_change' %}">Change Password</a>
+      <a class="nav-item nav-link active" href="/admin/database">
+          <li class="nav-item active">Home <span class="sr-only">(current)</span></a>
+    </li>
+            <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Renewals
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" href="send_email">Send Renewals</a>
+      <a class="dropdown-item" href="renewals">Renewals</a>
+        </div>
+      </li>
+      <li class="nav-item">
+          <a class="nav-item nav-link" href="customer_upload">Data</a>
+          </li>
+       <li class="nav-item">
+           <a class="nav-item nav-link" href="{% url 'admin:password_change' %}">Change Password</a>
+               <li class="nav-item">
         <a class="nav-item nav-link" href="{% url 'admin:logout' %}?next=/admin">Logout</a>
+               </li>
+
     </div>
   </div>
 </nav>
@@ -68,31 +80,24 @@
 
                 <!-- Current Members -->
                 <div class="shadow p-3 mb-5 bg-white rounded col-md-9" class="rounded">
-                    {% if locker_renewals %}
                     <table class="table table-bordered table-fixed">
                         <thead>
+                        <!-- Search form -->
+                        <div class="pull-right"><form method="GET" action="">
+                        <div class="input-group md-form form-sm form-1 pl-0">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-search text-white"
+                                aria-hidden="true"></i></span>
+                          </div>
+                              <div class="col-xs-3">
+                          <input class="form-control my-0 py-1" type="search" placeholder="Search Customer" name="customer">
+                        </div>
+                        </div>
+                        </form>
+                            </div>
+                        <br>
 
-                        <!-- Search Customer -->
-                            <div class="">
-                                <div class="form-row">
-                                    <div class="form-group col-3">
 
-                                        <div class="text-right">
-                                        <form method="GET" action="">
-                                            <div class="input-group mb-3">
-                                                <input class="form-control border-right-0 tex" type="search"
-                                                       placeholder="Search Customer" name="customer">
-                                                <div class="input-group-append">
-                                            <span class="input-group-text bg-transparent">
-                                                <i class="fa fa-search"></i>
-                                            </span>
-                                                </div>
-                                            </div>
-                                        </form>
-                                        </div>
-
-                                    </div>
-                                </div>
 
                         <tr><h1>Awaiting Renewal <em>(as of {% now "F j, Y" %})</em> <a href="send_email"><i
                                 class="fa fa-envelope" aria-hidden="true"
@@ -115,6 +120,7 @@
                         </tr>
                         </thead>
                         <tbody>
+                        {% if locker_renewals %}
                         {% for item in all_cust_lockers %}
                         {% if item.is_past_due %}
 
@@ -140,6 +146,12 @@
                         {% else %}
                         {% endif %}
                         {% endfor %}
+                        {% else %}
+                                   <tr>
+                <td colspan="100%">
+                    <em>There are currently no members up for renewal.</em>
+                </td>
+            </tr>
                         </tbody>
                         {% endif %}
 
@@ -165,6 +177,7 @@
                             </tr>
                             </thead>
                             <tbody>
+                            {% if all_cust_lockers %}
                             {% for item in all_cust_lockers %}
 
                             <tr>
@@ -180,7 +193,7 @@
                                 <td>{{ item.locker_id.locker_status_id.locker_status_name }}</td>
                                 <td><a href="{{ item.get_admin_url }}">{{ item.locker_id.location_id.location_name }}</a>
                                 </td>
-                                <td><a href="{{ item.get_admin_url }}">{{ item.locker_id.locker_name }}</a>
+                                <td><a href="{{ item.get_admin_url }}">#{{ item.locker_id.locker_name }}</a>
 
                                 <td><a href="{{ item.get_admin_url }}"><i class="fa fa-edit"></i></a>
                                     <a href="cust_locker/{{ item.pk }}/delete"><i class="fa fa-trash"></i></a>
@@ -188,13 +201,19 @@
                             </tr>
 
                             {% endfor %}
+                            {% else %}
+                                        <tr>
+                <td colspan="100%">
+                    <em>There are currently no customers listed.</em>
+                </td>
+            </tr>
+                            {% endif %}
                             </tbody>
                         </table>
 
                         <table class="table table-bordered table-fixed">
-                            {% if all_inquiries %}
                             <thead>
-                            <tr><h1>Waitlist <a href="location/add/"><i class="fa fa-plus" aria-hidden="true"
+                            <tr><h1>Waitlist <a href="inquiry/add/"><i class="fa fa-plus" aria-hidden="true"
                                                                         style=" vertical-align: middle; font-size: 1rem;"></i></a>
                             </h1>
                                 <th scope="col">First</th>
@@ -214,6 +233,7 @@
                             </tr>
                             </thead>
                             <tbody>
+                            {% if all_inquiries %}
                             {% for item in all_inquiries %}
                             {% if item %}
                             <tr>
@@ -237,21 +257,14 @@
 
 
                             </tr>
-                            {% else %}
-                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
-                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
-                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
-                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
-                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
-                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
-                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
-                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
-                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
-                            <td>-</td>
-                            <td><a href="{{ item.get_admin_url }}">N/A</a></td>
                             {% endif %}
                             {% endfor %}
-                            </tbody>
+                            {% else %}
+            <tr>
+                <td colspan="100%">
+                    <em>There are currently no customers on the waitlist.</em>
+                </td>
+            </tr>                            </tbody>
                             {% endif %}
                         </table>
 
@@ -269,6 +282,7 @@
                             </tr>
                             </thead>
                             <tbody>
+                            {% if all_maintenance %}
                             {% for item in all_maintenance %}
                             {% if item %}
                             <tr>
@@ -297,28 +311,18 @@
                                 <td><a href="{{ item.get_admin_url }}">N/A</a></td>
                             {% endif %}
                             {% endfor %}
+                            {% else %}
+                            <tr>
+                <td colspan="100%">
+                    <em>There are currently no maintenance requests.</em>
+                </td>
+            </tr>
+                            {% endif %}
                             </tbody>
                         </table>
-                </div>
-
-        </div>
-        </table>
-    </div>
-</div>
-
-
-</div>
-</div>
-</div>
-</div>
-
-</div>
 {% else %}
 <p>Please <a href="{% url 'admin:login' %}">Log In!</a></p>
 {% endif %}
-
-{% block sidebar %}
-{% endblock %}
 {% endblock %}
 
 

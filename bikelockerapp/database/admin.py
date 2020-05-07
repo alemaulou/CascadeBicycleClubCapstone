@@ -31,6 +31,7 @@ admin.site.register(Renewal)
 admin.site.register(Renewal_Response)
 admin.site.register(Inquiry)
 admin.site.register(Locker_Log)
+admin.site.register(Renewal_Form)
 admin.site.register(Staff)
 
 

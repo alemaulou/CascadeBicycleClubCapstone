@@ -3,8 +3,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 {% extends "admin/base_site.html" %}
-    %{% block breadcrumbs %}
-    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
+{% block breadcrumbs %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
 
   <button class="navbar-toggler" type="buton" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -12,16 +12,31 @@
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav" style="margin-left: 3%">
 
-      <a class="nav-item nav-link active" href="/admin/database">Home <span class="sr-only">(current)</span></a>
-      <a class="nav-item nav-link" href="../send_email">Send Renewals</a>
-      <a class="nav-item nav-link" href="../renewals">Renewals</a>
-      <a class="nav-item nav-link" href="">Import Data</a>
-        <a class="nav-item nav-link" href="{% url 'admin:password_change' %}">Change Password</a>
+      <a class="nav-item nav-link active" href="/admin/database">
+          <li class="nav-item active">Home <span class="sr-only">(current)</span></a>
+    </li>
+            <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Renewals
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" href="../send_email">Send Renewals</a>
+      <a class="dropdown-item" href="../renewals">Renewals</a>
+        </div>
+      </li>
+      <li class="nav-item">
+          <a class="nav-item nav-link" href="../customer_upload">Data</a>
+          </li>
+       <li class="nav-item">
+           <a class="nav-item nav-link" href="{% url 'admin:password_change' %}">Change Password</a>
+               <li class="nav-item">
         <a class="nav-item nav-link" href="{% url 'admin:logout' %}?next=/admin">Logout</a>
+               </li>
+
     </div>
   </div>
 </nav>
-    {% endblock %}
+{% endblock %}
 {% block content %}
 <tr class="container">
 
@@ -36,7 +51,7 @@
         </div>
         {% endfor %}
         {% else %}
-        <h1>CSV Upload Form</h1>
+        <h1>Export Data</h1>
         {{ order }}
         <div>
             <form method="post" enctype="multipart/form-data">

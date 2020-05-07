@@ -1,0 +1,162 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+{% extends "admin/base_site.html" %}
+
+{% load widget_tweaks %}
+<tr class="container">
+
+    {% load i18n admin_urls static %}
+    { block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} delete-confirmation
+    {% block breadcrumbs %}
+    {% endblock %}
+    {% block content %}
+    {% if user.is_authenticated %}
+
+
+    <div class="shadow p-3 mb-5 bg-white rounded col-md-9" class="rounded">
+        <p class="display-4">Renewal Process for KCM Bike Lockers</p>
+        <p class="blockquote">
+            Hello, this is the bike locker team at Cascade Bicycle Club checking in on your locker rental status for the year. If you have any questions, or if the following survey is not working for you, please email us at: <a href="">bikelocker@cascade.org</a>, or call us at (206) 939-4311.
+
+<p class="blockquote">Thank you for renting a bike locker from King County Metro! Please answer all of the following questions so that we can process your renewal status in a timely manner - this survey will only take about 3 minutes. All answers are fully confidential.
+    </p>
+<p class="blockquote">If your response is not received within 2 weeks, then your locker may be forfeited. Note that your locker deposit will also be forfeited if you do not respond.
+</p>
+
+        <p class="blockquote">
+If you are using your locker less than two times per week, please send your key back to us so that we can lease your locker to someone else.  Directions for returning your key are given after completing the form. Once the key is received, we will return your initial key deposit.
+        </p>
+        </p>
+    </div>
+       <div class="shadow p-3 mb-5 bg-white rounded col-md-9" class="rounded">
+        <form method="POST" action="">{% csrf_token %}
+            <div>
+                <p class="blockquote">
+                    E-mail address*:
+                </p>
+
+        {{ form.email|add_class:'form-control w-25' }}
+    </div>
+</div>
+
+           <div class="shadow p-3 mb-5 bg-white rounded col-md-9" class="rounded">
+            <div>
+                <p class="blockquote">
+                   What name is your locker leased under?*
+                </p>
+
+        {{ form.name_lease|add_class:'form-control w-25' }}
+    </div>
+</div>
+
+               <div class="shadow p-3 mb-5 bg-white rounded col-md-9" class="rounded">
+
+            <div>
+                <p class="blockquote">
+                   What name is your current mailing address?*
+                </p>
+
+        {{ form.mailing_address|add_class:'form-control w-25' }}
+    </div>
+</div>
+
+                   <div class="shadow p-3 mb-5 bg-white rounded col-md-9" class="rounded">
+
+            <div>
+                <p class="blockquote">
+                   What name is your current phone under?*
+                </p>
+
+        {{ form.phone|add_class:'form-control w-25' }}
+    </div>
+</div>
+
+                   <div class="shadow p-3 mb-5 bg-white rounded col-md-9" class="rounded">
+            <div>
+                <p class="blockquote">
+                   What is your transit center location?*
+                </p>
+
+        {{ form.location }}
+    </div>
+</div>
+
+    <div class="shadow p-3 mb-5 bg-white rounded col-md-9" class="rounded">
+            <div>
+                <p class="blockquote">
+                   What is your locker number?*
+                </p>
+
+        {{ form.locker_number|add_class:'form-control w-25' }}
+    </div>
+</div>
+
+            <div class="shadow p-3 mb-5 bg-white rounded col-md-9" class="rounded">
+            <div>
+                <p class="blockquote">
+                   How much do you use your locker?*
+                </p>
+        {{ form.locker_usage|add_class:'form-control w-25' }}
+    </div>
+</div>
+
+                <div class="shadow p-3 mb-5 bg-white rounded col-md-9" class="rounded">
+            <div>
+                <p class="blockquote">
+                   Would you like to renew your locker lease for another year? *
+                </p>
+        {{ form.renewal_decision|add_class:'form-control w-25' }}
+    </div>
+</div>
+
+                    <div class="shadow p-3 mb-5 bg-white rounded col-md-9" class="rounded">
+            <div>
+                <p class="blockquote">
+Please use this section to leave comments, suggestions, and feedback for the bike locker team. It is not required.                </p>
+        {{ form.feedback|add_class:'form-control w-25' }}
+    </div>
+</div>
+        <button type="submit" class="save btn btn-default">Save</button>
+    </form>
+<!--                <div>-->
+<!--                    <h3>To:</h3>-->
+<!--                    {% for item in all_cust_lockers %}-->
+<!--                    {% if item.is_under_2_weeks_past_due %}-->
+<!--                    {{ item.cust_id }}-->
+<!--                    {% endif %}-->
+<!--                    {% endfor %}-->
+
+<!--                    <select name="users" multiple style="display: none">-->
+<!--                        {% for item in emails %}-->
+<!--                        <option value="{{ user.id }}" selected>{{ item.cust_id.cust_f_name }}</option>-->
+<!--                        {% endfor %}-->
+<!--                    </select>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                    <p>{{ form.subject.errors }}</p>-->
+<!--                    <h3>Subject:</h3>-->
+<!--                    <p>{{ form.subject|add_class:'form-control' }}</p>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                    <p>{{ form.message.errors }}</p>-->
+<!--                    <h3>Message:</h3>-->
+<!--                    <p>{{ form.message|add_class:'form-control' }}</p>-->
+
+<!--                </div>-->
+<!--                <input name="form1" type="submit" value="{% trans 'Send message' %}"/>-->
+            </div>
+        </form>
+    </div>
+
+    </div>
+</tr>
+{% endif %}
+
+{% endblock %}
+
+
+

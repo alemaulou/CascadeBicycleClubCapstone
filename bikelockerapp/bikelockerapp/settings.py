@@ -57,7 +57,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'crispy_forms',
     'import_export',
-    'django_select2'
+    'django_select2',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

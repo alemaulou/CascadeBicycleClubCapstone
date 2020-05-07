@@ -11,7 +11,7 @@ from django.utils import timezone
 class Location(models.Model):
     location_id = models.AutoField(primary_key=True)
     location_name = models.CharField('Location Name', max_length=100)
-    location_zip = models.CharField('Location Zip', max_length=10)
+    location_zip = models.CharField('Location Zip', max_length=10, blank=True)
     location_capacity = models.IntegerField('Location Capacity', default=0)
 
     def __str__(self):
@@ -25,9 +25,9 @@ class Location(models.Model):
         return len(Cust_Locker.objects.filter(locker_id__location_id=self.pk))
 
     def get_renewal_count(self):
-        location = Cust_Locker.objects.filter(locker_id__location_id=self.pk)
+        location = Cust_Locker.objects.filter(locker_id__location_id=self.pk).filter(cust_id__status_id__status_name__iexact="Renewed")
         if location:
-            return len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Renewed"))
+            return len(location)
         else:
             return 0
 
@@ -50,7 +50,7 @@ class Location(models.Model):
         location = Cust_Locker.objects.filter(locker_id__location_id=self.pk)
         if location:
             if (len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Renewed")) + len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Renewing")) + len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded"))) != 0:
-                return str(round((len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Renewed")) + len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Renewing"))) / (len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Renewed")) + len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Renewing")) + len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded"))), 2))
+                return str(round((len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Renewed")) + len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Renewing"))) / (len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Renewed")) + len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Renewing")) + len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded")))*100)) + "%"
             else:
                 return 0
         return 0
@@ -167,9 +167,6 @@ class Customer(models.Model):
     cust_state = models.CharField('State', max_length=50)
     cust_zip = models.CharField('Zip Code', max_length=10)
     status = models.ForeignKey(Status, on_delete=models.CASCADE, null=True)
-    CONTACTED_ONCE = "Contacted Once"
-    CONTACTED_TWICE = "Contacted Twice"
-    contacted = models.CharField('Contacted', max_length=50, default='Not Contacted', blank=True)
     # CHOICES = [('option1', 'label 1'), ('option2', 'label 2')]
     # some_field = forms.ChoiceField(choices=CHOICES, widget=forms.RadioSelect())
 
@@ -208,10 +205,8 @@ class Customer(models.Model):
 def delete_inactive_cust_locker(sender, instance, created, **kwargs):
     try:
         cust_locker = Cust_Locker.objects.get(cust_id=instance.cust_id)
-        print(cust_locker)
-        instance_status = instance.status.status_id
-        print(instance_status)
-        if instance_status == 4:
+        instance_status = instance.status.status_name
+        if instance_status == "Inactive":
             cust_locker.delete()
     except:
         inquiry = None
@@ -234,7 +229,7 @@ class Cust_Locker(models.Model):
     locker_id = models.ForeignKey(Locker, on_delete=models.CASCADE)
     contract_date = models.DateField()
     renew_date = models.DateField()
-    description = models.CharField(max_length=100, default="")
+    description = models.CharField(max_length=100, default="", blank=True)
 
     @property
     def total_lockers(self):
@@ -251,7 +246,8 @@ class Cust_Locker(models.Model):
 
     @property
     def is_2_weeks_past_due(self):
-        return date.today() - timedelta(14) > self.renew_date
+        if(date.today() - timedelta(14) > self.renew_date) and (self.cust_id.status.status_name == "Not Responded"):
+            return True
 
     class Meta:
         verbose_name = "Customer Locker"
@@ -268,10 +264,10 @@ def create_cust_locker(sender, instance, created, **kwargs):
     try:
         inquiry = Inquiry.objects.get(cust_id=instance.cust_id)
         inquiry.delete()
+        locker_leased = Locker_Status.objects.get(locker_status_name='Leased')
 
-        # Check to see if locker in use
         locker = Locker.objects.get(locker_id=instance.locker_id.pk)
-        locker.locker_status_id = Locker_Status.objects.get(pk=4)
+        locker.locker_status.locker_status_id = 3
         locker.save()
     except:
         inquiry = None
@@ -295,6 +291,32 @@ class Renewal(models.Model):
     response_2 = models.ForeignKey(Renewal_Response, on_delete=models.CASCADE, related_name='response2', blank=True)
     phone_call_date = models.DateField('Phone Call Date', default=timezone.now(), blank=True)
     response_3 = models.ForeignKey(Renewal_Response, on_delete=models.CASCADE, related_name='response3', blank=True)
+
+class Renewal_Form(models.Model):
+    renewal_form_id = models.AutoField(primary_key=True)
+    email = models.EmailField('E-mail', default='')
+    name_lease = models.CharField('Name On Lease', max_length=50, default='')
+    mailing_address = models.CharField('Current Mailing Address', max_length=300, default='')
+    phone = models.CharField('Phone', max_length=50, default='')
+    location = models.CharField('Location', max_length=50, default='')
+    locker_number = models.CharField('Locker Number', max_length=50, default='')
+
+    LOCKER_USE = (
+        ("0-1", "0-1"),
+        ("1-2", "1-2"),
+        ("2-3", "2-3"),
+        ("3+", "3+"),
+    )
+    locker_usage = models.CharField('Locker Usage', choices=LOCKER_USE, max_length=50)
+
+    TRUE_FALSE_CHOICES = (
+        ('Yes', 'Yes'),
+        ('No', 'No')
+    )
+
+    renewal_decision = models.CharField('Renewal Decision', choices=TRUE_FALSE_CHOICES, max_length=50)
+    feedback = models.TextField('Feedback', max_length=5000, default='')
+
 
 class Inquiry(models.Model):
     inquiry_id = models.AutoField(primary_key=True)

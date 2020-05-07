@@ -1,13 +1,13 @@
 import csv, io
 
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, BadHeaderError, HttpResponse
 from django.contrib import messages
-from .models import Customer, Inquiry, Location, Cust_Locker, Maintenance, Locker, Waitlist, Locker_Log, Status
-from .forms import CustomerForm, SendEmailForm, SendEmailFormAfter2Weeks
+from .models import Customer, Inquiry, Location, Cust_Locker, Maintenance, Locker, Waitlist, Locker_Log, Status, \
+    Locker_Status, Renewal_Form
+from .forms import CustomerForm, SendEmailForm, SendEmailFormAfter2Weeks, RenewalsForm
 from datetime import datetime, date, timedelta
 from django.conf import settings
 from django.core.paginator import Paginator
@@ -36,9 +36,10 @@ def index(request):
     # Filtering customer data by customer name
     if customer_contains_query != '' and customer_contains_query is not None:
         customers = []
-        if all_cust_locker.filter(cust_id__cust_f_name__icontains=customer_contains_query) | all_cust_locker.filter(cust_id__cust_l_name__icontains=customer_contains_query):
+        if all_cust_locker.filter(cust_id__cust_f_name__icontains=customer_contains_query) | all_cust_locker.filter(cust_id__cust_l_name__icontains=customer_contains_query) | all_cust_locker.filter(cust_id__cust_email__icontains=customer_contains_query):
             customers += all_cust_locker.filter(cust_id__cust_f_name__icontains=customer_contains_query)
             customers += all_cust_locker.filter(cust_id__cust_l_name__icontains=customer_contains_query)
+            customers += all_cust_locker.filter(cust_id__cust_email__icontains=customer_contains_query)
         all_cust_locker = customers
         all_inquiry = all_inquiry.filter(cust_id__cust_f_name__contains=customer_contains_query)
 
@@ -158,13 +159,14 @@ def send_email(request):
     # Rendering boolean for New Locker Renewal Requests
     contains_lr_under_2_weeks = False
     for locker_renewals in all_cust_locker:
-        if date.today() > locker_renewals.renew_date and date.today() - timedelta(14) < locker_renewals.renew_date:
+        if date.today() > locker_renewals.renew_date and date.today() - timedelta(14) < locker_renewals.renew_date and (locker_renewals.cust_id.status.status_name == "Not Responded"):
+            print(locker_renewals)
             contains_lr_under_2_weeks = True
 
     # Rendering boolean for Past due (over 2 week) Locker Renewal Requests
     contains_lr_over_2_weeks = False
     for locker_renewals in all_cust_locker:
-        if date.today() - timedelta(14) > locker_renewals.renew_date:
+        if date.today() - timedelta(14) > locker_renewals.renew_date and (locker_renewals.cust_id.status.status_name == "Not Responded"):
             contains_lr_over_2_weeks = True
 
     # Total number of Lockers by Location Capacity
@@ -207,8 +209,18 @@ def renewals(request):
     # Total Renewing
     locker_renewal_count_total = 0
     for locker in all_stations:
-        if Cust_Locker.objects.filter(locker_id__location_id=locker.pk) and Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Renewed"):
-            locker_renewal_count_total += 1
+        if locker.pk:
+            print('hi')
+            print(locker.pk)
+            try:
+                Cust_Locker.objects.get(locker_id__location_id=locker.pk)
+                locker_instance = Cust_Locker.objects.get(locker_id__location_id=locker.pk)
+                status = Status.objects.get(status_name='Renewed')
+                if locker_instance.cust_id.status.status_name == str(status):
+                    locker_renewal_count_total += 1
+                    print(locker_renewal_count_total)
+            except Cust_Locker.DoesNotExist:
+                print('hello')
 
     # Not Renewing
     locker_not_renewal_count_total = 0
@@ -225,10 +237,9 @@ def renewals(request):
     # Calculation for number responded and total
     total_percentage_responded = 0
     if (locker_renewal_count_total + locker_not_renewal_count_total + not_responded_count_total) != 0:
-        total_percentage_responded = (locker_renewal_count_total + locker_not_renewal_count_total) / (locker_renewal_count_total + locker_not_renewal_count_total + not_responded_count_total)
-        print(total_percentage_responded)
+        total_percentage_responded = str(round((locker_renewal_count_total + locker_not_renewal_count_total) / (locker_renewal_count_total + locker_not_renewal_count_total + not_responded_count_total)*100)) + "%"
     else:
-        total_percentage_responded = 0
+        total_percentage_responded = str(0) + "%"
 
     # Selecting which buttons pressed and querying Customer
     list_of_id_for_action = request.POST.getlist('for_action')
@@ -248,6 +259,7 @@ def renewals(request):
     # Mass update
     if 'list' in request.POST:
         active_customers = Customer.objects.all().exclude(status_id__status_name__iexact="Inactive").exclude(status__isnull=True).exclude(status_id__status_name__iexact="Not Renewing")
+        # active_cust_lockers = Cust_Locker.objects.all.exclude(cust_id__status_id__status_name__iexact="Inactive")..exclude(cust_id__status_id__status_name__iexact="Not Renewing")
         active_customers.update(status=not_responded_status)
         return HttpResponseRedirect("renewals")
 
@@ -255,9 +267,12 @@ def renewals(request):
     if 'purge' in request.POST:
         inactive_lockers = Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Inactive")
         print(inactive_lockers)
-        for locker in inactive_lockers:
-            print(locker)
-            locker.delete()
+        for single_locker in inactive_lockers:
+            print(inactive_lockers)
+            locker_available = Locker_Status.objects.get(locker_status_name='Available')
+            inactive = Locker.objects.filter(locker_id = single_locker.pk)
+            inactive.update(locker_status_id=locker_available)
+            single_locker.delete()
         return HttpResponseRedirect("renewals")
 
     # Set Not Renewing Status to Inactive
@@ -269,7 +284,6 @@ def renewals(request):
 
     if request.GET.get('featured'):
         location = request.GET['featured']
-        print(location)
         all_cust_locker = all_cust_locker.filter(locker_id__location_id__location_name__contains=location).filter(cust_id__status_id__status_name__iexact="Not Responded")
     else:
         all_cust_locker = Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded")
@@ -293,3 +307,22 @@ def log(request):
     all_logs = Locker_Log.objects.all()
     return render(request, 'log.html',
                   {'all_logs': all_logs})
+
+def renewals_form(request):
+    submitted = False
+    if request.method == 'POST':
+        print('did')
+        form = RenewalsForm(request.POST)
+        if form.is_valid():
+            print('did2')
+            product = form.save()
+            return HttpResponseRedirect('/admin')
+        else:
+            print('form invalid')
+            print(form.errors)
+    else:
+        print('didn')
+        form = RenewalsForm()
+        if request.method == 'GET':
+            submitted = True
+    return render(request, 'renewals_form.html', {'form': form})

@@ -12,4 +12,5 @@ urlpatterns = [
     path('log/', views.log, name='log'),
     path('renewals', views.renewals, name='renewals'),
     path('send_email', views.send_email, name='send-email'),
+    path('renewals_form', views.renewals_form, name='renewals_form')
 ]

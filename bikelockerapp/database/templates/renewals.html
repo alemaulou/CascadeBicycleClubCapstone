@@ -9,8 +9,8 @@
 
     {% load i18n admin_urls static %}
     { block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} delete-confirmation
-    {% block breadcrumbs %}
-    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
+{% block breadcrumbs %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
 
   <button class="navbar-toggler" type="buton" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -18,22 +18,53 @@
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav" style="margin-left: 3%">
 
-      <a class="nav-item nav-link active" href="/admin/database">Home <span class="sr-only">(current)</span></a>
-      <a class="nav-item nav-link" href="send_email">Send Renewals</a>
-      <a class="nav-item nav-link" href="renewals">Renewals</a>
-      <a class="nav-item nav-link" href="customer_upload">Import Data</a>
-        <a class="nav-item nav-link" href="{% url 'admin:password_change' %}">Change Password</a>
+      <a class="nav-item nav-link active" href="/admin/database">
+          <li class="nav-item active">Home <span class="sr-only">(current)</span></a>
+    </li>
+            <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Renewals
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" href="send_email">Send Renewals</a>
+      <a class="dropdown-item" href="renewals">Renewals</a>
+        </div>
+      </li>
+      <li class="nav-item">
+          <a class="nav-item nav-link" href="customer_upload">Data</a>
+          </li>
+       <li class="nav-item">
+           <a class="nav-item nav-link" href="{% url 'admin:password_change' %}">Change Password</a>
+               <li class="nav-item">
         <a class="nav-item nav-link" href="{% url 'admin:logout' %}?next=/admin">Logout</a>
+               </li>
+
     </div>
   </div>
 </nav>
-    {% endblock %}
+{% endblock %}
     {% block content %}
     {% if user.is_authenticated %}
 
     <div class="row p-3 justify-content-md-center">
+
+            <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-sm-3" class="rounded">
+        <table class="table table-bordered table-fixed table-sm">
+            <h1>
+                Set Renewal Date
+            </h1>
+
+            <div>
+                Set a renewal date uniformly for current active customers.
+            </div>
+            <br>
+                <form method="POST" action="">{% csrf_token %}
+                    <input type="submit" name="list" value="Reset Date"/>
+                </form>
+        </table>
+    </div>
         <!--    Reset Renewals-->
-    <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-md-4" class="rounded">
+    <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-sm-3" class="rounded">
         <table class="table table-bordered table-fixed table-sm">
             <h1>
                 Reset Renewals
@@ -50,7 +81,7 @@
         </table>
     </div>
 
-        <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-md-4" class="rounded">
+        <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-md-3.5" class="rounded">
         <table class="table table-bordered table-fixed table-sm">
                 <h1>Set All Not Renewing to Inactive</h1>
             <div>
@@ -66,7 +97,7 @@
         </table>
             </div>
 
-        <div class="shadow p-3 mb-5 bg-white rounded col-md-3" class="rounded">
+        <div class="shadow p-3 mb-5 bg-white rounded col-md-2" class="rounded">
             <table class="table table-bordered table-fixed table-sm">
                 <h1>
                     Purge Inactive Lockers
@@ -183,8 +214,9 @@
         </form>
 
     </div>
+            </table>
 </div>
-    </table>
+
 </div>
     {% endif %}
 
