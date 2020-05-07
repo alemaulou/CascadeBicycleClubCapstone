@@ -116,7 +116,7 @@
     </div>
     {% endif %}
 
-    {% if lr_over_2 %}
+
     <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
         <table class="table table-bordered table-fixed">
             <thead>
@@ -139,6 +139,7 @@
             </tr>
             </thead>
             <tbody>
+            {% if lr_over_2 %}
             {% for item in all_cust_lockers %}
             {% if item.is_2_weeks_past_due %}
             <tr>
@@ -156,11 +157,17 @@
                 <td><a href="{{ item.get_admin_url }}"><i class="fa fa-edit"></i></a>
                     <a href="cust_locker/{{ item.pk }}/delete"><i class="fa fa-trash"></i></a>
                 </td>
-
-
             </tr>
             {% endif %}
             {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="100%">
+                    <em>There are currently no lockers over 2 weeks past due.</em>
+                </td>
+            </tr>
+            {% endif %}
+
             </tbody>
         </table>
 
@@ -199,7 +206,6 @@
     <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
         There are no lockers up for renewal. <a href="../database">Back to main page.</a>
     </div>
-    {% endif %}
     {% endif %}
 
 </tr>

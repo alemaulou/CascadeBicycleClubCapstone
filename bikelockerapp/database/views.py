@@ -1,4 +1,7 @@
 import csv, io
+
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, BadHeaderError, HttpResponse
@@ -9,7 +12,7 @@ from datetime import datetime, date, timedelta
 from django.conf import settings
 from django.core.paginator import Paginator
 
-
+@staff_member_required
 # Admin Index View
 def index(request):
 
@@ -26,14 +29,18 @@ def index(request):
 
     # Filtering customer data (station, locker, inquiry) by location
     if location_contains_query != '' and location_contains_query is not None:
-        all_station = all_station.filter(location_name__icontains=location_contains_query)
         all_cust_locker = all_cust_locker.filter(locker_id__location_id__location_name__contains=location_contains_query)
         all_inquiry = all_inquiry.filter(locations__location_name__contains=location_contains_query)
         all_maintenance = all_maintenance.filter(lockers__location_id__location_name__contains=location_contains_query)
 
     # Filtering customer data by customer name
     if customer_contains_query != '' and customer_contains_query is not None:
-        all_customer = all_customer.filter(cust_f_name__icontains=customer_contains_query)
+        customers = []
+        if all_cust_locker.filter(cust_id__cust_f_name__icontains=customer_contains_query) | all_cust_locker.filter(cust_id__cust_l_name__icontains=customer_contains_query):
+            customers += all_cust_locker.filter(cust_id__cust_f_name__icontains=customer_contains_query)
+            customers += all_cust_locker.filter(cust_id__cust_l_name__icontains=customer_contains_query)
+        all_cust_locker = customers
+        all_inquiry = all_inquiry.filter(cust_id__cust_f_name__contains=customer_contains_query)
 
     # Rendering boolean for Locker Renewals
     contains_locker_renewals = False
@@ -48,6 +55,7 @@ def index(request):
 def BootstrapFilterView(request):
     render(request, "bootstrap_form.html ")
 
+@staff_member_required
 # Customer Upload Data View
 def customer_upload(request):
     # Import data template
@@ -84,6 +92,7 @@ def customer_upload(request):
     context = {}
     return render(request, template, context)
 
+@staff_member_required
 # Customer Waitlist View
 def customer_waitlist(request):
     submitted = False
@@ -106,6 +115,7 @@ def customer_waitlist(request):
     return render(request, 'customer_inquiry.html', {'form': form, 'submitted': submitted})
 
 # Admin E-Mail Renewals View
+@staff_member_required
 def send_email(request):
     x = [obj.cust_id.cust_email for obj in Cust_Locker.objects.all() if obj.is_under_2_weeks_past_due]
     y = [obj.cust_id.cust_email for obj in Cust_Locker.objects.all() if obj.is_2_weeks_past_due]
@@ -178,7 +188,7 @@ def send_email(request):
                    'total_lockers': total_lockers,
                    'total_occupied': total_occupied})
 
-# TBD: DELETE IF UNIMPLEMENTED
+@staff_member_required
 def renewals(request):
     # Querying for data.
     all_stations = Location.objects.all()
@@ -215,7 +225,8 @@ def renewals(request):
     # Calculation for number responded and total
     total_percentage_responded = 0
     if (locker_renewal_count_total + locker_not_renewal_count_total + not_responded_count_total) != 0:
-        total_percentage_responded = ((locker_renewal_count_total + locker_not_renewal_count_total) / (locker_renewal_count_total + locker_not_renewal_count_total + not_responded_count_total), 2)
+        total_percentage_responded = (locker_renewal_count_total + locker_not_renewal_count_total) / (locker_renewal_count_total + locker_not_renewal_count_total + not_responded_count_total)
+        print(total_percentage_responded)
     else:
         total_percentage_responded = 0
 
@@ -276,6 +287,7 @@ def renewals(request):
                    'total_lockers': total_lockers,
                    'total_occupied': total_occupied})
 
+@staff_member_required
 # TBD: DELETE IF UNIMPLEMENTED
 def log(request):
     all_logs = Locker_Log.objects.all()

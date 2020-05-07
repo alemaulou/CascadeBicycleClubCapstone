@@ -1,6 +1,29 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 {% extends "admin/change_form.html" %}
-{% block breadcrumbs %}
-{% endblock %}
+    {% block breadcrumbs %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
+
+  <button class="navbar-toggler" type="buton" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav" style="margin-left: 3%">
+
+      <a class="nav-item nav-link active" href="/admin/database">Home <span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link" href="/admin/database/send_email">Send Renewals</a>
+      <a class="nav-item nav-link" href="/admin/database/renewals">Renewals</a>
+      <a class="nav-item nav-link" href="/admin/database/customer_upload">Import Data</a>
+        <a class="nav-item nav-link" href="{% url 'admin:password_change' %}">Change Password</a>
+        <a class="nav-item nav-link" href="{% url 'admin:logout' %}?next=/admin">Logout</a>
+    </div>
+  </div>
+</nav>
+    {% endblock %}
 {% block userlinks %}
 {% endblock %}
 {% if user.is_active and user.is_staff %}

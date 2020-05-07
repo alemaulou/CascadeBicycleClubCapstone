@@ -9,7 +9,7 @@
 
     {% load i18n admin_urls static %}
     { block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} delete-confirmation
-    %{% block breadcrumbs %}
+    {% block breadcrumbs %}
     <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
 
   <button class="navbar-toggler" type="buton" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,7 +30,60 @@
     {% endblock %}
     {% block content %}
     {% if user.is_authenticated %}
-            <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
+
+    <div class="row p-3 justify-content-md-center">
+        <!--    Reset Renewals-->
+    <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-md-4" class="rounded">
+        <table class="table table-bordered table-fixed table-sm">
+            <h1>
+                Reset Renewals
+            </h1>
+
+            <div>
+                At time to start updating customer information for renewals, this feature functions as a method to change
+                customer's status' from "Active" to "No Reponse."
+            </div>
+            <br>
+                <form method="POST" action="">{% csrf_token %}
+                    <input type="submit" name="list" value="Reset Renewals"/>
+                </form>
+        </table>
+    </div>
+
+        <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-md-4" class="rounded">
+        <table class="table table-bordered table-fixed table-sm">
+                <h1>Set All Not Renewing to Inactive</h1>
+            <div>
+                Set all Customers not Renewing to Inactive.
+            </div>
+            <br>
+            <div>
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <input type="submit" name="inactive" value="Set Not Renewing to Inactive"/>
+            </form>
+            </div>
+        </table>
+            </div>
+
+        <div class="shadow p-3 mb-5 bg-white rounded col-md-3" class="rounded">
+            <table class="table table-bordered table-fixed table-sm">
+                <h1>
+                    Purge Inactive Lockers
+                </h1>
+            <div>
+                This will purge all inactive lockers and free them up.
+            </div>
+            <br>
+            <div>
+                <form method="POST" action="">{% csrf_token %}
+                    <input type="submit" name="purge" value="Purge Inactive Lockers"/>
+                </form>
+            </table>
+        </div>
+    </div>
+
+    <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
         <table class="table table-bordered table-fixed table-sm">
             <thead>
             <tr><h1>Renewal Summary</h1>
@@ -69,53 +122,20 @@
             </tbody>
         </table>
     </div>
-        <div class="row">
-<!--    Reset Renewals-->
-    <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-md-3" class="rounded">
-        <table class="table table-bordered table-fixed table-sm">
-            <h1>1) Reset Renewals</h1>
-            <div>At time to start updating customer information for renewals, this feature functions as a method to change
-                customer's status' from "Active" to "No Reponse."</div>
-            <div>
-                <form method="POST" action="">{% csrf_token %}
-                    <input type="submit" name="list" value="Reset Renewals"/>
-                </form>
-            </table>
-    </div>
-
-            <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-md-3" class="rounded">
-        <table class="table table-bordered table-fixed table-sm">
-                <h1>2) Set All Not Renewing to Inactive</h1>
-                Set all Customers not Renewing to Inactive
-            <div><form method="POST" action="">{% csrf_token %}
-    <input type="submit" name="inactive" value="Set Not Renewing to Inactive"/>
-</form>
-                </div>
-        </table>
-                </div>
-
-    <div class="shadow p-3 mb-5 bg-white rounded col-md-3" class="rounded">
-        <table class="table table-bordered table-fixed table-sm">
-                <h1>3) Purge Inactive Lockers</h1>
-                This will purge all inactive lockers and free them up.
-            <div><form method="POST" action="">{% csrf_token %}
-    <input type="submit" name="purge" value="Purge Inactive Lockers"/>
-</form>
-            </table>
-    </div>
-            </div>
-
 
 <!--    Reset Renewals-->
     <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
         <table class="table table-bordered table-fixed table-sm">
 
 
-        <h1 class="page-header">Customers Not Responded <a href="customer">
+        <h1 class="page-header">Customer Responses <a href="customer">
             <i class="fa fa-edit"
             aria-hidden="true"
                style=" vertical-align: middle; font-size: 1rem;"></i></a></h1>
-            List of Customers who's statuses are still not confirmed.
+            <div>
+                Based on customer responses from survey, set Customers to their appropriate statuses.
+            </div>
+            <br>
             <p><form method="GET" action="">
     <select name="featured">
 
@@ -164,7 +184,7 @@
 
     </div>
 </div>
-</table>
+    </table>
 </div>
     {% endif %}
 
