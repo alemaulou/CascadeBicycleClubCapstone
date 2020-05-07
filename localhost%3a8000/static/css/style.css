@@ -50,8 +50,7 @@
 .header-section {
 	padding-left: 55px;
 	padding-right: 72px;
-	background-color: white;
-	margin-bottom: -100px;
+	background: white;
 }
 
 .site-logo {
@@ -173,44 +172,48 @@
 	padding-top: 50px;
 }
 
-header {
-	background-color:lightseagreen;
-}
+
 
 /* hero section */
 
 .hero-section2 {
 	overflow: hidden;
+	background-color: cornflowerblue;
 } 
 
 .hs-item2 {
 	height: 724px;
 	padding-bottom: 90px;
-	padding-top: 300px;
+	padding-top: 240px;
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;
 	-webkit-box-align: center;
 	-ms-flex-align: center;
 	align-items: center;
-	background-color: white;
+	background: white;
 }
 
 .hs-text h2{
 	font-size: 70px;
 	margin-bottom: 25px;
 	line-height: 0.9;
-	 color: white; 
-}
-
-.hs-text h4, .hs-text p {
-	color: white;
-	opacity: 0.8;
+	 color: green; 
 }
 
 .hs-text p {
+	color: black;
+	opacity: 0.6;
 	margin-bottom: 50px;
+	
 }
+
+
+.hr-img {
+	position: absolute;
+	left: 150px;
+}
+
 
 
 
@@ -238,14 +241,14 @@ Intro section
 }
 
 .steps-text h4 {
-	color: forestgreen;
+	color: green;
 }
-
 
 .contact-us{
 	position: relative;
 	left:-18px;
-	bottom: 20px;
+	bottom: 40px;
+
 }
 
 
@@ -298,17 +301,34 @@ Concept section
 }
 
 
-#mapid { 
-	height: 500px;
-	width:100%; 
-	position: relative;
-}
+
+.map-container{
+    overflow:hidden;
+    padding-bottom:56.25%;
+    position:relative;
+    height:0;
+    }
+    .map-container iframe{
+    left:100px;
+    top:40px;
+    height:100%;
+    width:100%;
+	position:absolute;
+	overflow: hidden;
+    }
+
+    #mapid {
+			height: 400px;
+			width: 100%;
+			position: relative;
+			left: 10px;
+			}
 
 div#custform {
+	float: right;
 	margin-top: -30px;
 	list-style-type: none;
-	border: 1px solid gray;
-	border-radius: 5px;
+	border: black;
 }
 
 div#custform button {
@@ -319,7 +339,7 @@ div#custform button {
 	padding: 8px 5px;
 	border-radius: 50px;
 	text-transform: uppercase;
-	background:  #37B04A;
+	background: #37B04A;
 	color: #fff;
 	line-height: normal;
 	cursor: pointer;
@@ -329,7 +349,7 @@ div#custform button {
 
 .filterBtn {
 		position: relative;
-		left: 185px;
+		left: 70px;
 		bottom: 20px;
 }
 
@@ -340,7 +360,6 @@ div#custform button {
 	font-weight: 500;
 	min-width: 90px;
 	padding: 8px 5px;
-	margin-top: 50px;
 	border-radius: 50px;
 	text-transform: uppercase;
 	background: #37B04A;
@@ -350,17 +369,6 @@ div#custform button {
 	text-align: center;
 
 }
-
-#mapFormSection {
-	color:  #1c294a;
-}
-
-#mapFormSection input {
-	border-radius: 7px;
-	border-width: 1.5px;
-}
-
-
 /* Dropdown Button */
 .dropbtn {
   background-color: #3498DB;
@@ -440,8 +448,8 @@ Subscription section
  .subscription-section {
 	background: lightgray;
 	padding: 40px;
+	margin-top: 1200px;
 	width: 100%;
-	margin-top: 20px;
 }
 
 .sub-text {
@@ -468,22 +476,18 @@ Subscription section
 	margin-bottom: 40px;
 }
 
-a.lease-now {
+.sub-list {
+	list-style: none;
 	background: #37B04A;
+	padding: 40px 15px 20px 57px;
+	border-radius: 30px;
+	
+}
+
+.sub-list li {
 	color: white;
-	display: inline-block;
-	border: none;
-	font-size: 14px;
-	font-weight: 500;
-	min-width: 195px;
-	padding: 23px 20px;
-	border-radius: 50px;
-	text-transform: uppercase;
-	line-height: normal;
-	cursor: pointer;
-	text-align: center;
-	margin-top: -200px;
-	margin-left:15px;
+	font-size: 16px;
+	margin-bottom: 8px;
 }
 
 
@@ -507,84 +511,16 @@ a.lease-now {
 }
 
 #footer {
-	height: 230px;
+	height: 200px;
 	position: relative;
-	background-color: #006882;
-	color: blAck;
+	background-color: #37B04A;
+	color: white;
 	list-style: none;
 	padding: 10px;
-	margin-top: -230px;
 }
 
-.clearfooter {
-height: 230px;
-clear: both;
-}
+.clearfooter {/* height: 200px; */clear: both;}
 
-section#steps-section {
-	background-color: lightgray;
-	width: 100%;
-	padding-bottom: 20px;
-	margin-top: 30px;
-}
-
-#main-photo {
-	top: -3px;
-}
-
-
-.hr-img {
-	position: absolute;
-}
-
-ul{
-	list-style-type: none;
-	padding-left: 0;
-}
-
-#footer {
-	padding: 30px;
-}
-
-div#sound-transit {
-	background-color:#37B04A;
-	color: #1c294a;
-	border-radius: 5px;
-	padding: 10px;
-	margin-top: 100px;
-	margin-bottom: 20px;
-}
-
-
-div#sound-transit a {
-	font-weight: bold;
-	color: #1c294a;
-	text-transform: uppercase;
-}
-
-div#sound-transit p {
-	font-size: large;
-	color: #1c294a;
-}
-
-@media (max-width:1000px){
-    .hr-img {
-        display:none;
-    }
-}
-
-div#locker-list-body {
-	background-color: white;
-	color: grey;
-	padding: 5px;
-}
-
-input, option {
-	margin: 10px;
-}
-
-div#landing-text {
-	background-color: #006882;
-	padding: 30px;
-	border-radius: 10px;
+#mapFormSection {
+	display: block;
 }

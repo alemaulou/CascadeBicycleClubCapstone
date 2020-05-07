@@ -32,4 +32,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('maintenance_report/', views.maintenance_report, name='maintenance-report'),
     path('', views.customer_inquiry, name='landing'),
+    url(r'^select2/', include('django_select2.urls')),
 ]

@@ -56,7 +56,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'crispy_forms',
-    'import_export'
+    'import_export',
+    'django_select2'
 ]
 
 MIDDLEWARE = [
