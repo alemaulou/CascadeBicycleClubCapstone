@@ -137,7 +137,7 @@ class Maintenance(models.Model):
     lockers = models.ManyToManyField(Locker, blank=True)
     maintenance_description = models.CharField('Maintenance Description', max_length=250, default='')
     start_date = models.DateField()
-    end_date = models.DateField(null=True)
+    end_date = models.DateField(blank=True)
     main_status_id = models.ForeignKey(Maintenance_Status, on_delete=models.CASCADE, default = 1)
 
     def __str__(self):
