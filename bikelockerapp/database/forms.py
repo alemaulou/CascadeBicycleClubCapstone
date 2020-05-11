@@ -1,5 +1,5 @@
 from django import forms
-from database.models import Customer, Location, Status, Renewal_Form
+from database.models import Customer, Location, Status, Renewal_Form, Cust_Locker
 from datetime import date, datetime
 
 
@@ -31,4 +31,12 @@ class RenewalsForm(forms.ModelForm):
         model = Renewal_Form
         fields = ['email', 'name_lease', 'mailing_address', 'phone', 'location', 'locker_number', 'locker_usage', 'renewal_decision', 'feedback']
 
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+class ContractRenewForm(forms.ModelForm):
+    class Meta:
+        model = Cust_Locker
+        fields = ['renew_date']
+        widgets = {'renew_date': DateInput()}
 

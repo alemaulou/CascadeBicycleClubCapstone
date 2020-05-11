@@ -1,6 +1,7 @@
 import csv, io
 
 from django.contrib.admin.views.decorators import staff_member_required
+from django.core import serializers
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, BadHeaderError, HttpResponse
@@ -10,7 +11,7 @@ from .models import Customer, Inquiry, Location, Cust_Locker, Maintenance, Locke
 from .forms import CustomerForm, SendEmailForm, SendEmailFormAfter2Weeks, RenewalsForm
 from datetime import datetime, date, timedelta
 from django.conf import settings
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 @staff_member_required
 # Admin Index View
@@ -21,11 +22,16 @@ def index(request):
     all_station = Location.objects.all()
     all_customer = Customer.objects.all()
     all_cust_locker = Cust_Locker.objects.all()
+
     all_maintenance = Maintenance.objects.all()
 
     # Checking to see if user input in search field "contains" query
     location_contains_query = request.GET.get('location')
     customer_contains_query = request.GET.get('customer')
+
+    render_cust = False
+    if location_contains_query or customer_contains_query:
+        render_cust = True
 
     # Filtering customer data (station, locker, inquiry) by location
     if location_contains_query != '' and location_contains_query is not None:
@@ -49,8 +55,15 @@ def index(request):
         if date.today() > locker_renewals.renew_date:
             contains_locker_renewals = True
 
+    paginator = Paginator(all_cust_locker,25)
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    json = serializers.serialize('json', all_cust_locker)
+
     # Returning values to to render onto template
-    render_dicts = {'all_stations': all_station, 'all_customer': all_customer, 'all_inquiries': all_inquiry, 'all_cust_lockers': all_cust_locker, 'locker_renewals': contains_locker_renewals, 'all_maintenance' : all_maintenance}
+    render_dicts = {'render_cust': render_cust, 'all_stations': all_station, 'all_customer': all_customer, 'page_obj': page_obj, 'all_inquiries': all_inquiry, 'all_cust_lockers': all_cust_locker, 'locker_renewals': contains_locker_renewals, 'all_maintenance' : all_maintenance}
     return render(request, 'admin/index.html', render_dicts)
 
 def BootstrapFilterView(request):
@@ -80,16 +93,41 @@ def customer_upload(request):
 
     # Scraping data from CSV file.
     for column in csv.reader(io_string, delimiter=',', quotechar="|"):
-        _, created = Customer.objects.update_or_create(
+        not_created, created = Customer.objects.update_or_create(
             cust_f_name = column[0],
             cust_l_name = column[1],
             cust_email = column[6],
+            cust_phone = column[8].replace('-',''),
+            cust_phone2 = column[9].replace('-',''),
             cust_address = column[2],
             cust_city = column[3],
             cust_state = column[4],
             cust_zip = column[5]
         )
 
+        not_created_location, created_location = Location.objects.update_or_create(
+            location_name = column[15],
+            location_capacity = 0
+        )
+        not_created_locker, created_locker = Locker.objects.update_or_create(
+            location_id = not_created_location,
+            locker_name = column[10],
+            locker_status_id =  Locker_Status.objects.get(locker_status_name='Leased')
+        )
+        contract_date = column[13]
+        contract_date_year = contract_date[-2:]
+        contract_date = contract_date[:-2]
+        contract_date += "20{}".format(contract_date_year)
+
+        if not_created.cust_f_name != "":
+            not_created_cust_locker, created_cust_locker = Cust_Locker.objects.update_or_create(
+                cust_id = not_created,
+                locker_id = not_created_locker,
+                locker_id__locker_status_id = Locker_Status.objects.get(locker_status_name='Leased'),
+                contract_date = datetime.strptime(contract_date, "%m/%d/%Y").date(),
+                renew_date = datetime.now(),
+                description = column[11]
+            )
     context = {}
     return render(request, template, context)
 
@@ -140,9 +178,7 @@ def send_email(request):
         form2 = SendEmailFormAfter2Weeks(request.POST)
         if form2.is_valid():
             subject = form2.cleaned_data['subject']
-            print(subject)
             message = form2.cleaned_data['message']
-            print(message)
             from_email = settings.EMAIL_HOST_USER
             try:
                 send_mail(subject, message, from_email, y, fail_silently=False)
@@ -159,14 +195,13 @@ def send_email(request):
     # Rendering boolean for New Locker Renewal Requests
     contains_lr_under_2_weeks = False
     for locker_renewals in all_cust_locker:
-        if date.today() > locker_renewals.renew_date and date.today() - timedelta(14) < locker_renewals.renew_date and (locker_renewals.cust_id.status.status_name == "Not Responded"):
-            print(locker_renewals)
+        if date.today() > locker_renewals.renew_date and date.today() - timedelta(14) < locker_renewals.renew_date:
             contains_lr_under_2_weeks = True
 
     # Rendering boolean for Past due (over 2 week) Locker Renewal Requests
     contains_lr_over_2_weeks = False
     for locker_renewals in all_cust_locker:
-        if date.today() - timedelta(14) > locker_renewals.renew_date and (locker_renewals.cust_id.status.status_name == "Not Responded"):
+        if date.today() - timedelta(14) > locker_renewals.renew_date:
             contains_lr_over_2_weeks = True
 
     # Total number of Lockers by Location Capacity
@@ -175,7 +210,8 @@ def send_email(request):
         total_lockers += location.location_capacity
 
     # Total number of Occupied Lockers
-    total_occupied = len(all_cust_locker)
+    total_occupied = len(Cust_Locker.objects.all())
+
 
     return render(request, 'send_email.html',
                   {'all_stations': all_stations,
@@ -195,49 +231,58 @@ def renewals(request):
     # Querying for data.
     all_stations = Location.objects.all()
     all_cust_locker = Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded")
-    paginator = Paginator(all_cust_locker, 1)
-    page = request.GET.get('page')
+
     # Total number of Lockers by Location Capacity
     total_lockers = 0
     for location in all_stations:
         total_lockers += location.location_capacity
 
     # Total number of Occupied Lockers
-    total_occupied = len(all_cust_locker)
+    total_occupied = len(Cust_Locker.objects.all())
 
     ## Get Total Customer Renewal Status to render
     # Total Renewing
     locker_renewal_count_total = 0
+
     for locker in all_stations:
         if locker.pk:
-            print('hi')
-            print(locker.pk)
             try:
-                Cust_Locker.objects.get(locker_id__location_id=locker.pk)
-                locker_instance = Cust_Locker.objects.get(locker_id__location_id=locker.pk)
+                # Cust_Locker.objects.get(locker_id__location_id=locker.pk)
+                bug = Cust_Locker.objects.filter(locker_id__location_id=locker.pk)
+                type(bug)
+                # locker_instance = Cust_Locker.objects.get(locker_id__location_id=locker.pk)
                 status = Status.objects.get(status_name='Renewed')
-                if locker_instance.cust_id.status.status_name == str(status):
-                    locker_renewal_count_total += 1
-                    print(locker_renewal_count_total)
+                locker_renewal_count_total += len(Cust_Locker.objects.filter(locker_id__location_id=locker.pk).filter(cust_id__status_id__status_name=str(status)))
+
             except Cust_Locker.DoesNotExist:
-                print('hello')
+                pass
 
     # Not Renewing
     locker_not_renewal_count_total = 0
     for locker in all_stations:
-        if Cust_Locker.objects.filter(locker_id__location_id=locker.pk) and Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Renewing"):
-            locker_not_renewal_count_total += 1
+        if locker.pk:
+            try:
+                # Cust_Locker.objects.filter(locker_id__location_id=locker.pk)
+                # locker_instance =  Cust_Locker.objects.get(locker_id__location_id=locker.pk)
+                status = Status.objects.get(status_name='Not Renewing')
+                locker_not_renewal_count_total += len(Cust_Locker.objects.filter(locker_id__location_id=locker.pk).filter(cust_id__status_id__status_name=str(status)))
+            except Cust_Locker.DoesNotExist:
+                pass
 
     # Not Responded
     not_responded_count_total = 0
     for locker in all_stations:
-        if Cust_Locker.objects.filter(locker_id__location_id=locker.pk) and Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded"):
-            not_responded_count_total += 1
+        if locker.pk:
+            try:
+                status = Status.objects.get(status_name='Not Responded')
+                not_responded_count_total += len(Cust_Locker.objects.filter(locker_id__location_id=locker.pk).filter(cust_id__status_id__status_name=str(status)))
+            except Cust_Locker.DoesNotExist:
+                pass
 
     # Calculation for number responded and total
     total_percentage_responded = 0
     if (locker_renewal_count_total + locker_not_renewal_count_total + not_responded_count_total) != 0:
-        total_percentage_responded = str(round((locker_renewal_count_total + locker_not_renewal_count_total) / (locker_renewal_count_total + locker_not_renewal_count_total + not_responded_count_total)*100)) + "%"
+        total_percentage_responded = str((locker_renewal_count_total + locker_not_renewal_count_total) / (locker_renewal_count_total + locker_not_renewal_count_total + not_responded_count_total)*100) + "%"
     else:
         total_percentage_responded = str(0) + "%"
 
@@ -256,6 +301,14 @@ def renewals(request):
             list_of_obj_not_renewing.update(status=not_renewing_status)
         return HttpResponseRedirect("renewals")
 
+    # Update Renewal date based on location.
+    list_of_location = Location.objects.all()
+    list_of_cust_locker = Cust_Locker.objects.filter(locker_id__location_id__in=list_of_location)
+    if 'update_renewal' in request.POST:
+        if list_of_cust_locker:
+            get_date=request.POST['update_renewal']
+            list_of_cust_locker.update(renew_date=get_date)
+
     # Mass update
     if 'list' in request.POST:
         active_customers = Customer.objects.all().exclude(status_id__status_name__iexact="Inactive").exclude(status__isnull=True).exclude(status_id__status_name__iexact="Not Renewing")
@@ -266,9 +319,7 @@ def renewals(request):
     # Purge "Inactive" Cust_Lockers
     if 'purge' in request.POST:
         inactive_lockers = Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Inactive")
-        print(inactive_lockers)
         for single_locker in inactive_lockers:
-            print(inactive_lockers)
             locker_available = Locker_Status.objects.get(locker_status_name='Available')
             inactive = Locker.objects.filter(locker_id = single_locker.pk)
             inactive.update(locker_status_id=locker_available)
@@ -314,14 +365,11 @@ def renewals_form(request):
         print('did')
         form = RenewalsForm(request.POST)
         if form.is_valid():
-            print('did2')
             product = form.save()
             return HttpResponseRedirect('/admin')
         else:
-            print('form invalid')
             print(form.errors)
     else:
-        print('didn')
         form = RenewalsForm()
         if request.method == 'GET':
             submitted = True

@@ -48,21 +48,7 @@
 
     <div class="row p-3 justify-content-md-center">
 
-            <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-sm-3" class="rounded">
-        <table class="table table-bordered table-fixed table-sm">
-            <h1>
-                Set Renewal Date
-            </h1>
 
-            <div>
-                Set a renewal date uniformly for current active customers.
-            </div>
-            <br>
-                <form method="POST" action="">{% csrf_token %}
-                    <input type="submit" name="list" value="Reset Date"/>
-                </form>
-        </table>
-    </div>
         <!--    Reset Renewals-->
     <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-sm-3" class="rounded">
         <table class="table table-bordered table-fixed table-sm">
@@ -97,7 +83,7 @@
         </table>
             </div>
 
-        <div class="shadow p-3 mb-5 bg-white rounded col-md-2" class="rounded">
+        <div class="shadow p-3 mb-5 bg-white rounded col-md-3" class="rounded">
             <table class="table table-bordered table-fixed table-sm">
                 <h1>
                     Purge Inactive Lockers
@@ -154,6 +140,7 @@
         </table>
     </div>
 
+
 <!--    Reset Renewals-->
     <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
         <table class="table table-bordered table-fixed table-sm">
@@ -189,7 +176,6 @@
                     <th>Location</th>
                     <th>Renewing</th>
                     <th>Not Renewing</th>
-<!--                    <th>Not Responded</th>-->
                 </tr>
                 {% if all_cust_lockers %}
                 {% for item in all_cust_lockers %}
@@ -200,8 +186,6 @@
                      name='for_action' id='for_action' ></td>
                      <td><input type="checkbox" value='{{item.cust_id.pk}}'
                      name='for_action2' id='for_action2' ></td>
-<!--                    <td><input type="radio" value='{{item.cust_id.pk}}'-->
-<!--                     name='for_action3' id='for_action3' ></td>-->
                 </tr>
                 {% endfor %}
                 {% else %}
@@ -213,11 +197,11 @@
             <input type="submit" value="Save" name="save">
         </form>
 
-    </div>
-            </table>
-</div>
 
-</div>
+    </div>
+
+            </table>
+
     {% endif %}
 
 {% endblock %}

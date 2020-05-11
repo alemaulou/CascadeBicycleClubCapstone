@@ -50,7 +50,7 @@
     <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
         <table class="table table-bordered table-fixed">
             <thead>
-            <tr><h1>Awaiting Renewal <em>(as of {% now "F j, Y" %})</em></h1>
+            <tr><h1>Awaiting Renewal</h1>
 
                 <th scope="col" style="width: 9.09%">First</th>
                 <th scope="col" style="width: 9.09%">Last</th>
@@ -72,7 +72,6 @@
             {% if lr_under_2 %}
             {% for item in all_cust_lockers %}
             {% if item.is_under_2_weeks_past_due %}
-
             <tr>
                 <td>{{ item.cust_id.cust_f_name }}</td>
                 <td>{{ item.cust_id.cust_l_name }}</td>
@@ -80,7 +79,7 @@
                 <td>{{ item.cust_id.cust_city }}</td>
                 <td>{{ item.cust_id.cust_state }}</td>
                 <td>{{ item.cust_id.cust_zip }}</td>
-                <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_email }}</a></td>
+                <td style="word-break: break-all;"><a href="mailto: {{ item.cust_id.cust_email }}" target="_blank">{{item.cust_id.cust_email }}</a></td>
                 <td>{{ item.cust_id.phone_number }}</td>
                 <td>{{ item.cust_id.phone_number2 }}</td>
                 <td>{{ item.locker_id.locker_status_id.locker_status_name }}</td>
@@ -142,7 +141,7 @@
     <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
         <table class="table table-bordered table-fixed">
             <thead>
-            <tr><h1>Over 2 Weeks Past Due <em>(as of {% now "F j, Y" %})</em></h1>
+            <tr><h1>Over 2 Weeks Past Due</h1>
 
                 <th scope="col" style="width: 9.09%">First</th>
                 <th scope="col" style="width: 9.09%">Last</th>
@@ -171,7 +170,7 @@
                 <td>{{ item.cust_id.cust_city }}</td>
                 <td>{{ item.cust_id.cust_state }}</td>
                 <td>{{ item.cust_id.cust_zip }}</td>
-                <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_email }}</a></td>
+                <td style="word-break: break-all;"><a href="mailto: {{ item.cust_id.cust_email }}" target="_blank">{{item.cust_id.cust_email }}</a></td>
                 <td>{{ item.cust_id.phone_number }}</td>
                 <td>{{ item.cust_id.phone_number2 }}</td>
                 <td>{{ item.locker_id.locker_status_id.locker_status_name }}</td>
