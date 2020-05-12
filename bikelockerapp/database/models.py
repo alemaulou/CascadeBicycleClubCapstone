@@ -14,6 +14,9 @@ class Location(models.Model):
     location_zip = models.CharField('Location Zip', max_length=10, blank=True)
     location_capacity = models.IntegerField('Location Capacity', default=0)
 
+    class Meta:
+        ordering = ['location_name']
+
     def __str__(self):
         return self.location_name
 
@@ -51,7 +54,6 @@ class Location(models.Model):
         if location:
             location_not_responded = Cust_Locker.objects.filter(locker_id__location_id=self.pk).filter(
                 cust_id__status_id__status_name__iexact="Not Responded")
-            print(len(location_not_responded))
             location_renewed = Cust_Locker.objects.filter(locker_id__location_id=self.pk).filter(
                 cust_id__status_id__status_name__iexact="Renewed")
             location_not_renew = Cust_Locker.objects.filter(locker_id__location_id=self.pk).filter(
@@ -62,6 +64,18 @@ class Location(models.Model):
                  return "{}{}".format(top/bottom * 100,"%")
         return "{}{}".format(0,"%")
 
+
+class Location_Renewals(models.Model):
+    location_renew_id = models.AutoField(primary_key=True)
+    location = models.ForeignKey(Location, on_delete=models.SET_NULL, blank=True, null=True)
+    date = models.DateField('Locker Location Renewal Date', null=True)
+
+    def __str__(self):
+        return "{} / {}".format(str(self.location), str(self.date))
+
+    class Meta:
+        verbose_name = "Locker Location Renewal Date"
+        verbose_name_plural = "Locker Location Renewal Dates"
 
 class Locker_Status(models.Model):
     locker_status_id = models.AutoField(primary_key=True)
@@ -162,8 +176,6 @@ class Status(models.Model):
 
     def __str__(self):
         return self.status_name
-    
-
 
 class Customer(models.Model):
     cust_id = models.AutoField(primary_key=True)
@@ -238,8 +250,14 @@ class Cust_Locker(models.Model):
     locker_id = models.ForeignKey(Locker, on_delete=models.CASCADE)
     contract_date = models.DateField()
     renew_date = models.DateField()
+    location_renewal = models.ForeignKey(Location_Renewals, on_delete=models.CASCADE, blank=True, null=True)
     description = models.CharField(max_length=100, default="", blank=True)
-
+    CONTACT_CHOICES = (
+        ('No', 'No'),
+        ('Initial Contact', 'Initial Contact'),
+        ('Second Contact', 'Second Contact')
+    )
+    contacted = models.CharField('Contacted', choices=CONTACT_CHOICES, max_length=50, default='No')
 
     @property
     def natural_key(self):
@@ -251,19 +269,44 @@ class Cust_Locker(models.Model):
 
     @property
     def is_past_due(self):
-        return date.today() > self.renew_date
+        try:
+            if self.location_renewal.date:
+                return date.today() > self.location_renewal.date
+        except:
+            return False
 
     @property
     def is_under_2_weeks_past_due(self):
-        if (date.today() > self.renew_date and date.today() - timedelta(14) < self.renew_date):
-            return True
+        try:
+            if self.location_renewal.date:
+                if (date.today() > self.location_renewal.date and date.today() - timedelta(14) < self.location_renewal.date):
+                    return True
+        except:
+            return False
 
     @property
     def is_2_weeks_past_due(self):
-        if(date.today() - timedelta(14) > self.renew_date):
+        try:
+            if(date.today() - timedelta(14) > self.location_renewal.date):
+                return True
+        except:
+            return False
+
+    @property
+    def not_contacted(self):
+        if self.contacted == "No":
             return True
+        else:
+            return False
+
+    def contacted_once(self):
+        if self.contacted == "Initial Contact":
+            return True
+        else:
+            return False
 
     class Meta:
+        ordering = ['locker_id__location_id__location_name', 'cust_id__cust_l_name']
         verbose_name = "Customer Locker"
         verbose_name_plural = "Customer Lockers"
 
@@ -337,11 +380,6 @@ class Inquiry(models.Model):
     cust_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
     inquiry_date = models.DateField()
     locations = models.ManyToManyField(Location)
-
-    @property
-    def is_empty(self):
-        if Inquiry.objects.count() == 0:
-            return True
 
     class Meta:
         verbose_name = "Inquiry"

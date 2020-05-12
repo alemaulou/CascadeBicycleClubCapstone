@@ -52,8 +52,11 @@ def index(request):
     # Rendering boolean for Locker Renewals
     contains_locker_renewals = False
     for locker_renewals in all_cust_locker:
-        if date.today() > locker_renewals.renew_date:
-            contains_locker_renewals = True
+        if locker_renewals.location_renewal:
+            if date.today() > locker_renewals.location_renewal.date:
+                contains_locker_renewals = True
+        else:
+            pass
 
     paginator = Paginator(all_cust_locker,25)
 
@@ -74,7 +77,6 @@ def BootstrapFilterView(request):
 def customer_upload(request):
     # Import data template
     template = "customer_upload.html"
-
     prompt = {
         'order': 'Order of CSV should be the following: cust_f_name, cust_l_name, cust_email, address, city, state, zip'
     }
@@ -156,53 +158,101 @@ def customer_waitlist(request):
 # Admin E-Mail Renewals View
 @staff_member_required
 def send_email(request):
-    x = [obj.cust_id.cust_email for obj in Cust_Locker.objects.all() if obj.is_under_2_weeks_past_due]
-    y = [obj.cust_id.cust_email for obj in Cust_Locker.objects.all() if obj.is_2_weeks_past_due]
+    x = [obj.cust_id.cust_email for obj in Cust_Locker.objects.all() if (obj.is_under_2_weeks_past_due and obj.not_contacted)]
+    yy = [obj for obj in Cust_Locker.objects.all() if obj.is_2_weeks_past_due and (obj.not_contacted)]
+    y = [obj.cust_id.cust_email for obj in yy if obj.contacted_once]
+    for yy in y:
+        print(yy)
     all_stations = Location.objects.all()
     all_cust_locker = Cust_Locker.objects.all()
     if request.method == 'GET':
         form = SendEmailForm()
         form2 = SendEmailFormAfter2Weeks()
     if request.method == 'POST' and 'form1' in request.POST:
-        form = SendEmailForm(request.POST)
+        form = SendEmailForm(request.POST or None)
         if form.is_valid():
+            print('test')
             subject = form.cleaned_data['subject']
             message = form.cleaned_data['message']
             from_email = settings.EMAIL_HOST_USER
             try:
                 send_mail(subject, message, from_email, x, fail_silently=False)
+                customers = [obj for obj in Cust_Locker.objects.all() if
+                     (obj.is_under_2_weeks_past_due and obj.not_contacted)]
+                for customer in customers:
+                    print(customer)
+                    print(customer.contacted)
+                    customer.contacted = 'Initial Contact'
+                    customer.save()
+                    print(customer.contacted)
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
-            return redirect('thanks')
+            return HttpResponseRedirect("send_email")
+
     if request.method == 'POST' and 'form2' in request.POST:
+        print('test')
         form2 = SendEmailFormAfter2Weeks(request.POST)
         if form2.is_valid():
+            print('test2')
             subject = form2.cleaned_data['subject']
             message = form2.cleaned_data['message']
             from_email = settings.EMAIL_HOST_USER
             try:
                 send_mail(subject, message, from_email, y, fail_silently=False)
+                customers = [obj for obj in Cust_Locker.objects.all() if
+                             (obj.is_2_weeks_past_due and obj.not_contacted)]
+                customers_filtered = [obj for obj in customers if obj.contacted_once]
+                for customer in customers_filtered:
+                    print(customer)
+                    print(customer.contacted)
+                    customer.contacted = 'Second Contact'
+                    customer.save()
+                    print(customer.contacted)
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
-            return redirect('thanks')
+            return HttpResponseRedirect("send_email")
+
+    if 'reset contacted' in request.POST:
+        print('tester')
+        active_customers = Customer.objects.all().exclude(status_id__status_name__iexact="Inactive").exclude(status__isnull=True).exclude(status_id__status_name__iexact="Not Renewing")
+        active_lockers = Cust_Locker.objects.all().filter(cust_id__in=active_customers)
+        for customer in active_lockers:
+            if customer.location_renewal:
+                if date.today() > customer.location_renewal.date:
+                    customer.contacted = "No"
+                    customer.save()
+                else:
+                    pass
+            else:
+                pass
+        return HttpResponseRedirect("send_email")
 
     # Rendering boolean for Locker Renewals
     contains_locker_renewals = False
     for locker_renewals in all_cust_locker:
-        if date.today() > locker_renewals.renew_date:
-            contains_locker_renewals = True
+        if locker_renewals.location_renewal:
+            if date.today() > locker_renewals.location_renewal.date:
+                contains_locker_renewals = True
+        else:
+            pass
 
     # Rendering boolean for New Locker Renewal Requests
     contains_lr_under_2_weeks = False
     for locker_renewals in all_cust_locker:
-        if date.today() > locker_renewals.renew_date and date.today() - timedelta(14) < locker_renewals.renew_date:
-            contains_lr_under_2_weeks = True
+        if locker_renewals.location_renewal:
+            if date.today() > locker_renewals.location_renewal.date and date.today() - timedelta(14) < locker_renewals.location_renewal.date and locker_renewals.contacted == "No":
+                contains_lr_under_2_weeks = True
+        else:
+            pass
 
     # Rendering boolean for Past due (over 2 week) Locker Renewal Requests
     contains_lr_over_2_weeks = False
     for locker_renewals in all_cust_locker:
-        if date.today() - timedelta(14) > locker_renewals.renew_date:
-            contains_lr_over_2_weeks = True
+        if locker_renewals.location_renewal:
+            if date.today() - timedelta(14) > locker_renewals.location_renewal.date and (locker_renewals.contacted == "No" or locker_renewals.contacted == "Initial Contact"):
+                contains_lr_over_2_weeks = True
+        else:
+            pass
 
     # Total number of Lockers by Location Capacity
     total_lockers = 0
@@ -211,7 +261,6 @@ def send_email(request):
 
     # Total number of Occupied Lockers
     total_occupied = len(Cust_Locker.objects.all())
-
 
     return render(request, 'send_email.html',
                   {'all_stations': all_stations,
@@ -247,13 +296,10 @@ def renewals(request):
     for locker in all_stations:
         if locker.pk:
             try:
-                # Cust_Locker.objects.get(locker_id__location_id=locker.pk)
                 bug = Cust_Locker.objects.filter(locker_id__location_id=locker.pk)
                 type(bug)
-                # locker_instance = Cust_Locker.objects.get(locker_id__location_id=locker.pk)
                 status = Status.objects.get(status_name='Renewed')
                 locker_renewal_count_total += len(Cust_Locker.objects.filter(locker_id__location_id=locker.pk).filter(cust_id__status_id__status_name=str(status)))
-
             except Cust_Locker.DoesNotExist:
                 pass
 
@@ -262,8 +308,6 @@ def renewals(request):
     for locker in all_stations:
         if locker.pk:
             try:
-                # Cust_Locker.objects.filter(locker_id__location_id=locker.pk)
-                # locker_instance =  Cust_Locker.objects.get(locker_id__location_id=locker.pk)
                 status = Status.objects.get(status_name='Not Renewing')
                 locker_not_renewal_count_total += len(Cust_Locker.objects.filter(locker_id__location_id=locker.pk).filter(cust_id__status_id__status_name=str(status)))
             except Cust_Locker.DoesNotExist:
@@ -282,7 +326,7 @@ def renewals(request):
     # Calculation for number responded and total
     total_percentage_responded = 0
     if (locker_renewal_count_total + locker_not_renewal_count_total + not_responded_count_total) != 0:
-        total_percentage_responded = str((locker_renewal_count_total + locker_not_renewal_count_total) / (locker_renewal_count_total + locker_not_renewal_count_total + not_responded_count_total)*100) + "%"
+        total_percentage_responded = str(round((locker_renewal_count_total + locker_not_renewal_count_total) / (locker_renewal_count_total + locker_not_renewal_count_total + not_responded_count_total),2)*100) + "%"
     else:
         total_percentage_responded = str(0) + "%"
 
@@ -305,15 +349,22 @@ def renewals(request):
     list_of_location = Location.objects.all()
     list_of_cust_locker = Cust_Locker.objects.filter(locker_id__location_id__in=list_of_location)
     if 'update_renewal' in request.POST:
-        if list_of_cust_locker:
-            get_date=request.POST['update_renewal']
-            list_of_cust_locker.update(renew_date=get_date)
-
+        return HttpResponseRedirect("location_renewals")
     # Mass update
     if 'list' in request.POST:
         active_customers = Customer.objects.all().exclude(status_id__status_name__iexact="Inactive").exclude(status__isnull=True).exclude(status_id__status_name__iexact="Not Renewing")
-        # active_cust_lockers = Cust_Locker.objects.all.exclude(cust_id__status_id__status_name__iexact="Inactive")..exclude(cust_id__status_id__status_name__iexact="Not Renewing")
-        active_customers.update(status=not_responded_status)
+        type(active_customers)
+        active_lockers = Cust_Locker.objects.all().filter(cust_id__in=active_customers)
+        for customer in active_lockers:
+            if customer.location_renewal:
+                if date.today() > customer.location_renewal.date:
+                    print(customer.cust_id.status)
+                    customer.cust_id.status=not_responded_status
+                    customer.cust_id.save()
+                else:
+                    pass
+            else:
+                pass
         return HttpResponseRedirect("renewals")
 
     # Purge "Inactive" Cust_Lockers
