@@ -3,118 +3,162 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
 {% extends "admin/base_site.html" %}
+{% load static %}
 {% load widget_tweaks %}
+
 <tr class="container">
 
     {% load i18n admin_urls static %}
     { block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} delete-confirmation
-{% block breadcrumbs %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
+    {% block breadcrumbs %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
 
-  <button class="navbar-toggler" type="buton" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div class="navbar-nav" style="margin-left: 3%">
+        <button class="navbar-toggler" type="buton" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav" style="margin-left: 3%">
 
-      <a class="nav-item nav-link active" href="/admin/database">
-          <li class="nav-item active">Home <span class="sr-only">(current)</span></a>
-    </li>
-            <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Renewals
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-        <a class="dropdown-item" href="send_email">Send Renewals</a>
-      <a class="dropdown-item" href="renewals">Renewals</a>
+                <a class="nav-item nav-link active" href="/admin/database">
+                    <li class="nav-item active">Home <span class="sr-only">(current)</span>
+                </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Renewals
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="send_email">Send Renewals</a>
+                        <a class="dropdown-item" href="renewals">Renewals</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-item nav-link" href="customer_upload">Data</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-item nav-link" href="{% url 'admin:password_change' %}">Change Password</a>
+                <li class="nav-item">
+                    <a class="nav-item nav-link" href="{% url 'admin:logout' %}?next=/admin">Logout</a>
+                </li>
+
+            </div>
         </div>
-      </li>
-      <li class="nav-item">
-          <a class="nav-item nav-link" href="customer_upload">Data</a>
-          </li>
-       <li class="nav-item">
-           <a class="nav-item nav-link" href="{% url 'admin:password_change' %}">Change Password</a>
-               <li class="nav-item">
-        <a class="nav-item nav-link" href="{% url 'admin:logout' %}?next=/admin">Logout</a>
-               </li>
-
-    </div>
-  </div>
-</nav>
-{% endblock %}
+    </nav>
+    {% endblock %}
     {% block content %}
     {% if user.is_authenticated %}
 
+    <div class="row p-3 justify-content-md-center">
+
+        <!--Reset Renewal Date-->
+        <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-sm-4 border-0" class="rounded">
+                <div style="text-align: center"><a href=""><i class="fa fa-arrow-up fa-5x" aria-hidden="true"></i></a>
+            <p>
+                <h1>
+                    Update Locker Location Renewal Date
+                </h1>
+            </p>
+        </div>
+        <div>
+            Update Customer Locker Location Renewal Dates based on the location of their lockers. This comes in handy after a renewal cycle comes to an end!
+        </div>
+        <br>
+        <a href="../database/location_renewals"><input type="submit" name="update locker renewals" value="Update Renewal Dates" ></a>
+        </table>
+    </div>
+
+    <!-- Reset Customer Contact Field -->
+    <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-sm-4" class="rounded">
+        <div style="text-align: center">
+            <a href=""><i class="fa fa-refresh fa-5x" aria-hidden="true">
+            </i></a>
+            <p>
+                <h1 class="icon">
+                    Reset "Customer Contacted" Field
+                </h1>
+            </p>
+        </div>
+        <table class="table table-bordered table-fixed table-sm">
+            <div>
+                At times of renewal, reset Customers to "Not Responded" so that they appear on the lists below.
+            </div>
+            <br>
+            <div>
+                <form method="POST" action="">{% csrf_token %}
+                    <input type="submit" name="reset contacted" value="Reset Customer Contacted" />
+                </form>
+            </div>
+        </table>
+    </div>
+    </div>
     <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
         <table class="table table-bordered table-fixed">
             <thead>
-            <tr><h1>Awaiting Renewal <em>(as of {% now "F j, Y" %})</em></h1>
-
-                <th scope="col" style="width: 9.09%">First</th>
-                <th scope="col" style="width: 9.09%">Last</th>
-                <th scope="col" style="width: 9.09%">Address</th>
-                <th scope="col" style="width: 9.09%">City</th>
-                <th scope="col" style="width: 9.09%">State</th>
-                <th scope="col" style="width: 9.09%">Zip</th>
-                <th scope="col" style="width: 9.09%">E-mail</th>
-                <th scope="col" style="width: 9.09%">CELL #1</th>
-                <th scope="col" style="width: 9.09%">CELL #2</th>
-                <th scope="col" style="width: 9.09%">Status</th>
-                <th scope="col" style="width: 9.09%">Renewal</th>
-                <th scope="col" style="width: 9.09%">Action</th>
-
-
-            </tr>
+                <tr>
+                    <h1>Awaiting Renewal</h1>
+                    <th scope="col" style="width: 9.09%">First</th>
+                    <th scope="col" style="width: 9.09%">Last</th>
+                    <th scope="col" style="width: 9.09%">Address</th>
+                    <th scope="col" style="width: 9.09%">City</th>
+                    <th scope="col" style="width: 9.09%">State</th>
+                    <th scope="col" style="width: 9.09%">Zip</th>
+                    <th scope="col" style="width: 9.09%">E-mail</th>
+                    <th scope="col" style="width: 9.09%">Cell #1</th>
+                    <th scope="col" style="width: 9.09%">Status</th>
+                    <th scope="col" style="width: 9.09%">Renewal</th>
+                    <th scope="col" style="width: 9.09%">Action</th>
+                </tr>
             </thead>
             <tbody>
-            {% if lr_under_2 %}
-            {% for item in all_cust_lockers %}
-            {% if item.is_under_2_weeks_past_due %}
-
-            <tr>
-                <td>{{ item.cust_id.cust_f_name }}</td>
-                <td>{{ item.cust_id.cust_l_name }}</td>
-                <td>{{ item.cust_id.cust_address }}</td>
-                <td>{{ item.cust_id.cust_city }}</td>
-                <td>{{ item.cust_id.cust_state }}</td>
-                <td>{{ item.cust_id.cust_zip }}</td>
-                <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_email }}</a></td>
-                <td>{{ item.cust_id.phone_number }}</td>
-                <td>{{ item.cust_id.phone_number2 }}</td>
-                <td>{{ item.locker_id.locker_status_id.locker_status_name }}</td>
-                <td>{{ item.renew_date }}</a></td>
-                <td><a href="{{ item.get_admin_url }}"><i class="fa fa-edit"></i></a>
-                    <a href="cust_locker/{{ item.pk }}/delete"><i class="fa fa-trash"></i></a>
-                </td>
-
-
-            </tr>
-            {% endif %}
-            {% endfor %}
-            {% else %}
-            <tr>
-                <td colspan="100%">
-                    <em>There are currently no lockers up for renewal.</em>
-                </td>
-            </tr>
-            {% endif %}
+                {% if lr_under_2 %}
+                {% for item in all_cust_lockers %}
+                {% if item.is_under_2_weeks_past_due and item.not_contacted %}
+                <tr>
+                    <td>{{ item.cust_id.cust_f_name }}</td>
+                    <td>{{ item.cust_id.cust_l_name }}</td>
+                    <td>{{ item.cust_id.cust_address }}</td>
+                    <td>{{ item.cust_id.cust_city }}</td>
+                    <td>{{ item.cust_id.cust_state }}</td>
+                    <td>{{ item.cust_id.cust_zip }}</td>
+                    <td style="word-break: break-all;"><a href="mailto: {{ item.cust_id.cust_email }}"
+                            target="_blank">{{item.cust_id.cust_email }}</a></td>
+                    <td>{{ item.cust_id.phone_number }}</td>
+                    <td>{{ item.locker_id.locker_status_id.locker_status_name }}</td>
+                    <td>{{ item.location_renewal.date }}</a></td>
+                    <td><a href="{{ item.get_admin_url }}"><i class="fa fa-edit"></i></a>
+                        <a href="cust_locker/{{ item.pk }}/delete"><i class="fa fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="100%">
+                        <em>There are currently no lockers up for renewal.</em>
+                    </td>
+                </tr>
+                {% endif %}
             </tbody>
         </table>
 
     </div>
     <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
-        <h1>Renewal Process for KCM Bike Lockers</h1>
-        <form method="POST" action="">{% csrf_token %}
+        <h1>E-mail Renewal Process for KCM Bike Lockers</h1>
+        <ol>
+            <li>An e-mail listing has been generated based above based on dates we have in
+                our database. It contains customers <em>under two weeks past due</em> and who <em>have not recieved this
+                    e-mail yet</em>.</li>
+            <li>Once the e-mail sends, they will be removed from the listing.</li>
+            <li><strong>Be sure to double check that the Google form URL is correct and the year listed is
+                    correct.</strong></p>
+            </li>
+        </ol>
+        <form method="POST" action="" id="form1">{% csrf_token %}
             <div>
                 <div>
-                    <h3>To:</h3>
-                    {% for item in all_cust_lockers %}
-                    {% if item.is_under_2_weeks_past_due %}
-                    {{ item.cust_id }}
-                    {% endif %}
-                    {% endfor %}
 
                     <select name="users" multiple style="display: none">
                         {% for item in emails %}
@@ -124,71 +168,69 @@
                 </div>
                 <div>
                     <p>{{ form.subject.errors }}</p>
-                    <h3>Subject:</h3>
+                    <h2>Subject:</h2>
                     <p>{{ form.subject|add_class:'form-control' }}</p>
                 </div>
                 <div>
                     <p>{{ form.message.errors }}</p>
-                    <h3>Message:</h3>
+                    <h2>Message:</h2>
                     <p>{{ form.message|add_class:'form-control' }}</p>
 
                 </div>
-                <input name="form1" type="submit" value="{% trans 'Send message' %}"/>
+                <input name="form1" type="submit" value="{% trans 'Send message' %}" />
             </div>
         </form>
     </div>
 
-
     <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
         <table class="table table-bordered table-fixed">
             <thead>
-            <tr><h1>Over 2 Weeks Past Due <em>(as of {% now "F j, Y" %})</em></h1>
-
-                <th scope="col" style="width: 9.09%">First</th>
-                <th scope="col" style="width: 9.09%">Last</th>
-                <th scope="col" style="width: 9.09%">Address</th>
-                <th scope="col" style="width: 9.09%">City</th>
-                <th scope="col" style="width: 9.09%">State</th>
-                <th scope="col" style="width: 9.09%">Zip</th>
-                <th scope="col" style="width: 9.09%">E-mail</th>
-                <th scope="col" style="width: 9.09%">CELL #1</th>
-                <th scope="col" style="width: 9.09%">CELL #2</th>
-                <th scope="col" style="width: 9.09%">Status</th>
-                <th scope="col" style="width: 9.09%">Renewal</th>
-                <th scope="col" style="width: 9.09%">Action</th>
-
-
-            </tr>
+                <tr>
+                    <h1>Over 2 Weeks Past Due</h1>
+                    <th scope="col" style="width: 9.09%">First</th>
+                    <th scope="col" style="width: 9.09%">Last</th>
+                    <th scope="col" style="width: 9.09%">Address</th>
+                    <th scope="col" style="width: 9.09%">City</th>
+                    <th scope="col" style="width: 9.09%">State</th>
+                    <th scope="col" style="width: 9.09%">Zip</th>
+                    <th scope="col" style="width: 9.09%">E-mail</th>
+                    <th scope="col" style="width: 9.09%">CELL #1</th>
+                    <th scope="col" style="width: 9.09%">Status</th>
+                    <th scope="col" style="width: 9.09%">Renewal</th>
+                    <th scope="col" style="width: 9.09%">Action</th>
+                </tr>
             </thead>
             <tbody>
-            {% if lr_over_2 %}
-            {% for item in all_cust_lockers %}
-            {% if item.is_2_weeks_past_due %}
-            <tr>
-                <td>{{ item.cust_id.cust_f_name }}</td>
-                <td>{{ item.cust_id.cust_l_name }}</td>
-                <td>{{ item.cust_id.cust_address }}</td>
-                <td>{{ item.cust_id.cust_city }}</td>
-                <td>{{ item.cust_id.cust_state }}</td>
-                <td>{{ item.cust_id.cust_zip }}</td>
-                <td><a href="{{ item.get_admin_url }}">{{ item.cust_id.cust_email }}</a></td>
-                <td>{{ item.cust_id.phone_number }}</td>
-                <td>{{ item.cust_id.phone_number2 }}</td>
-                <td>{{ item.locker_id.locker_status_id.locker_status_name }}</td>
-                <td>{{ item.renew_date }}</a></td>
-                <td><a href="{{ item.get_admin_url }}"><i class="fa fa-edit"></i></a>
-                    <a href="cust_locker/{{ item.pk }}/delete"><i class="fa fa-trash"></i></a>
-                </td>
-            </tr>
-            {% endif %}
-            {% endfor %}
-            {% else %}
-            <tr>
-                <td colspan="100%">
-                    <em>There are currently no lockers over 2 weeks past due the renewal date.</em>
-                </td>
-            </tr>
-            {% endif %}
+                {% if lr_over_2 %}
+                {% for item in all_cust_lockers %}
+                {% if item.is_2_weeks_past_due %}
+                {% if item.not_contacted or item.contacted_once %}
+                <tr>
+                    <td>{{ item.cust_id.cust_f_name }}</td>
+                    <td>{{ item.cust_id.cust_l_name }}</td>
+                    <td>{{ item.cust_id.cust_address }}</td>
+                    <td>{{ item.cust_id.cust_city }}</td>
+                    <td>{{ item.cust_id.cust_state }}</td>
+                    <td>{{ item.cust_id.cust_zip }}</td>
+                    <td style="word-break: break-all;"><a href="mailto: {{ item.cust_id.cust_email }}"
+                            target="_blank">{{item.cust_id.cust_email }}</a></td>
+                    <td>{{ item.cust_id.phone_number }}</td>
+                    <td>{{ item.locker_id.locker_status_id.locker_status_name }}</td>
+                    <td>{{ item.location_renewal.date }}</a></td>
+                    <td><a href="{{ item.get_admin_url }}"><i class="fa fa-edit"></i></a>
+                        <a href="cust_locker/{{ item.pk }}/delete"><i class="fa fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="100%">
+                        <em>There are currently no lockers over 2 weeks past due the renewal date.</em>
+                    </td>
+                </tr>
+                {% endif %}
 
             </tbody>
         </table>
@@ -196,31 +238,44 @@
     </div>
     <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
         <h1>Renewal Process for KCM Bike Lockers (After 2 Weeks)</h1>
-        <p>Follow up with people who give no response within 2 weeks. If you do not receive a response from them within
-            2 weeks, then send the following response. The e-mail listing has been generated based on dates we have in
-            our database.
+        <p>
+            <ol>
+                <li>Follow up with people who give no response within 2 weeks.</li>
+                <li>If you do not receive a response from them within
+                    2 weeks, then send the following response.</li>
+                <li>An e-mail listing has been generated based above based on dates we have in
+                    our database. It contains customers <em>over two weeks past due</em> and who <em>have not recieved
+                        this e-mail yet</em>.</li>
+                <li>Once the e-mail sends, they will be removed from the listing.</li>
+                <li><strong>Be sure to double check that the Google form URL is correct and the year listed is
+                        correct.</strong>
+        </p>
+        </li>
 
-        Be sure to double check that the Google form URL is correct and the year listed is correct.</p>
-        <form method="POST" action="">{% csrf_token %}
+        </ol>
+
+        <form method="POST" action="" id="form2">{% csrf_token %}
             <div>
-                <div><h3>To:</h3>
-                    {% for item in all_cust_lockers %}
-                    {% if item.is_2_weeks_past_due %}
-                    {{ item.cust_id }}
-                    {% endif %}
-                    {% endfor %}
-                </div>
+                <!--                <div><h2>To:</h2>-->
+                <!--                    {% for item in all_cust_lockers %}-->
+                <!--                    {% if item.is_2_weeks_past_due %}-->
+                <!--                    {% if item.not_contacted or item.contacted_once %}-->
+                <!--                    {{ item.cust_id }}-->
+                <!--                    {% endif %}-->
+                <!--                    {% endif %}-->
+                <!--                    {% endfor %}-->
+                <!--                </div>-->
                 <div>
                     <p>{{ form2.subject.errors }}</p>
-                    <h3>Subject:</h3>
+                    <h2>Subject:</h2>
                     <p>{{ form2.subject|add_class:'form-control input-sm' }}</p>
                 </div>
                 <div>
                     <p>{{ form2.message.errors }}</p>
-                    <h3>Message:</h3>
+                    <h2>Message:</h2>
                     <p>{{ form2.message|add_class:'form-control' }}</p>
                 </div>
-                <input type="submit" name="form2" value="{% trans 'Send message' %}"/>
+                <input type="submit" name="form2" value="{% trans 'Send message' %}" />
             </div>
         </form>
     </div>
@@ -234,6 +289,3 @@
 </tr>
 
 {% endblock %}
-
-
-

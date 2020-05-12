@@ -3,6 +3,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 {% extends "admin/base_site.html" %}
+    {% load static %}
 {% block breadcrumbs %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
 
@@ -38,10 +39,12 @@
 </nav>
 {% endblock %}
 {% block content %}
+
 <tr class="container">
+    <div class="row p-3 justify-content-md-center">
 
     <!-- Current Members -->
-    <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
+    <div class="shadow p-3 mb-5 bg-white rounded col-md-9" class="rounded">
         {% if messages %}
         {% for message in messages %}
         <div>
@@ -51,19 +54,37 @@
         </div>
         {% endfor %}
         {% else %}
-        <h1>Export Data</h1>
-        {{ order }}
+        <h1>Import Data</h1>
+        <p>This is the tool we built to import CBC BLM Customer Data. In order for the data scraper to work, it is essential that the steps are followed when uploading user data:</p>
+        <h2>Format</h2>
+        <ol>
+
+            <img src="{% static 'admin/upload_example.png' %}" height="200rem">
+        </ol>
+          <h2>Steps</h2>
+        <ol>
+
+            <li>Download Google Sheets as a CSV file.</li>
+            <li>Inspect document with Excel.</li>
+            <li>Change date format of column N to match double-digit date format (<em>dd-mm-yy</em>).</li>
+            <li>Add the locker location name <strong>exactly</strong> as viewed on the database panel to column P.</li>
+        </ol>
+        <br>
         <div>
             <form method="post" enctype="multipart/form-data">
         </div>
         {% csrf_token %}
         <div><label><strong>Upload a file:</strong></label>
             <input type="file" name="file">
-            <h4>Only accepts .csv files</h4>
-            <button class="btn btn-primary" type="submit">Upload</button>
+            <div class="text-sm-left">
+                <strong>Note:</strong> <em>Only accepts .csv files!</em>
+            </div>
+            <br>
+            <button class="button" type="submit">Upload</button>
             </form>
         </div>
         {% endif %}
+    </div>
     </div>
 </tr>
 {% endblock %}

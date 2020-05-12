@@ -48,32 +48,25 @@
 
     <div class="row p-3 justify-content-md-center">
 
-            <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-sm-3" class="rounded">
-        <table class="table table-bordered table-fixed table-sm">
-            <h1>
-                Set Renewal Date
-            </h1>
 
-            <div>
-                Set a renewal date uniformly for current active customers.
-            </div>
-            <br>
-                <form method="POST" action="">{% csrf_token %}
-                    <input type="submit" name="list" value="Reset Date"/>
-                </form>
-        </table>
-    </div>
         <!--    Reset Renewals-->
-    <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-sm-3" class="rounded">
-        <table class="table table-bordered table-fixed table-sm">
-            <h1>
-                Reset Renewals
-            </h1>
+    <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-sm-3" class="rounded"
+        <a href="../database/location_renewals"><div align="center"><a>
+                <a href=""> <i class="fa fa-undo fa-5x" aria-hidden="true"></i></a>
 
+                </i>
+
+        <p>
+                      <h1>
+                         Reset Renewals
+                      </h1>
+        </p>
+                  </div>
             <div>
                 At time to start updating customer information for renewals, this feature functions as a method to change
-                customer's status' from "Active" to "No Reponse."
+                customer's status' from "Active" to "No Reponse." This feature will only affect customers who are up for renewal!
             </div>
+
             <br>
                 <form method="POST" action="">{% csrf_token %}
                     <input type="submit" name="list" value="Reset Renewals"/>
@@ -81,34 +74,36 @@
         </table>
     </div>
 
-        <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-md-3.5" class="rounded">
-        <table class="table table-bordered table-fixed table-sm">
-                <h1>Set All Not Renewing to Inactive</h1>
+        <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-md-3" class="rounded">
+                   <div align="center"><a href=""><i class="fa fa-close fa-5x" aria-hidden="true"></a></i>
+                                   <p>
+                      <h1>Set Not Renewing to Inactive</h1>
+        </p>
+        </div>
             <div>
-                Set all Customers not Renewing to Inactive.
+                If a customer is not renewing, there's no need to keep them logged with their locker once they have collected their equipment. Once a customer has vacated the locker, be sure to set all Customers not Renewing to Inactive.
             </div>
             <br>
-            <div>
                 <form method="POST" action="">
                     {% csrf_token %}
                     <input type="submit" name="inactive" value="Set Not Renewing to Inactive"/>
             </form>
-            </div>
         </table>
             </div>
 
-        <div class="shadow p-3 mb-5 bg-white rounded col-md-2" class="rounded">
-            <table class="table table-bordered table-fixed table-sm">
-                <h1>
-                    Purge Inactive Lockers
-                </h1>
+        <div class="shadow p-3 mb-5 mr-2 bg-white rounded col-md-3" class="rounded">
+                   <div align="center"><a href=""><i class="fa fa-trash fa-5x" aria-hidden="true"></i></a>
+                                   <p>
+                      <h1>Purge Inactive Lockers</h1>
+        </p>
+        </div>
             <div>
-                This will purge all inactive lockers and free them up.
+                Once a Customer is Inactive, it's time to Purge Inactive Lockers. This will remove the relationship between the Customer and Locker and free up space in the database.
             </div>
             <br>
             <div>
                 <form method="POST" action="">{% csrf_token %}
-                    <input type="submit" name="purge" value="Purge Inactive Lockers"/>
+                    <input type="submit" name="purge" value="Purge Inactive Lockers""/>
                 </form>
             </table>
         </div>
@@ -154,6 +149,7 @@
         </table>
     </div>
 
+
 <!--    Reset Renewals-->
     <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
         <table class="table table-bordered table-fixed table-sm">
@@ -189,7 +185,6 @@
                     <th>Location</th>
                     <th>Renewing</th>
                     <th>Not Renewing</th>
-<!--                    <th>Not Responded</th>-->
                 </tr>
                 {% if all_cust_lockers %}
                 {% for item in all_cust_lockers %}
@@ -200,8 +195,6 @@
                      name='for_action' id='for_action' ></td>
                      <td><input type="checkbox" value='{{item.cust_id.pk}}'
                      name='for_action2' id='for_action2' ></td>
-<!--                    <td><input type="radio" value='{{item.cust_id.pk}}'-->
-<!--                     name='for_action3' id='for_action3' ></td>-->
                 </tr>
                 {% endfor %}
                 {% else %}
@@ -213,11 +206,11 @@
             <input type="submit" value="Save" name="save">
         </form>
 
-    </div>
-            </table>
-</div>
 
-</div>
+    </div>
+
+            </table>
+
     {% endif %}
 
 {% endblock %}

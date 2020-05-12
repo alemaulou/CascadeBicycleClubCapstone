@@ -14,6 +14,9 @@ class Location(models.Model):
     location_zip = models.CharField('Location Zip', max_length=10, blank=True)
     location_capacity = models.IntegerField('Location Capacity', default=0)
 
+    class Meta:
+        ordering = ['location_name']
+
     def __str__(self):
         return self.location_name
 
@@ -32,28 +35,47 @@ class Location(models.Model):
             return 0
 
     def get_not_renewed_count(self):
-        location = Cust_Locker.objects.filter(locker_id__location_id=self.pk)
+        location = Cust_Locker.objects.filter(locker_id__location_id=self.pk).filter(cust_id__status_id__status_name__iexact="Not Renewing")
         if location:
-            return len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Renewing"))
+            return len(location)
         else:
             return 0
 
     def get_not_responded(self):
-        location = Cust_Locker.objects.filter(locker_id__location_id=self.pk)
+        location = Cust_Locker.objects.filter(locker_id__location_id=self.pk).filter(cust_id__status_id__status_name__iexact="Not Responded")
         if location:
-            print(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded"))
-            return len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded"))
+            return len(location)
         else:
             return 0
 
     def get_renewal_percentage(self):
+
         location = Cust_Locker.objects.filter(locker_id__location_id=self.pk)
         if location:
-            if (len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Renewed")) + len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Renewing")) + len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded"))) != 0:
-                return str(round((len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Renewed")) + len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Renewing"))) / (len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Renewed")) + len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Renewing")) + len(Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded")))*100)) + "%"
-            else:
-                return 0
-        return 0
+            location_not_responded = Cust_Locker.objects.filter(locker_id__location_id=self.pk).filter(
+                cust_id__status_id__status_name__iexact="Not Responded")
+            location_renewed = Cust_Locker.objects.filter(locker_id__location_id=self.pk).filter(
+                cust_id__status_id__status_name__iexact="Renewed")
+            location_not_renew = Cust_Locker.objects.filter(locker_id__location_id=self.pk).filter(
+                cust_id__status_id__status_name__iexact="Not Renewing")
+            if (len(location) > 0):
+                 top = (len(location_not_renew) + len(location_renewed))
+                 bottom = (len(location_not_responded) + len(location_renewed) + len(location_not_renew))
+                 return "{}{}".format(top/bottom * 100,"%")
+        return "{}{}".format(0,"%")
+
+
+class Location_Renewals(models.Model):
+    location_renew_id = models.AutoField(primary_key=True)
+    location = models.ForeignKey(Location, on_delete=models.SET_NULL, blank=True, null=True)
+    date = models.DateField('Locker Location Renewal Date', null=True)
+
+    def __str__(self):
+        return "{} / {}".format(str(self.location), str(self.date))
+
+    class Meta:
+        verbose_name = "Locker Location Renewal Date"
+        verbose_name_plural = "Locker Location Renewal Dates"
 
 class Locker_Status(models.Model):
     locker_status_id = models.AutoField(primary_key=True)
@@ -166,9 +188,8 @@ class Customer(models.Model):
     cust_city = models.CharField('City', max_length=50)
     cust_state = models.CharField('State', max_length=50)
     cust_zip = models.CharField('Zip Code', max_length=10)
-    status = models.ForeignKey(Status, on_delete=models.CASCADE, null=True)
-    # CHOICES = [('option1', 'label 1'), ('option2', 'label 2')]
-    # some_field = forms.ChoiceField(choices=CHOICES, widget=forms.RadioSelect())
+    renewed = Status.objects.filter(status_name__iexact="Renewed")
+    status = models.ForeignKey(Status, on_delete=models.CASCADE, default=1)
 
     def not_responded(self):
         if self.status == Status.objects.get(pk=3):
@@ -229,7 +250,18 @@ class Cust_Locker(models.Model):
     locker_id = models.ForeignKey(Locker, on_delete=models.CASCADE)
     contract_date = models.DateField()
     renew_date = models.DateField()
+    location_renewal = models.ForeignKey(Location_Renewals, on_delete=models.CASCADE, blank=True, null=True)
     description = models.CharField(max_length=100, default="", blank=True)
+    CONTACT_CHOICES = (
+        ('No', 'No'),
+        ('Initial Contact', 'Initial Contact'),
+        ('Second Contact', 'Second Contact')
+    )
+    contacted = models.CharField('Contacted', choices=CONTACT_CHOICES, max_length=50, default='No')
+
+    @property
+    def natural_key(self):
+        return self.my_natural_key
 
     @property
     def total_lockers(self):
@@ -237,19 +269,44 @@ class Cust_Locker(models.Model):
 
     @property
     def is_past_due(self):
-        return date.today() > self.renew_date
+        try:
+            if self.location_renewal.date:
+                return date.today() > self.location_renewal.date
+        except:
+            return False
 
     @property
     def is_under_2_weeks_past_due(self):
-        if (date.today() > self.renew_date and date.today() - timedelta(14) < self.renew_date) and (self.cust_id.status.status_name == "Not Responded"):
-            return True
+        try:
+            if self.location_renewal.date:
+                if (date.today() > self.location_renewal.date and date.today() - timedelta(14) < self.location_renewal.date):
+                    return True
+        except:
+            return False
 
     @property
     def is_2_weeks_past_due(self):
-        if(date.today() - timedelta(14) > self.renew_date) and (self.cust_id.status.status_name == "Not Responded"):
+        try:
+            if(date.today() - timedelta(14) > self.location_renewal.date):
+                return True
+        except:
+            return False
+
+    @property
+    def not_contacted(self):
+        if self.contacted == "No":
             return True
+        else:
+            return False
+
+    def contacted_once(self):
+        if self.contacted == "Initial Contact":
+            return True
+        else:
+            return False
 
     class Meta:
+        ordering = ['locker_id__location_id__location_name', 'cust_id__cust_l_name']
         verbose_name = "Customer Locker"
         verbose_name_plural = "Customer Lockers"
 
@@ -323,11 +380,6 @@ class Inquiry(models.Model):
     cust_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
     inquiry_date = models.DateField()
     locations = models.ManyToManyField(Location)
-
-    @property
-    def is_empty(self):
-        if Inquiry.objects.count() == 0:
-            return True
 
     class Meta:
         verbose_name = "Inquiry"
