@@ -2,18 +2,25 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% extends "admin/base_site.html" %}
-{% block breadcrumbs %}
+{% block branding %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/base_site.css' %}">
+    <a href="/"><img src="{% static 'admin/cbc_head.png' %}" height="150rem"></a>
 {% endblock %}
-  {% block content %}
-  <html>
-    <head>
-      <title>Maintenance Report Form</title>
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    </head>
-    <body style="padding: 20px; align-content: center;">
+{% load widget_tweaks %}
+    { block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} delete-confirmation
+    {% block breadcrumbs %}
+    {% endblock %}
+    {% block content %}
+<title>Maintenance Report Form</title>
+<tr class="container">
+
+       <div class="shadow p-3 mb-5 bg-white rounded col-md-8" class="rounded">
+
       <h1>Report Maintenance Issues Here:</h1>
-  
+
       {% if submitted %}
         <p class="success">
            Your information was submitted successfully. We will reach out through email regarding next steps. Thank you.
@@ -25,13 +32,12 @@
            {{ form.as_table }}
            <tr>
                <td>&nbsp;</td>
-                
+
            </tr>
        </table>
        {% csrf_token %}
-       <button type="submit" class="btn btn-primary">Submit</button>
+       <input type="submit" class="btn btn-primary"></input>
        </form>
+                  </div>d
    {% endif %}
    {% endblock content %}
-    </body>
-  </html>

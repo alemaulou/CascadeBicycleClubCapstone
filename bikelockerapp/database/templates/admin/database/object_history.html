@@ -4,13 +4,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% extends "admin/base_site.html" %}
-{% load i18n static %}
-{% block extrastyle %}
-{% endblock %}
-
-<!-- Overriding Django Admin -->
-{% block userlinks %}
-{% endblock %}
+{% load i18n admin_urls %}
 
 {% block breadcrumbs %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
@@ -46,58 +40,33 @@
   </div>
 </nav>
 {% endblock %}
+
 {% block content %}
-{% if user.is_authenticated %}
-
 <div id="content-main">
-    <div class="shadow p-3 mb-5 bg-white rounded col-md-12" class="rounded">
-        <table class="table table-bordered table-fixed table-sm">
-            <form method="post">
-                {% csrf_token %}
+<div class="module">
 
-                <div>
-                    <h1>Change Password</h1>
-                    <p>Please enter your old password, for security’s sake, and then enter your new password twice so we
-                        can verify you typed it in correctly.</p>
-                    <div class="help">{{ form.new_password1.help_text|safe }}</div>
-                </div>
-                <br>
-                <!-- Old Password -->
-                <div>
-                    {{ form.old_password.errors }}
-
-                    <strong>{{ form.old_password.label_tag }}</strong>
-                    {{ form.old_password }}
-                </div>
-
-                <!-- Old Password Errors -->
-
-                <div>
-                    {{ form.new_password1.errors }}
-                    <Strong>{{ form.new_password1.label_tag }} </Strong>
-                    {{ form.new_password1 }}
-                    {% if form.new_password1.help_text %}
-                </div>
-                {% endif %}
-
-                <div>
-                    {{ form.new_password2.errors }}
-                    <Strong>{{ form.new_password2.label_tag }}</Strong>
-                    {{ form.new_password2 }}
-                    {% if form.new_password2.help_text %}
-                    <div class="help">{{ form.new_password2.help_text|safe }}</div>
-                    {% endif %}
-                </div>
-
-                </fieldset>
-
-                <div class="submit-row">
-                    <input type="submit" value="Change my password" class="default">
-                </div>
-    </div>
-    </form>
-</div>
-</div>
-</table>
+{% if action_list %}
+    <table id="change-history">
+        <thead>
+        <tr>
+            <th scope="col">{% trans 'Date/time' %}</th>
+            <th scope="col">{% trans 'User' %}</th>
+            <th scope="col">{% trans 'Action' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for action in action_list %}
+        <tr>
+            <th scope="row">{{ action.action_time|date:"DATETIME_FORMAT" }}</th>
+            <td>{{ action.user.get_username }}{% if action.user.get_full_name %} ({{ action.user.get_full_name }}){% endif %}</td>
+            <td>{{ action.get_change_message }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>{% trans 'This object doesn’t have a change history. It probably wasn’t added via this admin site.' %}</p>
 {% endif %}
+</div>
+</div>
 {% endblock %}

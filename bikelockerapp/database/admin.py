@@ -14,9 +14,15 @@ class LocationA(admin.ModelAdmin):
 class MaintenanceAdmin(admin.ModelAdmin):
     list_filter = ('main_type_id', 'location_id')
 
+
+class Location_Renewals_A(admin.ModelAdmin):
+    list_display = ('location', 'date')
+    list_filter = ('location', 'date',)
+
 admin.site.register(Location, LocationA)
 admin.site.register(Waitlist)
 admin.site.register(Locker_Status)
+admin.site.register(Location_Renewals, Location_Renewals_A)
 admin.site.register(Locker)
 admin.site.register(Key_Status)
 admin.site.register(Key)
