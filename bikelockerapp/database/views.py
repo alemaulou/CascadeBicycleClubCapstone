@@ -22,7 +22,6 @@ def index(request):
     all_station = Location.objects.all()
     all_customer = Customer.objects.all()
     all_cust_locker = Cust_Locker.objects.all()
-
     all_maintenance = Maintenance.objects.all()
 
     # Checking to see if user input in search field "contains" query
@@ -127,7 +126,6 @@ def customer_upload(request):
                 locker_id = not_created_locker,
                 locker_id__locker_status_id = Locker_Status.objects.get(locker_status_name='Leased'),
                 contract_date = datetime.strptime(contract_date, "%m/%d/%Y").date(),
-                renew_date = datetime.now(),
                 description = column[11]
             )
     context = {}

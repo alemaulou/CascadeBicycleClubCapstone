@@ -249,7 +249,6 @@ class Cust_Locker(models.Model):
     cust_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
     locker_id = models.ForeignKey(Locker, on_delete=models.CASCADE)
     contract_date = models.DateField()
-    renew_date = models.DateField()
     location_renewal = models.ForeignKey(Location_Renewals, on_delete=models.CASCADE, blank=True, null=True)
     description = models.CharField(max_length=100, default="", blank=True)
     CONTACT_CHOICES = (
@@ -258,6 +257,9 @@ class Cust_Locker(models.Model):
         ('Second Contact', 'Second Contact')
     )
     contacted = models.CharField('Contacted', choices=CONTACT_CHOICES, max_length=50, default='No')
+    # Couldn't drop this field due to SQLITE3. Now used for renew_dates is now used for locker notes.
+    renew_date = models.TextField("Notes", null=True, blank=True, default="")
+
 
     @property
     def natural_key(self):
