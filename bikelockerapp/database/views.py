@@ -1,17 +1,13 @@
 import csv, io
-
 from django.contrib.admin.views.decorators import staff_member_required
-from django.core import serializers
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, BadHeaderError, HttpResponse
 from django.contrib import messages
-from .models import Customer, Inquiry, Location, Cust_Locker, Maintenance, Locker, Waitlist, Locker_Log, Status, \
-    Locker_Status, Renewal_Form
+from .models import Customer, Inquiry, Location, Cust_Locker, Maintenance, Locker, Waitlist, Locker_Log, Status, Locker_Status
 from .forms import CustomerForm, SendEmailForm, SendEmailFormAfter2Weeks, RenewalsForm
 from datetime import datetime, date, timedelta
 from django.conf import settings
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 @staff_member_required
 # Admin Index View
@@ -22,7 +18,6 @@ def index(request):
     all_station = Location.objects.all()
     all_customer = Customer.objects.all()
     all_cust_locker = Cust_Locker.objects.all()
-
     all_maintenance = Maintenance.objects.all()
 
     # Checking to see if user input in search field "contains" query
@@ -57,13 +52,6 @@ def index(request):
                 contains_locker_renewals = True
         else:
             pass
-
-    paginator = Paginator(all_cust_locker,25)
-
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    json = serializers.serialize('json', all_cust_locker)
 
     # Returning values to to render onto template
     render_dicts = {'render_cust': render_cust, 'all_stations': all_station, 'all_customer': all_customer, 'page_obj': page_obj, 'all_inquiries': all_inquiry, 'all_cust_lockers': all_cust_locker, 'locker_renewals': contains_locker_renewals, 'all_maintenance' : all_maintenance}
@@ -127,7 +115,6 @@ def customer_upload(request):
                 locker_id = not_created_locker,
                 locker_id__locker_status_id = Locker_Status.objects.get(locker_status_name='Leased'),
                 contract_date = datetime.strptime(contract_date, "%m/%d/%Y").date(),
-                renew_date = datetime.now(),
                 description = column[11]
             )
     context = {}
@@ -350,6 +337,7 @@ def renewals(request):
     list_of_cust_locker = Cust_Locker.objects.filter(locker_id__location_id__in=list_of_location)
     if 'update_renewal' in request.POST:
         return HttpResponseRedirect("location_renewals")
+
     # Mass update
     if 'list' in request.POST:
         active_customers = Customer.objects.all().exclude(status_id__status_name__iexact="Inactive").exclude(status__isnull=True).exclude(status_id__status_name__iexact="Not Renewing")
@@ -389,9 +377,6 @@ def renewals(request):
         all_cust_locker = all_cust_locker.filter(locker_id__location_id__location_name__contains=location).filter(cust_id__status_id__status_name__iexact="Not Responded")
     else:
         all_cust_locker = Cust_Locker.objects.filter(cust_id__status_id__status_name__iexact="Not Responded")
-
-    # context_dict = {'listings': listings}
-    # return render(request, template_name, context_dict)
 
     return render(request, 'renewals.html',
                   {'all_cust_lockers': all_cust_locker,
