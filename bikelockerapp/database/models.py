@@ -268,7 +268,7 @@ class Cust_Locker(models.Model):
     locker_id = models.ForeignKey(Locker, on_delete=models.CASCADE)
     contract_date = models.DateField()
     location_renewal = models.ForeignKey(Location_Renewals, on_delete=models.CASCADE, blank=True, null=True)
-    description = models.CharField(max_length=100, default="", blank=True)
+    key_number = models.CharField(max_length=100, default="", blank=True)
     CONTACT_CHOICES = (
         ('No Contact', 'No Contact'),
         ('Initial Contact', 'Initial Contact'),
