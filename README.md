@@ -8,7 +8,7 @@
 
 Cascade Bicycle Club handles 220 of King County Metro’s leased bike locker units and manages over 160 customers who rent these eco-friendly and affordable lockers. Cascade relied heavily on manual transactional processes to facilitate their bike locker leasing program. Our project, C-Bike, has successfully eased the process for this non-profit by creating a secure, data-integrable customer management database for locker administrators, and a clear, concise frontend locker rental webpage for customer inquiries. Through C-Bike, customers and administrators can have swift and more secure interactions, thus ensuring that these resources are quickly accessible to those who need them.
 
-##Techstack
+## Tech Stack
 Python, Django, AWS, Postman, Docker, HTML, CSS, Javascript, SQL
 
 ## Product
